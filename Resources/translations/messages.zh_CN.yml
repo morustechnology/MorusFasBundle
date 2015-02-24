@@ -1,0 +1,56 @@
+inventory:
+    itemcode: 货品编号
+    itemname: 货品名称
+    default_discount: 默认折扣
+    
+menu:
+    home: 主页
+    account: 帐户
+    account_sales: 销售
+    statement: 月结单
+    statement_import: 汇入
+    contacts: 通讯录
+    settings: 设定
+    settings_inventory: 库存货品
+    
+statement:
+    statement_list: 已上载月结单
+    upload_new_statement: 上载新月结单
+    supplier: 供应商
+    choose_supplier: '[ 选择供应商 ]'
+    remark: 备注
+    status: 状态
+    file: 档案
+    upload: 上载
+    export_invoice: 汇出发票
+    delete_invoice: 删除发票
+    statement_upload: 上载月結單
+    statement_export: 汇出月结单
+    choose_column: '[ 选择栏位 ]'
+    pairing_header: 栏位配对
+    confirmation: 确认
+    detect_new_product: 侦测货品
+    detect_new_vehicle: 侦测牌照
+    license_number: 牌照号码
+    new_customer: 新客户?
+    choose_customer: '[ 选择客戶 ]'
+    customer_info: 客户资料
+    btn:
+        export_invoices: 汇出发票
+
+export_step:
+    product_search: 货品搜索
+    vehicle_search: 牌照搜索
+    confirm_export: 确认汇出
+    search_result: 搜索结果
+    new_product: 新货品
+    database_product: 数据库中可配对货品
+    new_vehicle: 尚未登记车牌
+    database_vehicle: 已登记车牌
+    
+error:
+    import:
+        empty_null_value: 列%column, 第%row行含有空白或无效值字串
+        invalid_datetime_value: 列%column, 第%row行含有无效日期时间格式 (dd/MM/yyyy hh:mm:ss)
+        invalid_date_value: 列%column, 第%row行含有无效日期格式 (dd/MM/yyyy hh:mm:ss)
+        invalid_time_value: 列%column, 第%row行含有无效时间格式 (dd/MM/yyyy hh:mm:ss)

@@ -1,0 +1,42 @@
+morus_fas_statement:
+    path:     /
+    defaults: { _controller: "MorusFasBundle:Statement:index" }
+
+morus_fas_statement_import:
+    path:     /import
+    defaults: { _controller: "MorusFasBundle:Statement:import" }
+
+morus_fas_statement_export:
+    path:     /export
+    defaults: { _controller: "MorusFasBundle:Statement:export" }
+ 
+morus_fas_statement_export_new_product:
+    path:     /newProduct
+    defaults: { _controller: "MorusFasBundle:Statement:newProduct" }
+    
+morus_fas_statement_show:
+    path:     /{id}/show
+    defaults: { _controller: "MorusFasBundle:Statement:show" }
+
+morus_fas_statement_new:
+    path:     /new
+    defaults: { _controller: "MorusFasBundle:Statement:new" }
+
+morus_fas_statement_create:
+    path:     /create
+    defaults: { _controller: "MorusFasBundle:Statement:create" }
+    requirements: { _method: post }
+
+morus_fas_statement_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "MorusFasBundle:Statement:edit" }
+
+morus_fas_statement_update:
+    path:     /{id}/update
+    defaults: { _controller: "MorusFasBundle:Statement:update" }
+    requirements: { _method: post|put }
+
+morus_fas_statement_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "MorusFasBundle:Statement:delete" }
+    requirements: { _method: post|delete }

@@ -1,0 +1,95 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+
+{% endblock %}
+
+{% block stylesheets %}
+    {% stylesheets '@CraueFormFlowBundle/Resources/assets/css/buttons.css' %}
+        <link type="text/css" rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block body_title -%}
+    {{ 'statement.upload_new_statement'|trans }}
+{% endblock %}
+
+{% block body -%}
+    <div>
+    Steps:
+        {% include 'CraueFormFlowBundle:FormFlow:stepList.html.twig' %}
+    </div>
+    {{ form_start(form) }}
+        {{ form_errors(form) }}        
+        {% if flow.getCurrentStepNumber() == 1 %}
+            {{ 'statement.split_date_time'|trans }} {{ form_widget(form.splitDateTime) }}
+            {{ 'statement.supplier'|trans }} {{ form_widget(form.unit) }} {{ form_errors(form.unit) }}<br/>
+            {{ 'statement.remark'|trans }} {{ form_widget(form.name) }} {{ form_errors(form.name) }}<br/>
+            {{ 'statement.file'|trans }} {{ form_widget(form.file) }} {{ form_errors(form.file) }}<br/>
+        {% elseif flow.getCurrentStepNumber() == 2 %}
+            <div>
+                <h1>{{ 'statement.pairing_header'|trans }}</h1>
+                <br />
+                {{ 'statement.card_number_header'|trans }} {{ form_widget(form.cardNumberHeader) }} {{ form_errors(form.cardNumberHeader) }}<br/>
+                {{ 'statement.licence_number_header'|trans }} {{ form_widget(form.licenceNumberHeader) }} {{ form_errors(form.licenceNumberHeader) }}<br/>
+                {{ 'statement.site_header'|trans }} {{ form_widget(form.siteHeader) }} {{ form_errors(form.siteHeader) }}<br/>
+                {{ 'statement.receipt_number_header'|trans }} {{ form_widget(form.receiptNumberHeader) }} {{ form_errors(form.receiptNumberHeader) }}<br/>
+                {% if (flow.isSplitDateTime == true ) %}
+                    {{ 'statement.transaction_date_header'|trans }} {{ form_widget(form.transactionDateHeader) }} {{ form_errors(form.transactionDateHeader) }}<br/>
+                    {{ 'statement.transaction_time_header'|trans }} {{ form_widget(form.transactionTimeHeader) }} {{ form_errors(form.transactionTimeHeader) }}<br/>
+                {% else %}
+                    {{ 'statement.transaction_datetime'|trans }} {{ form_widget(form.transactionDatetimeHeader) }} {{ form_errors(form.transactionDatetimeHeader) }}<br/>
+                {% endif %}
+                {{ 'statement.product_name_header'|trans }} {{ form_widget(form.productNameHeader) }} {{ form_errors(form.productNameHeader) }}<br/>
+                {{ 'statement.product_code_header'|trans }} {{ form_widget(form.productCodeHeader) }} {{ form_errors(form.productCodeHeader) }}<br/>
+                {{ 'statement.volume_header'|trans }} {{ form_widget(form.volumeHeader) }} {{ form_errors(form.volumeHeader) }}<br/>
+                {{ 'statement.unit_price_header'|trans }} {{ form_widget(form.unitPriceHeader) }} {{ form_errors(form.unitPriceHeader) }}<br/>
+                {{ 'statement.net_amount_header'|trans }} {{ form_widget(form.netAmountHeader) }} {{ form_errors(form.netAmountHeader) }}<br/>
+            </div>
+            
+        {% elseif flow.getCurrentStepNumber() == 3 %}
+            {# Display Error #}
+            {% if flow.cardNumberLogs|length > 0 %}
+                {{ 'statement.card_number_log'|trans }}
+                <br/>
+                {% for cardNumberLog in flow.cardNumberLogs %}
+                    {{ cardNumberLog.log }} <br/>
+                {% endfor %} 
+            {% endif %}
+            
+            {% for licenceNumberLog in flow.licenceNumberLogs %}
+                {{ licenceNumberLog.log }} <br/>
+            {% endfor %}
+            
+            New Product Found<br/>
+            {% for newProduct in flow.newProductList %}
+                {{ newProduct }} <input type="text" name="fname"> <br/> 
+            {% endfor %}
+        {% endif %}
+
+        {{ form_rest(form) }}
+
+        {% set renderBackButton = flow.getFirstStepNumber() < flow.getLastStepNumber() and flow.getCurrentStepNumber() in (flow.getFirstStepNumber() + 1) .. flow.getLastStepNumber() %}
+        <div class="craue_formflow_buttons craue_formflow_button_count_{% if renderBackButton %}3{% else %}2{% endif %}">
+                {%- set isLastStep = flow.getCurrentStepNumber() == flow.getLastStepNumber() -%}
+                {%- set craue_formflow_button_class_last = craue_formflow_button_class_last | default('craue_formflow_button_last') -%}
+                {%- set craue_formflow_button_class_last = isLastStep
+                                ? craue_formflow_button_class_finish | default(craue_formflow_button_class_last)
+                                : craue_formflow_button_class_next | default(craue_formflow_button_class_last)
+                        -%}
+                <button type="submit" class="{{ craue_formflow_button_class_last }}">
+                        {{- (isLastStep ? 'button.finish' : 'button.next') | trans({}, 'CraueFormFlowBundle') -}}
+                </button>
+
+                {% if renderBackButton %}
+                        <button type="submit" class="{{ craue_formflow_button_class_back | default('') }}" name="{{ flow.getFormTransitionKey() }}" value="back" formnovalidate="formnovalidate">
+                                {{- 'button.back' | trans({}, 'CraueFormFlowBundle') -}}
+                        </button>
+                {% endif %}
+
+                <button type="submit" class="{{ craue_formflow_button_class_reset | default('craue_formflow_button_first') }}" name="{{ flow.getFormTransitionKey() }}" value="reset" formnovalidate="formnovalidate">
+                        {{- 'button.reset' | trans({}, 'CraueFormFlowBundle') -}}
+                </button>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

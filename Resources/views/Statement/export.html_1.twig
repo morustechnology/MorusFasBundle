@@ -1,0 +1,47 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+
+{% endblock %}
+
+{% block stylesheets %}
+    {% stylesheets '@CraueFormFlowBundle/Resources/assets/css/buttons.css' %}
+        <link type="text/css" rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block body_title -%}
+    {{ 'statement.export_statement'|trans }}
+{% endblock %}
+
+{% block body -%}
+    <div>
+    Steps:
+        {% include 'CraueFormFlowBundle:FormFlow:stepList.html.twig' %}
+    </div>
+    {{ form_start(form) }}
+        {{ form_errors(form) }}        
+        {% if flow.getCurrentStepNumber() == 1 %}
+            
+            {<div style="display:none">{{ render (controller("MorusFasBundle:Inventory:newDialog",  { 'id': 'prototype', 'itemcode' : 'prototype', 'itemname' : 'prototype' } )) }} </div>
+
+            New Products:
+            {% for itemcode, itemname in flow.newProdList %}
+                <div>
+                {{ itemname }} {# {{ render (controller("MorusFasBundle:Inventory:newDialog",  { 'id': loop.index, 'itemcode' : itemcode, 'itemname' : itemname } )) }} #}
+                </div> <br/>
+            {% endfor %}
+            <br/><br/><br/>
+            Found Products:<br/>
+           {% for prod in flow.prodList %}
+                {{ prod.parts.itemname }} ${{ prod.defaultDiscount|number_format(2, '.', ',') }} <br/>
+            {% endfor %}
+        {% endif %}
+
+        {{ form_rest(form) }}
+
+        {% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' %}
+    {{ form_end(form) }} 
+    
+    
+{% endblock %}

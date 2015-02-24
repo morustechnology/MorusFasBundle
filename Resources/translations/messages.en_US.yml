@@ -1,0 +1,56 @@
+inventory:
+    itemcode: Item Code
+    itemname: Item Name
+    default_discount: Default Discount
+        
+menu:
+    home: Home
+    account: Account
+    account_sales: Sales
+    statement: Statement
+    statement_import: Import
+    contacts: Contacts
+    settings: Settings
+    settings_inventory: Inventory
+    
+statement:
+    statement_list: Statement List
+    upload_new_statement: Upload New Statement
+    supplier: Supplier
+    choose_supplier: '[ Choose Supplier ]'
+    remark: Remark
+    status: Status
+    file: File
+    upload: Upload
+    export_invoice: Export Invoice
+    delete_invoice: Delete Invoice
+    statement_upload: Upload Statement
+    statement_export: Statement Export
+    choose_column: '[ Choose Column ]'
+    pairing_header: Pairing Header
+    confirmation: Confirmation
+    detect_new_product: Detect New Product
+    detect_new_vehicle: Detect New Vehicle
+    license_number: License Number
+    new_customer: New Customer?
+    choose_customer: '[ Choose Customer ]'
+    customer_info: Customer Info
+    btn:
+        export_invoices: Export Invoices
+
+export_step:
+    product_search: Product Search
+    vehicle_search: Vehicle Search
+    confirm_export: Confirm Export
+    search_result: Search Result
+    new_product: New Product
+    database_product: Product(s) already in database
+    new_vehicle: New Vehicle
+    database_vehicle: Vehicle number already in database
+    
+error:
+    import:
+        empty_null_value: Column %column, Row %row Contain empty or null value
+        invalid_datetime_value: Column %column, Row %row contain invalid datetime value
+        invalid_date_value: Column %column, Row %row contain invalid date value 
+        invalid_time_value: Column %column, Row %row contain invalid time value 

@@ -1,0 +1,41 @@
+services:
+    morus_fas.form.type.statement:
+        class: Morus\FasBundle\Form\Type\StatementType
+        tags:
+            - { name: form.type, alias: fas_statement }
+          
+    morus_fas.form.type.statementList:
+        class: Morus\FasBundle\Form\Type\StatementListType
+        tags:
+            - { name: form.type, alias: fas_statement_list }
+ 
+    morus_fas.form.flow.statementImport:
+        class: Morus\FasBundle\Form\ImportFlow
+        arguments: ["@doctrine.orm.entity_manager", "@service_container"]
+        parent: craue.form.flow
+        scope: request
+        
+    morus_fas.form.flow.export:
+        class: Morus\FasBundle\Form\ExportFlow
+        arguments: ["@doctrine.orm.entity_manager", "@service_container"]
+        parent: craue.form.flow
+        scope: request
+        
+    morus_fas.classes.importlog:
+        class: Morus\FasBundle\Classes\ImportLog
+        arguments: ["@translator"]
+        
+    morus_fas.form.type.parts.ext:
+        class: Morus\FasBundle\Form\Type\PartsExtType
+        tags:
+            - { name: form.type, alias: fas_parts_ext }
+    
+    morus_fas.form.type.parts:
+        class: Morus\FasBundle\Form\Type\PartsType
+        tags:
+            - { name: form.type, alias: fas_parts }
+            
+    morus_fas.form.type.parts_vehicle:
+        class: Morus\FasBundle\Form\Type\PartsVehicleType
+        tags:
+            - { name: form.type, alias: fas_parts_vehicle }

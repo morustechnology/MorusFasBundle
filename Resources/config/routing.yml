@@ -1,0 +1,7 @@
+morus_fas_homepage:
+    path:     /
+    defaults: { _controller: MorusFasBundle:Default:index }
+
+morus_fas_statement:
+    resource: "@MorusFasBundle/Resources/config/routing/statement.yml"
+    prefix:   /Fas/Statement
