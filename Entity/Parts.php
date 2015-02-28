@@ -9,7 +9,7 @@ use Morus\AcceticBundle\Entity\Parts as BaseParts;
  * Parts
  *
  * @ORM\Table(name="accetic_parts", uniqueConstraints={@ORM\UniqueConstraint(name="parts_itemcode_index_u", columns={"itemcode"})})
- * @ORM\Entity(repositoryClass="Morus\AcceticBundle\Entity\Repository\PartsRepository")
+ * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
 class Parts extends BaseParts

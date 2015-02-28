@@ -221,8 +221,8 @@ class StatementController extends Controller
         // Initialize new statement
         $statement = new Statement();
         $statement->setStatementStatus($init);
-        $statementProcess = new StatementProcess();
-        $statementProcess->setStatement($statement);
+//        $statementProcess = new StatementProcess();
+//        $statementProcess->setStatement($statement);
         
         $flow = $this->get('morus_fas.form.flow.statementImport'); // must match the flow's service id
         $flow->bind($statement);

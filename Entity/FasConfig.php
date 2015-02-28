@@ -25,7 +25,7 @@ class FasConfig
     /**
      * @var string
      *
-     * @ORM\Column(name="controlCode", type="string", length=50, nullable=false)
+     * @ORM\Column(name="control_code", type="string", length=50, nullable=false)
      */
     private $controlCode;
 

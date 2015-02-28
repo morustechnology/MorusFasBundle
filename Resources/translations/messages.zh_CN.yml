@@ -14,6 +14,7 @@ menu:
     settings_inventory: 库存货品
     
 statement:
+    separate_date_time_column: 独立日期时间列
     statement_list: 已上载月结单
     upload_new_statement: 上载新月结单
     supplier: 供应商

@@ -16,13 +16,12 @@
 
 {% block body -%}
     <div>
-    Steps:
         {% include 'CraueFormFlowBundle:FormFlow:stepList.html.twig' %}
     </div>
     {{ form_start(form) }}
         {{ form_errors(form) }}        
         {% if flow.getCurrentStepNumber() == 1 %}
-            {{ 'statement.split_date_time'|trans }} {{ form_widget(form.splitDateTime) }}
+            {{ 'statement.separate_date_time_column'|trans }} {{ form_widget(form.splitDateTime) }}<br/>
             {{ 'statement.supplier'|trans }} {{ form_widget(form.unit) }} {{ form_errors(form.unit) }}<br/>
             {{ 'statement.remark'|trans }} {{ form_widget(form.name) }} {{ form_errors(form.name) }}<br/>
             {{ 'statement.file'|trans }} {{ form_widget(form.file) }} {{ form_errors(form.file) }}<br/>
