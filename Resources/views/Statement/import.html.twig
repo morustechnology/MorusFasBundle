@@ -29,25 +29,206 @@
             <div>
                 <h1>{{ 'statement.pairing_header'|trans }}</h1>
                 <br />
-                {{ 'statement.card_number_header'|trans }} {{ form_widget(form.cardNumberHeader) }} {{ form_errors(form.cardNumberHeader) }}<br/>
-                {{ 'statement.licence_number_header'|trans }} {{ form_widget(form.licenceNumberHeader) }} {{ form_errors(form.licenceNumberHeader) }}<br/>
-                {{ 'statement.site_header'|trans }} {{ form_widget(form.siteHeader) }} {{ form_errors(form.siteHeader) }}<br/>
-                {{ 'statement.receipt_number_header'|trans }} {{ form_widget(form.receiptNumberHeader) }} {{ form_errors(form.receiptNumberHeader) }}<br/>
+                {{ 'statement.headers.card_number'|trans }} {{ form_widget(form.cardNumberHeader) }} {{ form_errors(form.cardNumberHeader) }}<br/>
+                {{ 'statement.headers.licence_number'|trans }} {{ form_widget(form.licenceNumberHeader) }} {{ form_errors(form.licenceNumberHeader) }}<br/>
+                {{ 'statement.headers.site'|trans }} {{ form_widget(form.siteHeader) }} {{ form_errors(form.siteHeader) }}<br/>
+                {{ 'statement.headers.receipt_number'|trans }} {{ form_widget(form.receiptNumberHeader) }} {{ form_errors(form.receiptNumberHeader) }}<br/>
                 {% if (flow.isSplitDateTime == true ) %}
-                    {{ 'statement.transaction_date_header'|trans }} {{ form_widget(form.transactionDateHeader) }} {{ form_errors(form.transactionDateHeader) }}<br/>
-                    {{ 'statement.transaction_time_header'|trans }} {{ form_widget(form.transactionTimeHeader) }} {{ form_errors(form.transactionTimeHeader) }}<br/>
+                    {{ 'statement.headers.transaction_date'|trans }} {{ form_widget(form.transactionDateHeader) }} {{ form_errors(form.transactionDateHeader) }}<br/>
+                    {{ 'statement.headers.transaction_time'|trans }} {{ form_widget(form.transactionTimeHeader) }} {{ form_errors(form.transactionTimeHeader) }}<br/>
                 {% else %}
-                    {{ 'statement.transaction_datetime'|trans }} {{ form_widget(form.transactionDatetimeHeader) }} {{ form_errors(form.transactionDatetimeHeader) }}<br/>
+                    {{ 'statement.headers.transaction_datetime'|trans }} {{ form_widget(form.transactionDatetimeHeader) }} {{ form_errors(form.transactionDatetimeHeader) }}<br/>
                 {% endif %}
-                {{ 'statement.product_name_header'|trans }} {{ form_widget(form.productNameHeader) }} {{ form_errors(form.productNameHeader) }}<br/>
-                {{ 'statement.product_code_header'|trans }} {{ form_widget(form.productCodeHeader) }} {{ form_errors(form.productCodeHeader) }}<br/>
-                {{ 'statement.volume_header'|trans }} {{ form_widget(form.volumeHeader) }} {{ form_errors(form.volumeHeader) }}<br/>
-                {{ 'statement.unit_price_header'|trans }} {{ form_widget(form.unitPriceHeader) }} {{ form_errors(form.unitPriceHeader) }}<br/>
-                {{ 'statement.net_amount_header'|trans }} {{ form_widget(form.netAmountHeader) }} {{ form_errors(form.netAmountHeader) }}<br/>
+                {{ 'statement.headers.product_name'|trans }} {{ form_widget(form.productNameHeader) }} {{ form_errors(form.productNameHeader) }}<br/>
+                {{ 'statement.headers.product_code'|trans }} {{ form_widget(form.productCodeHeader) }} {{ form_errors(form.productCodeHeader) }}<br/>
+                {{ 'statement.headers.volume'|trans }} {{ form_widget(form.volumeHeader) }} {{ form_errors(form.volumeHeader) }}<br/>
+                {{ 'statement.headers.unit_price'|trans }} {{ form_widget(form.unitPriceHeader) }} {{ form_errors(form.unitPriceHeader) }}<br/>
+                {{ 'statement.headers.net_amount'|trans }} {{ form_widget(form.netAmountHeader) }} {{ form_errors(form.netAmountHeader) }}<br/>
             </div>
             
         {% elseif flow.getCurrentStepNumber() == 3 %}
             {# Display Error #}
+            {% if flow.hasError %} {#  Display Error #}
+                {{ 'statement.msg.statment_error'|trans }}<br/>
+                {% image '@MorusFasBundle/Resources/public/images/magnifying_24x24.png' %}
+                    <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> {{ 'statement.msg.invalid_format'|trans }}
+                {% endimage %}
+                <br/>
+                {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                    <img src="{{ asset_url }}" alt="format error" style="width: 16px"/> {{ 'statement.msg.missing_data'|trans }}
+                {% endimage %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Row</th>
+                            <th>{{ 'statement.headers.card_number'|trans }}</th>
+                            <th>{{ 'statement.headers.licence_number'|trans }}</th>
+                            <th>{{ 'statement.headers.site'|trans }}</th>
+                            <th>{{ 'statement.headers.receipt_number'|trans }}</th>
+                            {% if flow.isSplitDateTime %}
+                                <th>{{ 'statement.headers.transaction_date'|trans }}</th>
+                                <th>{{ 'statement.headers.transaction_time'|trans }}</th>
+                            {% else %}
+                                <th>{{ 'statement.headers.transaction_datetime'|trans }}</th>
+                            {% endif %}
+                            <th>{{ 'statement.headers.product_name'|trans }}</th>
+                            <th>{{ 'statement.headers.product_code'|trans }}</th>
+                            <th>{{ 'statement.headers.volume'|trans }}</th>
+                            <th>{{ 'statement.headers.unit_price'|trans }}</th>
+                            <th>{{ 'statement.headers.net_amount'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for errorLog in flow.errorLogs %}
+                        <tr>
+                            <td>{{ errorLog.row }}</td>
+                            <td>
+                                {% if errorLog.nullCardNumber %}
+                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                    {% endimage %}
+                                {% else %}
+                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                    {% endimage %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if errorLog.nullLicenceNumber %}
+                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                    {% endimage %}
+                                {% else %}
+                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                    {% endimage %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if errorLog.nullSite %}
+                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                    {% endimage %}
+                                {% else %}
+                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                    {% endimage %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if errorLog.nullReceiptNumber %}
+                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                    {% endimage %}
+                                {% else %}
+                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                    {% endimage %}
+                                {% endif %}
+                            </td>
+                            {% if flow.isSplitDateTime %}
+                                <td>
+                                    {% if errorLog.nullTransactionDate %}
+                                        {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                        {% endimage %}
+                                    {% else %}
+                                        {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                        {% endimage %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if errorLog.nullTransactionTime %}
+                                        {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                        {% endimage %}
+                                    {% else %}
+                                        {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                        {% endimage %}
+                                    {% endif %}
+                                </td>
+                            {% else %}
+                                <td>
+                                    {% if errorLog.nullTransactionDateTime %}
+                                        {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                        {% endimage %}
+                                    {% else %}
+                                        {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                        {% endimage %}
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                            <td>
+                                {% if errorLog.nullProductName %}
+                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                    {% endimage %}
+                                {% else %}
+                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                    {% endimage %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if errorLog.nullProductCode %}
+                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                    {% endimage %}
+                                {% else %}
+                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                    {% endimage %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if errorLog.nullVolume %}
+                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                    {% endimage %}
+                                {% else %}
+                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                    {% endimage %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if errorLog.nullUnitPrice %}
+                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                    {% endimage %}
+                                {% else %}
+                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                    {% endimage %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if errorLog.nullNetAmount %}
+                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
+                                    {% endimage %}
+                                {% else %}
+                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
+                                    {% endimage %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% elseif flow.hasNewProduct %}  {#  Display New Product #}
+                New Product Found<br/>
+                {% for newProduct in flow.newProductList %}
+                    {{ newProduct }} <input type="text" name="fname"> <br/> 
+                {% endfor %}
+            {% endif %}
+            
+            {#
             {% if flow.cardNumberLogs|length > 0 %}
                 {{ 'statement.card_number_log'|trans }}
                 <br/>
@@ -59,11 +240,8 @@
             {% for licenceNumberLog in flow.licenceNumberLogs %}
                 {{ licenceNumberLog.log }} <br/>
             {% endfor %}
-            
-            New Product Found<br/>
-            {% for newProduct in flow.newProductList %}
-                {{ newProduct }} <input type="text" name="fname"> <br/> 
-            {% endfor %}
+            #}
+            Total Row Processed: {{ flow.totalProcessedCount }}
         {% endif %}
 
         {{ form_rest(form) }}

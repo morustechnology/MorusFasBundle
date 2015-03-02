@@ -23,8 +23,9 @@ class ImportFlow extends FormFlow {
     
     public $isSplitDateTime = false;
     public $result;
-    public $cardNumberLogs = array();
-    public $licenceNumberLogs = array();
+    public $hasError = false;
+    public $totalProcessedCount;
+    public $errorLogs = array();
     public $newProductList = array();
     
     public function __construct(EntityManager $entityManager, Container $container) {
@@ -95,7 +96,7 @@ class ImportFlow extends FormFlow {
         
     }
     
-    private function validateStatement($statement) {
+    private function validateStatement($statement) {        
         // 1. Save keyword to config
         // ------------------------------------------------------------------------------
         $pairingControlCode = HeaderKey::STATEMENT_PAIRING_HISTORY.'_'.strtoupper($statement->getUnit()->getId());
@@ -113,18 +114,39 @@ class ImportFlow extends FormFlow {
         
         // 2. Validate statement content 
         // ------------------------------------------------------------------------------
-        
-        foreach ($this->reader as $rowNum => $row) {           
-           // Validate Card Number Column
-           if ($this->isNullOrEmpty($row[$statement->getCardNumberHeader()])) {
-                $this->cardNumberLogs[] = $this->container->get('morus_fas.classes.importlog')
-                        ->setLog($rowNum, $statement->getCardNumberHeader(), ImportLog::EMPTY_NULL_VALUE);
-           }
+        $this->totalProcessedCount = 0;
+        foreach ($this->reader as $rowNum => $row) {    
+           $this->totalProcessedCount = $this->totalProcessedCount + 1;
+           $nullCard = false; $nullLic = false; $nullSite = false; 
            
-           // Validate Licence Number Column
-           if ($this->isNullOrEmpty($row[$statement->getLicenceNumberHeader()])) {
-                $this->licenceNumberLogs[] = $this->container->get('morus_fas.classes.importlog')
-                        ->setLog($rowNum, $statement->getLicenceNumberHeader(), ImportLog::EMPTY_NULL_VALUE);
+           // Validate Columns
+           $nullCard = ($this->isNullOrEmpty($row[$statement->getCardNumberHeader()]) ? true : false );
+           $nullLic = ($this->isNullOrEmpty($row[$statement->getLicenceNumberHeader()]) ? true : false );
+           $nullSite = ($this->isNullOrEmpty($row[$statement->getSiteHeader()]) ? true : false );
+           $nullRpt = ($this->isNullOrEmpty($row[$statement->getReceiptNumberHeader()]) ? true : false );
+           if ($statement->getSplitDateTime()) {
+               $nullTranDate = ($this->isNullOrEmpty($row[$statement->getTransactionDateHeader()]) ? true : false );
+                $nullTranTime = ($this->isNullOrEmpty($row[$statement->getTransactionTimeHeader()]) ? true : false );
+                $nullTranDateTime = false;
+           } else { 
+                $nullTranDate = false;
+                $nullTranTime = false;
+                $nullTranDateTime = ($this->isNullOrEmpty($row[$statement->getTransactionDatetimeHeader()]) ? true : false );
+           }
+           $nullPdtName = ($this->isNullOrEmpty($row[$statement->getProductNameHeader()]) ? true : false );
+           $nullPdtCode = ($this->isNullOrEmpty($row[$statement->getProductCodeHeader()]) ? true : false );
+           $nullVolume = ($this->isNullOrEmpty($row[$statement->getVolumeHeader()]) ? true : false );
+           $nullPx = ($this->isNullOrEmpty($row[$statement->getUnitPriceHeader()]) ? true : false );
+           $nullAmt = ($this->isNullOrEmpty($row[$statement->getNetAmountHeader()]) ? true : false );
+           
+           if ($nullCard || $nullLic || $nullSite || $nullRpt || $nullTranDateTime || $nullTranDate || $nullTranTime
+                        || $nullPdtName || $nullPdtCode || $nullVolume || $nullPx || $nullAmt ){
+               $importLog = new ImportLog($rowNum);
+               
+               $importLog->setLog($nullCard, $nullLic, $nullSite, $nullRpt, $nullTranDateTime, $nullTranDate, $nullTranTime
+                       , $nullPdtName, $nullPdtCode, $nullVolume, $nullPx, $nullAmt);
+               array_unshift($this->errorLogs, $importLog);
+               $this->hasError = true;
            }
            
            $productName = $row[$statement->getProductNameHeader()];

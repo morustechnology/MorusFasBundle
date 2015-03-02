@@ -36,8 +36,26 @@ statement:
     new_customer: 新客戶?
     choose_customer: '[ 選擇客戶 ]'
     customer_info: 客戶資料
-    btn:
-        export_invoice: 滙出發票
+    msg:
+        statment_error: 月結單含有錯誤，請修復錯誤並繼續下一步。
+        missing_data: 沒有資料數據
+        invalid_format: 格式錯誤
+    headers:
+        row: 行數
+        card_number:  咭號
+        licence_number: 車牌號碼
+        site: 油站
+        receipt_number: 收據編號
+        transaction_date: 日期
+        transaction_time: 時間
+        transaction_datetime: 日期/時間
+        product_name: 貨品名稱
+        product_code: 貨品編號
+        volume: 數量
+        unit_price: 價格
+        net_amount: 總計
+btn:
+    export_invoice: 滙出發票
 
 export_step:
     product_search: 貨品搜索

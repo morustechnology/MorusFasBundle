@@ -227,10 +227,6 @@ class StatementController extends Controller
         $flow = $this->get('morus_fas.form.flow.statementImport'); // must match the flow's service id
         $flow->bind($statement);
         
-        if ($statement->getFile()) {
-            $a = 4+9;
-        }
-        
         // form of the current step
         $form = $flow->createForm();
         if ($flow->isValid($form)) {

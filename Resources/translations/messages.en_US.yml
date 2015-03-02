@@ -14,6 +14,7 @@ menu:
     settings_inventory: Inventory
     
 statement:
+    
     separate_date_time_column: Separate Date Time Column
     statement_list: Statement List
     upload_new_statement: Upload New Statement
@@ -36,8 +37,27 @@ statement:
     new_customer: New Customer?
     choose_customer: '[ Choose Customer ]'
     customer_info: Customer Info
-    btn:
-        export_invoices: Export Invoices
+    msg:
+        statment_error: Statement contain error, please fix the error to proceed next step.
+        missing_data: Missing Data
+        invalid_format: Invalid Format
+    headers:
+        row: Row
+        card_number: Card Number
+        licence_number: Licence Number
+        site: Site
+        receipt_number: Receipt Number
+        transaction_date: Transaction Date
+        transaction_time: Transaction Time
+        transaction_datetime: Transaction Date & time
+        product_name: Product Name
+        product_code: Product Code
+        volume: Volume
+        unit_price: Unit Price
+        net_amount: Net Amount
+        
+btn:
+    export_invoices: Export Invoices
 
 export_step:
     product_search: Product Search

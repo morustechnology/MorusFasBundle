@@ -36,8 +36,26 @@ statement:
     new_customer: 新客户?
     choose_customer: '[ 选择客戶 ]'
     customer_info: 客户资料
-    btn:
-        export_invoices: 汇出发票
+    msg:
+        statment_error: 月结单含有错误，请修复错误并继续下一步。
+        missing_data: 没有资料数据
+        invalid_format: 格式错误
+    headers:
+        row: 行数
+        card_number: 咭号
+        licence_number: 车牌号码
+        site: 油站
+        receipt_number: 收据编号
+        transaction_date: 日期
+        transaction_time: 时间
+        transaction_datetime: 日期/时间
+        product_name: 货品名称
+        product_code: 货品编号
+        volume: 数量
+        unit_price: 价格
+        net_amount: 总计
+btn:
+    export_invoices: 汇出发票
 
 export_step:
     product_search: 货品搜索

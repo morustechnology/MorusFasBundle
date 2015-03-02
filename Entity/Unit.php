@@ -15,7 +15,7 @@ use Morus\AcceticBundle\Entity\Unit as BaseUnit;
 class Unit extends BaseUnit
 {
     /**
-     * @ORM\OneToMany(targetEntity="Statement", mappedBy="statementStatus")
+     * @ORM\OneToMany(targetEntity="Statement", mappedBy="unit")
      **/
     protected $statements;
     
