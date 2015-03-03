@@ -20,10 +20,20 @@ class Unit extends BaseUnit
     protected $statements;
     
     /**
+     * @ORM\OneToMany(targetEntity="Vehicle", mappedBy="unit")
+     **/
+    protected $vehicles;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="UnitParts", mappedBy="unit")
+     **/
+    protected $UnitParts;
+    
+    /**
      * Add statement
      *
      * @param \Morus\FasBundle\Entity\Statement $statement
-     * @return StatementStatus
+     * @return Unit
      */
     public function addStatement(\Morus\FasBundle\Entity\Statement $statement)
     {
@@ -50,5 +60,73 @@ class Unit extends BaseUnit
     public function getStatements()
     {
         return $this->statements;
+    }
+    
+    
+    
+    /**
+     * Add vehicle
+     *
+     * @param \Morus\FasBundle\Entity\Vehicle $vehicle
+     * @return Unit
+     */
+    public function addVehicle(\Morus\FasBundle\Entity\Vehicle $vehicle)
+    {
+        $this->vehicles[] = $vehicle;
+
+        return $this;
+    }
+
+    /**
+     * Remove vehicle
+     *
+     * @param \Morus\FasBundle\Entity\Vehicle $vehicle
+     */
+    public function removeVehicle(\Morus\FasBundle\Entity\Vehicle $vehicle)
+    {
+        $this->vehicles->removeElement($vehicle);
+    }
+
+    /**
+     * Get vehicles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getVehicles()
+    {
+        return $this->vehicles;
+    }
+
+    /**
+     * Add unitParts
+     *
+     * @param \Morus\FasBundle\Entity\UnitParts $unitParts
+     * @return Unit
+     */
+    public function addUnitParts(\Morus\FasBundle\Entity\UnitParts $unitParts)
+    {
+        $this->unitParts[] = $unitParts;
+
+        return $this;
+    }
+
+    /**
+     * Remove unitParts
+     *
+     * @param \Morus\FasBundle\Entity\UnitParts $unitParts
+     */
+    public function removeUnitParts(\Morus\FasBundle\Entity\UnitParts $unitParts)
+    {
+        $this->unitParts->removeElement($unitParts);
+    }
+
+    /**
+     * Get unitParts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUnitParts()
+    {
+        return $this->unitParts;
     }
 }

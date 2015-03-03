@@ -9,10 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 use Morus\FasBundle\Entity\Export;
 use Morus\FasBundle\Entity\Statement;
-use Morus\FasBundle\Entity\StatementProcess;
-use Morus\AcceticBundle\Entity\Parts;
-use Morus\FasBundle\Entity\PartsExt;
-use Morus\FasBundle\Entity\PartsVehicle;
+use Morus\FasBundle\Entity\Parts;
+use Morus\FasBundle\Entity\Unit;
 
 
 
@@ -36,12 +34,13 @@ class StatementController extends Controller
         $entities = $em->getRepository('MorusFasBundle:Statement')->findAll();
 
         $form = $this->createForm('fas_statement_list', $entities, array(
+            'attr'   => array('id' => 'fas_stmt_list_frm'),
             'action' => $this->generateUrl('morus_fas_statement'),
             'method' => 'POST',
         ));
 
-        $form->add('export_invoice', 'submit', array('label' => $this->get('translator')->trans('statement.export_invoice')));
-        $form->add('delete_invoice', 'submit', array('label' => $this->get('translator')->trans('statement.delete_invoice')));
+        $form->add('export_invoice', 'submit', array('label' => 'export', 'attr' => array( 'style' => 'display:none' )));
+        $form->add('delete_invoice', 'submit', array('label' => 'delete', 'attr' => array( 'style' => 'display:none' )));
         
         $form->handleRequest($request);
         
@@ -66,38 +65,35 @@ class StatementController extends Controller
      * Handle Ajax call for creating new product
      *
      */
-    public function newProductAction(Request $request) {        
+    public function createProductAjaxAction(Request $request) {        
         try {
             
             $index = $request->get('index');
-            $data = $request->get('fas_parts_ext');
+            $data = $request->get('fas_parts');
 
             $parts = new Parts();
-            $parts->setItemcode($data['parts']['itemcode']);
-            $parts->setItemname($data['parts']['itemname']);
+            $parts->setItemcode($data['itemcode']);
+            $parts->setItemname($data['itemname']);
             $parts->setUnit('L');
-            $partsExt = new PartsExt();
-            $partsExt->setDefaultDiscount($data['defaultDiscount']);
-            $partsExt->setParts($parts);
+            $parts->setDefaultDiscount($data['defaultDiscount']);
             
             $em = $this->getDoctrine()->getManager();
             $em->persist($parts);
-            $em->persist($partsExt);
             //$em->flush();
             
             $response = array(
                 "success" => true, 
                 "index" => $index,
-                "itemcode" => $data['parts']['itemcode'], 
-                "itemname" => $data['parts']['itemname'],
+                "itemcode" => $data['itemcode'], 
+                "itemname" => $data['itemname'],
                 "discount" => $data['defaultDiscount'],
                 );
         } catch (Exception $ex) {
             $response = array(
                 "success" => false,
                 "index" => $index,
-                "itemcode" => $data['parts']['itemcode'], 
-                "itemname" => $data['parts']['itemname'],
+                "itemcode" => $data['itemcode'], 
+                "itemname" => $data['itemname'],
                 "discount" => $data['defaultDiscount'],
                 );
         }
@@ -131,7 +127,7 @@ class StatementController extends Controller
             // ----------------------------------------------------
             // Export Form Flow
             // ----------------------------------------------------
-            $flow = $this->get('morus_fas.form.flow.export');
+            $flow = $this->get('morus_fas.form.flow.invoice.export');
             $flow->bind($export);
             
             // form of the current step
@@ -157,47 +153,36 @@ class StatementController extends Controller
             // New Parts Form
             // ----------------------------------------------------
             $parts = new Parts();
-//            $parts->setItemcode($request->get('itemcode'));
-//            $parts->setItemname($request->get('itemname'));
-//            $parts->setSale(true);
-
-            $partsExt = new PartsExt();
-            $partsExt->setParts($parts);
-//            $this->getDoctrine()->getManager()->persist($parts);
-//            $this->getDoctrine()->getManager()->persist($partsExt);
-
-            // New Parts Form
-            $parts_form = $this->createForm('fas_parts_ext', $partsExt, array(
-                'action' => $this->generateUrl('morus_fas_statement_export_new_product'),
+            $parts_form = $this->createForm('fas_parts', $parts, array(
+                'attr' => array('id' => 'accetic_parts_list'),
+                'action' => $this->generateUrl('morus_fas_statement_export_create_product_ajax'),
                 'method' => 'POST',
             ));
-
+            
             $parts_form->add('submit', 'submit', array(
-                    'label' => $this->get('translator')->trans('inventory.new.save'),
+                    'label' => $this->get('translator')->trans('btn.save'),
                     'attr' => array('style' => 'display:none')
                 ));
 
             
             // ----------------------------------------------------
-            // New Vehicle Form
+            // New Unit Form
             // ----------------------------------------------------
-            $partsVehicle = new PartsVehicle();
-            
-            // New Parts Form
-            $parts_vehicle_form = $this->createForm('fas_parts_vehicle', $partsVehicle, array(
-                'action' => $this->generateUrl('morus_fas_statement_export_new_product'),
+            $unit = new Unit();
+            $unit_form = $this->createForm('fas_unit', $unit, array(
+                'action' => $this->generateUrl('morus_fas_statement_export_create_product_ajax'),
                 'method' => 'POST',
             ));
 
-            $parts_form->add('submit', 'submit', array(
-                    'label' => $this->get('translator')->trans('inventory.new.save'),
+            $unit_form->add('submit', 'submit', array(
+                    'label' => $this->get('translator')->trans('btn.save'),
                     'attr' => array('style' => 'display:none')
                 ));
             
             return $this->render('MorusFasBundle:Statement:export.html.twig', array(
                 'export_form' => $export_form->createView(),
                 'parts_form' => $parts_form->createView(),
-                'parts_vehicle_form' => $parts_vehicle_form->createView(),
+                'unit_form' => $unit_form->createView(),
                 'flow' => $flow,
             ));
         } else {
@@ -224,7 +209,7 @@ class StatementController extends Controller
 //        $statementProcess = new StatementProcess();
 //        $statementProcess->setStatement($statement);
         
-        $flow = $this->get('morus_fas.form.flow.statementImport'); // must match the flow's service id
+        $flow = $this->get('morus_fas.form.flow.statement.import'); // must match the flow's service id
         $flow->bind($statement);
         
         // form of the current step
@@ -252,8 +237,6 @@ class StatementController extends Controller
             'flow' => $flow,
         ));
     }
-
-    
     
     /**
      * Creates a new Statement entity.

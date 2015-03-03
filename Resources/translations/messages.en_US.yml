@@ -14,10 +14,9 @@ menu:
     settings_inventory: Inventory
     
 statement:
-    
+    upload_new_statement: Upload New Statement
     separate_date_time_column: Separate Date Time Column
     statement_list: Statement List
-    upload_new_statement: Upload New Statement
     supplier: Supplier
     choose_supplier: '[ Choose Supplier ]'
     remark: Remark
@@ -25,7 +24,6 @@ statement:
     file: File
     upload: Upload
     export_invoice: Export Invoice
-    delete_invoice: Delete Invoice
     statement_upload: Upload Statement
     statement_export: Statement Export
     choose_column: '[ Choose Column ]'
@@ -38,9 +36,11 @@ statement:
     choose_customer: '[ Choose Customer ]'
     customer_info: Customer Info
     msg:
-        statment_error: Statement contain error, please fix the error to proceed next step.
+        statement_error: Statement contain error, please fix the error to proceed next step.
+        statement_valid: Statement contains no error, please press "finish" to proceed.
         missing_data: Missing Data
         invalid_format: Invalid Format
+        total_row_processed: Total of %row Row Processed
     headers:
         row: Row
         card_number: Card Number
@@ -58,6 +58,14 @@ statement:
         
 btn:
     export_invoices: Export Invoices
+    upload_new_statement: Upload New Statement
+    export_invoice: Export Invoice
+    delete_invoice: Delete Invoice
+    save: Save
+    edit: Edit
+    cancel: Cancel
+    delete: Delete
+    back: Back
 
 export_step:
     product_search: Product Search

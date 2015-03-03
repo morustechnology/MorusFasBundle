@@ -1,8 +1,0 @@
-{% block fas_statement_list_widget %}
-    {% spaceless %}
-        {% for id in form %}
-            Test {{ form_widget(id) }}
-        {% endfor %}
-        {{ form_rest(form) }}
-    {% endspaceless %}
-{% endblock %}

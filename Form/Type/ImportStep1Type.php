@@ -11,7 +11,7 @@ class ImportStep1Type extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add('unit', 'entity', array(
-                'class' => 'MorusAcceticBundle:Unit',
+                'class' => 'MorusFasBundle:Unit',
                 'property' => 'name'
             ))
             ->add('splitDateTime', 'checkbox', array(

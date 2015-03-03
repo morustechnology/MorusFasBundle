@@ -10,9 +10,9 @@ morus_fas_statement_export:
     path:     /export
     defaults: { _controller: "MorusFasBundle:Statement:export" }
  
-morus_fas_statement_export_new_product:
+morus_fas_statement_export_create_product_ajax:
     path:     /newProduct
-    defaults: { _controller: "MorusFasBundle:Statement:newProduct" }
+    defaults: { _controller: "MorusFasBundle:Statement:createProductAjax" }
     
 morus_fas_statement_show:
     path:     /{id}/show

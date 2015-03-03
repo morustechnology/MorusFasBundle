@@ -15,6 +15,11 @@ class PartsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('defaultDiscount' , 'money', array(
+                'currency' => 'HKD',
+                'precision' => 2,
+                'required' => false
+            ))
             ->add('itemcode' , 'text', array(
                 'read_only' => true
             ))
@@ -29,8 +34,7 @@ class PartsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Morus\AcceticBundle\Entity\Parts',
-            'attr' => ['id' => 'accetic_parts']
+            'data_class' => 'Morus\FasBundle\Entity\Parts'
         ));
     }
 

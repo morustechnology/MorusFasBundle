@@ -46,7 +46,7 @@ class Statement
     /**
      * @var string
      *
-     * @ORM\Column(name="path", type="string", length=20, nullable=true)
+     * @ORM\Column(name="path", type="text", nullable=true)
      */
     private $path;
     
@@ -119,13 +119,23 @@ class Statement
     private $unit;
     
     /**
+     * @ORM\ManyToOne(targetEntity="Export", inversedBy="statements")
+     * @ORM\JoinColumn(name="export_id", referencedColumnName="id")
+     **/
+    private $export;
+    
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $datetime = new \DateTime("now");
-        $datetimeStr = $datetime->format('d-m-Y');
-        $this->name = 'Import ' . $datetimeStr;
+        $month = date('m', strtotime('-1 month'));
+        $year = date('Y', strtotime('-1 month'));
+        
+//        $datetime = new \DateTime("now");
+//        $datetimeStr = $datetime->format('d-m-Y');
+//        $this->name = 'Import ' . $datetimeStr;
+        $this->name = $month.'月份 '.$year;
         $this->splitDateTime = false;
         $this->createDate = new \DateTime("now");
         $this->active = true;
@@ -745,10 +755,10 @@ class Statement
     /**
      * Set unit
      *
-     * @param \Morus\AcceticBundle\Entity\Unit $unit
+     * @param \Morus\FasBundle\Entity\Unit $unit
      * @return Statement
      */
-    public function setUnit(\Morus\AcceticBundle\Entity\Unit $unit = null)
+    public function setUnit(\Morus\FasBundle\Entity\Unit $unit = null)
     {
         $this->unit = $unit;
 
@@ -758,11 +768,34 @@ class Statement
     /**
      * Get unit
      *
-     * @return \Morus\AcceticBundle\Entity\Unit 
+     * @return \Morus\FasBundle\Entity\Unit 
      */
     public function getUnit()
     {
         return $this->unit;
+    }
+    
+    /**
+     * Set export
+     *
+     * @param \Morus\FasBundle\Entity\Export $export
+     * @return Statement
+     */
+    public function setExport(\Morus\FasBundle\Entity\Export $export = null)
+    {
+        $this->export = $export;
+
+        return $this;
+    }
+
+    /**
+     * Get export
+     *
+     * @return \Morus\FasBundle\Entity\Export 
+     */
+    public function getExport()
+    {
+        return $this->export;
     }
     
     /**

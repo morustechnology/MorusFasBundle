@@ -48,8 +48,14 @@
             
         {% elseif flow.getCurrentStepNumber() == 3 %}
             {# Display Error #}
-            {% if flow.hasError %} {#  Display Error #}
-                {{ 'statement.msg.statment_error'|trans }}<br/>
+            {% if  not flow.hasError %} 
+                {% image '@MorusFasBundle/Resources/public/images/ok_icon.png' %}
+                    <img src="{{ asset_url }}" alt="ok" style="width: 200px"/>
+                {% endimage %}
+                <br/>
+                {{ 'statement.msg.statement_valid'|trans }}<br/>
+            {% else %} {#  Display Error #}
+                {{ 'statement.msg.statement_error'|trans }}<br/>
                 {% image '@MorusFasBundle/Resources/public/images/magnifying_24x24.png' %}
                     <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> {{ 'statement.msg.invalid_format'|trans }}
                 {% endimage %}
@@ -221,27 +227,10 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            {% elseif flow.hasNewProduct %}  {#  Display New Product #}
-                New Product Found<br/>
-                {% for newProduct in flow.newProductList %}
-                    {{ newProduct }} <input type="text" name="fname"> <br/> 
-                {% endfor %}
             {% endif %}
+
+            {{ 'statement.msg.total_row_processed'|trans({ '%row' : flow.totalProcessedCount }) }}
             
-            {#
-            {% if flow.cardNumberLogs|length > 0 %}
-                {{ 'statement.card_number_log'|trans }}
-                <br/>
-                {% for cardNumberLog in flow.cardNumberLogs %}
-                    {{ cardNumberLog.log }} <br/>
-                {% endfor %} 
-            {% endif %}
-            
-            {% for licenceNumberLog in flow.licenceNumberLogs %}
-                {{ licenceNumberLog.log }} <br/>
-            {% endfor %}
-            #}
-            Total Row Processed: {{ flow.totalProcessedCount }}
         {% endif %}
 
         {{ form_rest(form) }}
@@ -254,9 +243,11 @@
                                 ? craue_formflow_button_class_finish | default(craue_formflow_button_class_last)
                                 : craue_formflow_button_class_next | default(craue_formflow_button_class_last)
                         -%}
+                {% if not flow.hasError %}
                 <button type="submit" class="{{ craue_formflow_button_class_last }}">
                         {{- (isLastStep ? 'button.finish' : 'button.next') | trans({}, 'CraueFormFlowBundle') -}}
                 </button>
+                {% endif %}
 
                 {% if renderBackButton %}
                         <button type="submit" class="{{ craue_formflow_button_class_back | default('') }}" name="{{ flow.getFormTransitionKey() }}" value="back" formnovalidate="formnovalidate">

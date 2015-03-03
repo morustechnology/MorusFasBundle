@@ -52,7 +52,7 @@ class ImportFlow extends FormFlow {
     public function getFormOptions($step, array $options = array()) {
         $options = parent::getFormOptions($step, $options);
         $statement = $this->getFormData();
-        
+        $this->hasError = false;
         switch($step) {
             case 2:
                 if ($statement->getFile()) {  
@@ -72,6 +72,7 @@ class ImportFlow extends FormFlow {
     }
     
     private function analyseHeader($statement) {
+        
         // 1. Save header in array
         $file = new SplFileObject($statement->getFile());
         $this->reader = new CsvReader($file);
@@ -119,11 +120,12 @@ class ImportFlow extends FormFlow {
            $this->totalProcessedCount = $this->totalProcessedCount + 1;
            $nullCard = false; $nullLic = false; $nullSite = false; 
            
-           // Validate Columns
+           // Validate Columns and write to logs
            $nullCard = ($this->isNullOrEmpty($row[$statement->getCardNumberHeader()]) ? true : false );
            $nullLic = ($this->isNullOrEmpty($row[$statement->getLicenceNumberHeader()]) ? true : false );
            $nullSite = ($this->isNullOrEmpty($row[$statement->getSiteHeader()]) ? true : false );
            $nullRpt = ($this->isNullOrEmpty($row[$statement->getReceiptNumberHeader()]) ? true : false );
+           
            if ($statement->getSplitDateTime()) {
                $nullTranDate = ($this->isNullOrEmpty($row[$statement->getTransactionDateHeader()]) ? true : false );
                 $nullTranTime = ($this->isNullOrEmpty($row[$statement->getTransactionTimeHeader()]) ? true : false );
@@ -148,16 +150,6 @@ class ImportFlow extends FormFlow {
                array_unshift($this->errorLogs, $importLog);
                $this->hasError = true;
            }
-           
-           $productName = $row[$statement->getProductNameHeader()];
-           $p = $this->entityManager
-                   ->getRepository('MorusAcceticBundle:Parts')
-                   ->findOneByItemname($productName);
-           
-           if (!$p && !in_array($productName,$this->newProductList)) {
-               $this->newProductList[] = $productName;
-           }
-           
         }
     }
     

@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class PartsVehicleType extends AbstractType
+class UnitType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -15,7 +15,8 @@ class PartsVehicleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('pricebreak');
+            ->add('name' , 'text')
+            ;
     }
     
     /**
@@ -24,7 +25,7 @@ class PartsVehicleType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Morus\FasBundle\Entity\PartsVehicle',
+            'data_class' => 'Morus\FasBundle\Entity\Unit'
         ));
     }
 
@@ -33,6 +34,6 @@ class PartsVehicleType extends AbstractType
      */
     public function getName()
     {
-        return 'fas_parts_vehicle';
+        return 'fas_unit';
     }
 }

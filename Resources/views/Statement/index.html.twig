@@ -1,5 +1,32 @@
 {% extends '::base.html.twig' %}
 
+{% set stmt_del_lk_id = 'fas_stmt_del_lk' %}
+{% set stmt_exp_lk_id = 'fas_stmt_exp_lk' %}
+{% set stmt_ul_lk_id = 'fas_stmt_ul_lk' %}
+
+{% block javascripts %}
+    {% javascripts 
+        '@MorusFasBundle/Resources/public/js/jquery-1.9.1.min.js'
+    %}
+        <script type="text/ecmascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
+    <script type='text/javascript'>
+        jQuery(document).ready(function() {
+            // Replace Export button
+            $('#{{ stmt_exp_lk_id }}').on('click', function(event){
+                event.preventDefault();
+                $('#{{ form.vars.attr.id }}').find('#fas_statement_list_export_invoice').click(); 
+            });
+            // Replace Delete Button
+            $('#{{ stmt_del_lk_id }}').on('click', function(event){
+                event.preventDefault();
+                $('#{{ form.vars.attr.id }}').find('#fas_statement_list_delete_invoice').click(); 
+            });
+        });
+    </script>
+{% endblock javascripts %}
+
 {% block body_title -%}
     {{ 'statement.statement_list'|trans }}
 {% endblock %}
@@ -7,6 +34,23 @@
 {% block body -%}
     {{ form_start(form) }}
         {{ form_errors(form) }}
+        <ul class="page-control">
+            <li>
+                <a id="{{ stmt_ul_lk_id }}" class="loading-btn" href="{{ path('morus_fas_statement_import') }}">
+                    {{ 'btn.upload_new_statement'|trans }}
+                </a>
+            </li>
+            <li>
+                <a id="{{ stmt_exp_lk_id }}" class="loading-btn" href="#">
+                    {{ 'btn.export_invoice'|trans }}
+                </a>
+            </li>
+            <li>
+                <a id="{{ stmt_del_lk_id }}" class="loading-btn" href="#">
+                    {{ 'btn.delete_invoice'|trans }}
+                </a>
+            </li>
+        </ul>
         {{ form_widget(form.export_invoice) }}
         {{ form_widget(form.delete_invoice) }}
         <table class="records_list">

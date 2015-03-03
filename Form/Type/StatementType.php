@@ -16,7 +16,7 @@ class StatementType extends AbstractType
     {
         $builder
             ->add('unit', 'entity', array(
-                'class' => 'MorusAcceticBundle:Unit',
+                'class' => 'MorusFasBundle:Unit',
                 'property' => 'name'
             ))
             
