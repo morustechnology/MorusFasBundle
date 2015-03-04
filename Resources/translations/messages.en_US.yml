@@ -32,9 +32,12 @@ statement:
     detect_new_product: Detect New Product
     detect_new_vehicle: Detect New Vehicle
     license_number: License Number
-    new_customer: New Customer?
+    new_customer: New Customer
+    existing_customer: Existing Customer
     choose_customer: '[ Choose Customer ]'
     customer_info: Customer Info
+    selected_licence_list: With your selected Licence Number
+    add_to: add to
     msg:
         statement_error: Statement contain error, please fix the error to proceed next step.
         statement_valid: Statement contains no error, please press "finish" to proceed.

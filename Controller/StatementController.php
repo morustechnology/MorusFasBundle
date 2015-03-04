@@ -103,10 +103,38 @@ class StatementController extends Controller
     }
     
     /**
-     * Handle Ajax call for new vehicle
+     * Handle Ajax call for adding vehicle to unit
      * 
      */
-    
+    public function addVehicleToCustomerAjaxAction(Request $request) {
+        try {
+            $id = $request->get('id');
+            $em = $this->getDoctrine()->getManager();
+        
+            $unit = $em
+                ->getRepository('MorusFasBundle:Unit')
+                ->find($id);
+            
+            $licences = $request->get('licences');
+            if (is_array($licences)) {
+                foreach ( $licences as $l) {
+                    $v = new \Morus\FasBundle\Entity\Vehicle();
+                    $v->setRegistrationNumber($l);
+                    $unit->addVehicle($v);
+                    $v->setUnit($unit);
+                    $em->persist($v);
+                }
+            }
+            
+            $em->persist($unit);
+//            $em->flush();
+            $response = array("success" => true);
+        } catch (Exception $ex) {
+            $response = array("success" => false);
+        }
+        
+        return new Response(json_encode($response));
+    }
     
     /**
      * Export Statement to invoice
@@ -168,7 +196,9 @@ class StatementController extends Controller
             // ----------------------------------------------------
             // New Unit Form
             // ----------------------------------------------------
-            $unit = new Unit();
+            $aem = $this->get('morus_accetic.entity_manager');
+            $unit = $aem->createUnit('customer');
+            
             $unit_form = $this->createForm('fas_unit', $unit, array(
                 'action' => $this->generateUrl('morus_fas_statement_export_create_product_ajax'),
                 'method' => 'POST',
@@ -179,10 +209,22 @@ class StatementController extends Controller
                     'attr' => array('style' => 'display:none')
                 ));
             
+            // ----------------------------------------------------
+            // New Existing Unit Form
+            // ----------------------------------------------------
+            $unitRepos = $aem->getUnitRepository();
+            
+            $qb = $unitRepos->createQueryBuilder('u')
+                ->select('u.id, u.name');
+                ;
+            
+            $existingUnits = $qb->getQuery()->getResult();
+            
             return $this->render('MorusFasBundle:Statement:export.html.twig', array(
                 'export_form' => $export_form->createView(),
                 'parts_form' => $parts_form->createView(),
                 'unit_form' => $unit_form->createView(),
+                'existing_units' => $existingUnits,
                 'flow' => $flow,
             ));
         } else {

@@ -14,6 +14,11 @@ morus_fas_statement_export_create_product_ajax:
     path:     /newProduct
     defaults: { _controller: "MorusFasBundle:Statement:createProductAjax" }
     
+    
+morus_fas_statement_add_vehicle_to_customer_ajax:
+    path:     /addVehicleToCustomer
+    defaults: { _controller: "MorusFasBundle:Statement:addVehicleToCustomerAjax" }
+    
 morus_fas_statement_show:
     path:     /{id}/show
     defaults: { _controller: "MorusFasBundle:Statement:show" }

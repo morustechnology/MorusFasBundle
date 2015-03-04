@@ -1,5 +1,7 @@
 {% extends '::base.html.twig' %}
 
+{% form_theme unit_form 'MorusFasBundle:Statement:layout.html.twig' %}
+
 {% set prod_dlg_btn_prfx = 'fas_inv_dlg_btn_' %}
 {% set prod_dlg_btn_id = prod_dlg_btn_prfx ~ '%itemcode%_%index%' %}
 {% set prod_dlg_idx_id = 'fas_inv_dlg_idx' %}
@@ -9,7 +11,14 @@
 {% set prod_db_tbl_id = 'fas_inv_prod_db_tbl' %}
 {% set prod_new_tbl_id = 'fas_inv_prod_new_tbl' %}
 
-{% set unit_dlg_div_id = 'fas_vce_dlg_div' %}
+{% set vec_dlg_div_id = 'fas_vec_dlg_div' %}
+{% set vec_dlg_new_cust_div_id = 'fas_vec_dlg_new_cust_div' %}
+{% set vec_dlg_exist_cust_div_id = 'fas_vec_dlg_exist_cust_div' %}
+{% set vec_dlg_cust_select_id = 'fas_vec_dlg_cust_select' %}
+{% set vec_dlg_cust_radio_id = 'fas_vec_dlg_cust_radio' %}
+
+{% set vec_dlg_lic_ul_id = 'fas_vec_dlg_lic_ul' %}
+{% set vec_dlg_btn_id = 'fas_vec_dlg_btn' %}
 
 {% block stylesheets %}
     {% stylesheets '@CraueFormFlowBundle/Resources/assets/css/buttons.css' %}
@@ -28,20 +37,131 @@
         '@MorusFasBundle/Resources/public/js/jquery.inputmask.js'
         '@MorusFasBundle/Resources/public/js/jquery.inputmask.numeric.extensions.js'
     %}
-        <script type="text/ecmascript" src="{{ asset_url }}">
-        </script>
+        <script type="text/ecmascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
     <script type='text/javascript'>
+        var $vecDlg, $vecBtn, $vecDlgLic, $vecDlgLicUl, $vecDlgCustSelect;
+        var $addChoice = 'existing';
+        // ==========================================
+        // Assign Vehicle JQuery Function
+        // ==========================================
+        jQuery(document).ready(function() {
+            $vecDlg = $( "#{{ vec_dlg_div_id }}" );
+            $vecBtn = $( '#{{ vec_dlg_btn_id }}');
+            $vecDlgLic = $( '#{{ vec_dlg_btn_id }}');
+            $vecDlgLicUl = $( '#{{ vec_dlg_lic_ul_id }}');
+            $vecDlgCustSelect = $( '#{{ vec_dlg_cust_select_id }}');
+            
+            $vecDlg.css({overflow:"auto"}); // Make dialog scrollable
+            $vecDlg.dialog({ //Init Dialog Box
+                autoOpen: false, height: 300, width: 900, modal: true,
+                buttons: {
+                    "{{ 'btn.save'|trans }}": function() {
+                        var licAry = $vecDlg.data('licences');
+                        
+                        if ($addChoice === 'existing') {
+                            var unitname = $vecDlgCustSelect.find('option:selected').text();
+                            var unitid = $vecDlgCustSelect.find('option:selected').val();
+                            alert('test');
+                            addToCustomer( unitid, licAry, function( response ){
+                                alert('response');
+                                if (response.success) {
+                                    $.each(licAry, function(key, value){
+                                        $('input[id="'+key+'"]').replaceWith(
+                                            {% image '@MorusFasBundle/Resources/public/images/ok_icon_16x16.png' %}
+                                                "<img src='{{ asset_url }}' alt='OK' style='width: 16px'/>"
+                                            {% endimage %}
+                                                );
+                                    });
+                                    
+                                    $vecDlg.dialog( "close" );
+                                }
+                            });
+                            
+                        } else if ($addChoice === 'new') {
+                            $vecDlg.dialog( "close" );
+                        } 
+                        
+                    },
+                    "{{ 'btn.cancel'|trans }}": function() {
+                        $vecDlg.dialog( "close" );
+                    }
+                },
+                show: { effect: "fade", duration: 500 },
+                hide: { effect: "fade", duration: 500 }
+            });
+            
+            // New Unit Popup Button
+            $vecBtn.on('click', function(event){
+                event.preventDefault();
+                
+                //  Get selected licences
+                var licAry = {};
+                $('input[name="licence_number_input"]:checked').each(function(event) {
+                    licAry[this.id] = this.value;
+                 });
+                
+                // Show Licences to dialog box list
+                $vecDlgLicUl.empty();
+                $.each(licAry, function(key, value){
+                    $vecDlgLicUl.append('<li>'+value+'</li>'); 
+                });
+                
+                
+                $vecDlg.data('licences', licAry)
+                        .dialog( "open" );
+            });
+            
+            // Choose Customer Radio Button
+            $('input[id="{{ vec_dlg_cust_radio_id }}"]').change(function(){
+                if (this.value === 'new') {
+                    $('#{{ vec_dlg_new_cust_div_id }}').show();
+                    $('#{{ vec_dlg_exist_cust_div_id }}').hide();
+                    $addChoice = this.value;
+                } else {
+                    $('#{{ vec_dlg_new_cust_div_id }}').hide();
+                    $('#{{ vec_dlg_exist_cust_div_id }}').show();
+                    $addChoice = this.value;
+                }
+            })
+            
+            
+            
+            // Post Form and get result
+            function addToCustomer( unitId, licences, callback ){
+                alert('inside function addToCustomer');
+                // Get all form values
+                var values = {};
+
+                values['id'] = unitId;
+                values['licences'] = licences;
+                alert('{{ path('morus_fas_statement_add_vehicle_to_customer_ajax') }}');
+                // Throw the form values to the server
+                $.ajax({
+                    url         : "{{ path('morus_fas_statement_add_vehicle_to_customer_ajax') }}",
+                    type        : "POST",
+                    data        : values,
+                    success     : function(response) {
+                        callback( jQuery.parseJSON(response) );
+                    }
+                });
+            }
+        });
+        
+        
+        // ==========================================
+        // New Product JQuery Function
+        // ==========================================
         jQuery(document).ready(function() {
             var newProdAry = [];
-            
+
             // Loop New Product Table
             $('#{{ prod_new_tbl_id }} > tbody  > tr').each(function() {
                 newProdAry.push(this.id);
             });
             
-            // Init New Item Dialog Box
+            // Init New Product Dialog Box
             $( "#{{ prod_dlg_div_id }}" ).dialog({
                 autoOpen: false,
                 height: 200,
@@ -49,6 +169,7 @@
                 modal: true,
                 buttons: {
                     "{{ 'btn.save'|trans }}": function() {
+                        
                         $('#{{ parts_form.vars.attr.id }}').find(':submit').click();
                     },
                     "{{ 'btn.cancel'|trans }}": function() {
@@ -174,7 +295,7 @@
     {{ form_start(export_form) }}
         {{ form_errors(export_form) }}        
         
-        {% if flow.getCurrentStepNumber() == 1 %}
+        {% if flow.getCurrentStepNumber() == 1 %} {# Product Search Step #}
             <h1>{{ 'export_step.search_result'|trans }}</h1>
             <hr/>
             
@@ -222,13 +343,14 @@
                     {% endfor %}
                 </table>
             </div>
-        {% elseif flow.getCurrentStepNumber() == 2 %}
+        {% elseif flow.getCurrentStepNumber() == 2 %}  {# Licence Search Step #}
+            <button id="{{ vec_dlg_btn_id }}" >Add New Customer</button>
             <table>
-                {% for row in flow.newVceList|batch(10) %}
+                {% for row in flow.newVceList|batch(5) %}
                     <tr>
                         {% for vcecode, vcename in row %}
                         <td>
-                            <input id="{{ vcecode }}" name="licence_number_input" type="checkbox" value="{{ vcename }}" disabled checked/>{{ vcename }}
+                            <input id="{{ vcecode }}" name="licence_number_input" type="checkbox" value="{{ vcename }}" />{{ vcename }}
                         </td>
                         {% endfor %}
                     </tr>
@@ -255,14 +377,90 @@
             {{ form_rest(parts_form) }}
         {{ form_end(parts_form) }}
     </div>
-       
-    <div id="{{ unit_dlg_div_id }}}">
-        {{ form_start(unit_form) }}
-            {{ form_errors(unit_form) }}
-            {{ form_widget( unit_form.name ) }}
-            {{ form_widget( unit_form.submit ) }}
-            {{ form_rest(unit_form) }}
-        {{ form_end(unit_form) }}
-    </div>
+    
+    {# Assign Licence to Customer Popup #}
+    <div id="{{ vec_dlg_div_id }}" title="{{ 'contact.add_contact'|trans }}" style="display:none">
+        <div id="container-box" class="contact-new">
+            <div class="section-form inset form">
+                {# Division to hold licence numbers #}
+                <div>
+                    {{ 'statement.selected_licence_list'|trans }} :
+                    <ul id="{{ vec_dlg_lic_ul_id }}">
 
+                    </ul>
+                </div>
+                {{ 'statement.add_to'|trans }}
+                <fieldset >
+                    <input type="radio" id="{{ vec_dlg_cust_radio_id }}" name="{{ vec_dlg_cust_radio_id }}"  value="existing" checked="checked" >{{ 'statement.existing_customer'|trans }}</input>
+                    <input type="radio" id="{{ vec_dlg_cust_radio_id }}" name="{{ vec_dlg_cust_radio_id }}"  value="new">{{ 'statement.new_customer'|trans }}</input>
+                </fieldset>
+
+                
+                {# Division for existing customer #}
+                <div id="{{ vec_dlg_exist_cust_div_id }}" >
+                    <select id="{{ vec_dlg_cust_select_id }}">
+                        {% for unit in existing_units %}
+                            <option value="{{ unit.id }}" >{{ unit.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {# Division for creating new customer #}
+                <div id="{{ vec_dlg_new_cust_div_id }}" style="display:none">
+                    {{ form_start(unit_form) }}
+                    {{ form_errors(unit_form) }}
+                        <fieldset>
+                            <div class="field long">
+                                <label>{{ 'contact.display_name'|trans }}</label>
+
+                                {{ form_widget(unit_form.name) }} {{ form_errors(unit_form.name) }}
+                            </div>
+                        </fieldset>
+
+
+                        <div id="entity_persons" data-prototype-persons="">
+                            {% for person in unit_form.persons %}
+                                {% if loop.index == 1 %}
+                                    <h4>{{ 'contact.primary_person'|trans }}</h4>
+                                {% endif %}
+                                <div id="entity_person_contacts" data-prototype-contacts="">
+                                    <fieldset>
+                                        {{ form_widget(person) }}
+                                        {% for contact in person.contacts %}
+                                            <div class="field inline long">{{ form_widget(contact) }}</div>
+                                        {% endfor %}
+                                    </fieldset>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="column">
+
+                            {% for location in unit_form.locations %}
+                                {{ form_widget(location) }}
+                            {% endfor %}
+
+                            <div class="col-1-3 last">
+                                <fieldset id="numbers">
+                                    <h6>{{ 'contact.others'|trans }}</h6>
+                                    {% for contact in unit_form.contacts %}
+                                        <div class="field">{{ form_widget(contact) }}</div>
+                                    {% endfor %}
+                                </fieldset>
+                            </div>
+
+                        </div>
+
+                        <div>
+
+                        </div>
+                        {{ form_widget(unit_form.submit) }}
+
+                        {{ form_rest(unit_form) }}
+                    {{ form_end(unit_form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+        
 {% endblock %}

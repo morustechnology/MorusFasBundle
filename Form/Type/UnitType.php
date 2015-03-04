@@ -16,7 +16,19 @@ class UnitType extends AbstractType
     {
         $builder
             ->add('name' , 'text')
-            ;
+            ->add('persons', 'collection', array(
+                'type' => 'accetic_person',
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'by_reference' => false,
+            ))
+            ->add('locations', 'collection', array(
+                'type' => 'accetic_location'
+            ))
+            ->add('contacts', 'collection', array(
+                'type' => 'accetic_contact'
+            ));
     }
     
     /**
