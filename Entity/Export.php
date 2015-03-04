@@ -20,49 +20,53 @@ class Export
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="sort_order", type="integer", nullable=true)
      */
-    private $sortOrder;
+    protected $sortOrder;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="active", type="boolean")
      */
-    private $active;
+    protected $active;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="create_date", type="datetime")
      */
-    private $createDate;
+    protected $createDate;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="last_modified_date", type="datetime", nullable=true)
      */
-    private $lastModifiedDate;
+    protected $lastModifiedDate;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="inactive_date", type="datetime", nullable=true)
      */
-    private $inactiveDate;
+    protected $inactiveDate;
 
     /**
-     * @ORM\OneToMany(targetEntity="Statement", mappedBy="export")
+     * @ORM\OneToMany(targetEntity="Statement", mappedBy="export", cascade={"persist"})
      **/
     protected $statements;
 
-
+    /**
+     * @ORM\OneToMany(targetEntity="Transaction", mappedBy="export", cascade={"persist"})
+     **/
+    protected $transactions;
+    
     /**
      * Constructor
      */
@@ -197,26 +201,26 @@ class Export
     }
 
     /**
-     * Add statements
+     * Add statement
      *
-     * @param \Morus\FasBundle\Entity\Statement $statements
+     * @param \Morus\FasBundle\Entity\Statement $statement
      * @return Export
      */
-    public function addStatement(\Morus\FasBundle\Entity\Statement $statements)
+    public function addStatement(\Morus\FasBundle\Entity\Statement $statement)
     {
-        $this->statements[] = $statements;
+        $this->statements[] = $statement;
 
         return $this;
     }
 
     /**
-     * Remove statements
+     * Remove statement
      *
-     * @param \Morus\FasBundle\Entity\Statement $statements
+     * @param \Morus\FasBundle\Entity\Statement $statement
      */
-    public function removeStatement(\Morus\FasBundle\Entity\Statement $statements)
+    public function removeStatement(\Morus\FasBundle\Entity\Statement $statement)
     {
-        $this->statements->removeElement($statements);
+        $this->statements->removeElement($statement);
     }
 
     /**
@@ -229,6 +233,38 @@ class Export
         return $this->statements;
     }
     
+    /**
+     * Add transactions
+     *
+     * @param \Morus\FasBundle\Entity\Transaction $transaction
+     * @return Export
+     */
+    public function addTransaction(\Morus\FasBundle\Entity\Transaction $transaction)
+    {
+        $this->statements[] = $transaction;
+
+        return $this;
+    }
+
+    /**
+     * Remove transaction
+     *
+     * @param \Morus\FasBundle\Entity\Transaction $transaction
+     */
+    public function removeTransaction(\Morus\FasBundle\Entity\Transaction $transaction)
+    {
+        $this->statements->removeElement($transaction);
+    }
+
+    /**
+     * Get statements
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTransactions()
+    {
+        return $this->statements;
+    }
     /**
      * @ORM\PrePersist
      */

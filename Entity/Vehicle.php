@@ -65,11 +65,16 @@ class Vehicle
     private $inactiveDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Unit", inversedBy="vehicles")
+     * @ORM\ManyToOne(targetEntity="Unit", inversedBy="vehicles", cascade={"persist"})
      * @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
      **/
     private $unit;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Invoice", mappedBy="vehicle", cascade={"persist"})
+     **/
+    private $invoices;
+    
     /**
      * Constructor
      */
@@ -248,6 +253,39 @@ class Vehicle
     public function getUnit()
     {
         return $this->unit;
+    }
+    
+    /**
+     * Add invoice
+     *
+     * @param \Morus\FasBundle\Entity\Invoice $invoice
+     * @return Vehicle
+     */
+    public function addInvoice(\Morus\FasBundle\Entity\Invoice $invoice)
+    {
+        $this->invoices[] = $invoice;
+
+        return $this;
+    }
+
+    /**
+     * Remove invoice
+     *
+     * @param \Morus\FasBundle\Entity\Invoice $invoice
+     */
+    public function removeInvoice(\Morus\FasBundle\Entity\Invoice $invoice)
+    {
+        $this->invoices->removeElement($invoice);
+    }
+
+    /**
+     * Get invoices
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getInvoices()
+    {
+        return $this->invoices;
     }
     
     /**

@@ -79,7 +79,7 @@ class StatementStatus
     private $inactiveDate;
     
     /**
-     * @ORM\OneToMany(targetEntity="Statement", mappedBy="statementStatus")
+     * @ORM\OneToMany(targetEntity="Statement", mappedBy="statementStatus", cascade={"persist"})
      **/
     protected $statements;
 

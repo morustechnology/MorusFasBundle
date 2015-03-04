@@ -64,13 +64,13 @@ class UnitParts {
     protected $inactiveDate;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Unit", inversedBy="unitParts")
+     * @ORM\ManyToOne(targetEntity="Unit", inversedBy="unitParts", cascade={"persist"})
      * @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
      **/
     protected $unit;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Parts", inversedBy="unitParts")
+     * @ORM\ManyToOne(targetEntity="Parts", inversedBy="unitParts", cascade={"persist"})
      * @ORM\JoinColumn(name="parts_id", referencedColumnName="id")
      **/
     protected $parts;

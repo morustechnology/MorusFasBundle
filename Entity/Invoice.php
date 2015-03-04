@@ -50,6 +50,13 @@ class Invoice extends BaseInvoice
     private $receiptNumber;
     
     /**
+     * @var
+     * 
+     * @ORM\Column(name="cost", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $cost;
+    
+    /**
      * Set cardNumber
      *
      * @param string $cardNumber
@@ -162,5 +169,28 @@ class Invoice extends BaseInvoice
     public function getReceiptNumber()
     {
         return $this->receiptNumber;
+    }
+    
+    /**
+     * Set cost
+     *
+     * @param string $cost
+     * @return Invoice
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    /**
+     * Get cost
+     *
+     * @return string 
+     */
+    public function getCost()
+    {
+        return $this->cost;
     }
 }

@@ -15,17 +15,17 @@ use Morus\AcceticBundle\Entity\Unit as BaseUnit;
 class Unit extends BaseUnit
 {
     /**
-     * @ORM\OneToMany(targetEntity="Statement", mappedBy="unit")
+     * @ORM\OneToMany(targetEntity="Statement", mappedBy="unit", cascade={"persist"})
      **/
     protected $statements;
     
     /**
-     * @ORM\OneToMany(targetEntity="Vehicle", mappedBy="unit")
+     * @ORM\OneToMany(targetEntity="Vehicle", mappedBy="unit", cascade={"persist"})
      **/
     protected $vehicles;
     
     /**
-     * @ORM\OneToMany(targetEntity="UnitParts", mappedBy="unit")
+     * @ORM\OneToMany(targetEntity="UnitParts", mappedBy="unit", cascade={"persist"})
      **/
     protected $UnitParts;
     

@@ -34,95 +34,95 @@ class Statement
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="path", type="text", nullable=true)
      */
-    private $path;
+    protected $path;
     
     /**
      * @var boolean
      *
      * @ORM\Column(name="splitDateTime", type="boolean", nullable=false)
      */
-    private $splitDateTime;
+    protected $splitDateTime;
     
     /**
      * @var string
      *
      * @ORM\Column(name="headers", type="text", nullable=false)
      */
-    private $headers;
+    protected $headers;
 
     /**
      * @var string
      *
      * @ORM\Column(name="key_pairs", type="text", nullable=false)
      */
-    private $keyPairs;
+    protected $keyPairs;
     
     /**
      * @var integer
      *
      * @ORM\Column(name="sort_order", type="integer", nullable=true)
      */
-    private $sortOrder;
+    protected $sortOrder;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="active", type="boolean")
      */
-    private $active;
+    protected $active;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="create_date", type="datetime")
      */
-    private $createDate;
+    protected $createDate;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="last_modified_date", type="datetime", nullable=true)
      */
-    private $lastModifiedDate;
+    protected $lastModifiedDate;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="inactive_date", type="datetime", nullable=true)
      */
-    private $inactiveDate;
+    protected $inactiveDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="StatementStatus", inversedBy="statements")
+     * @ORM\ManyToOne(targetEntity="StatementStatus", inversedBy="statements", cascade={"persist"})
      * @ORM\JoinColumn(name="statement_status_id", referencedColumnName="id")
      **/
-    private $statementStatus;
+    protected $statementStatus;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Unit", inversedBy="statements")
+     * @ORM\ManyToOne(targetEntity="Unit", inversedBy="statements", cascade={"persist"})
      * @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
      **/
-    private $unit;
+    protected $unit;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Export", inversedBy="statements")
+     * @ORM\ManyToOne(targetEntity="Export", inversedBy="statements", cascade={"persist"})
      * @ORM\JoinColumn(name="export_id", referencedColumnName="id")
      **/
-    private $export;
+    protected $export;
     
     /**
      * Constructor
