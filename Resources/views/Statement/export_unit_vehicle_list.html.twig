@@ -1,0 +1,12 @@
+<h2>{{ 'export_step.registered_vehicle_list'|trans }}</h2>
+{% for unit in units %}
+<h3>{{ unit.name }}</h3>
+{% for row in unit.vehicles|batch(10) %}
+    {% for vehicle in row %}
+        {% if loop.index != 1 %} , {% endif %}
+        {{ vehicle.registrationNumber }} 
+    {% endfor %}
+    <br/>
+{% endfor %}
+<hr/>
+{% endfor %}

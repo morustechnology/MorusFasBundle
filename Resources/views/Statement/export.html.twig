@@ -2,23 +2,30 @@
 
 {% form_theme unit_form 'MorusFasBundle:Statement:layout.html.twig' %}
 
+{# Product Popup Dialog #}
 {% set prod_dlg_btn_prfx = 'fas_inv_dlg_btn_' %}
 {% set prod_dlg_btn_id = prod_dlg_btn_prfx ~ '%itemcode%_%index%' %}
 {% set prod_dlg_idx_id = 'fas_inv_dlg_idx' %}
 {% set prod_dlg_div_id = 'fas_inv_dlg_div' %}
 
-{% set prod_new_div = 'fas_inv_new_div' %}
-{% set prod_db_tbl_id = 'fas_inv_prod_db_tbl' %}
-{% set prod_new_tbl_id = 'fas_inv_prod_new_tbl' %}
-
+{# Unit/Vehicle Pupup Dialog #}
 {% set vec_dlg_div_id = 'fas_vec_dlg_div' %}
-{% set vec_dlg_new_cust_div_id = 'fas_vec_dlg_new_cust_div' %}
+{% set vec_dlg_cust_new_div_id = 'fas_vec_dlg_cust_new_div' %}
 {% set vec_dlg_exist_cust_div_id = 'fas_vec_dlg_exist_cust_div' %}
 {% set vec_dlg_cust_select_id = 'fas_vec_dlg_cust_select' %}
 {% set vec_dlg_cust_radio_id = 'fas_vec_dlg_cust_radio' %}
-
 {% set vec_dlg_lic_ul_id = 'fas_vec_dlg_lic_ul' %}
 {% set vec_dlg_btn_id = 'fas_vec_dlg_btn' %}
+
+{# Step 2 #}
+{% set prod_new_div = 'fas_new_div' %}
+{% set prod_list_div_id = 'fas_prod_div' %}
+{% set prod_new_tbl_id = 'fas_prod_new_tbl' %}
+
+{% set prod_db_tbl_id = 'fas_prod_db_tbl' %}
+
+{# Step 3 #}
+{% set vec_list_div_id = 'fas_inv_vec_list_div' %}
 
 {% block stylesheets %}
     {% stylesheets '@CraueFormFlowBundle/Resources/assets/css/buttons.css' %}
@@ -41,18 +48,171 @@
     {% endjavascripts %}
 
     <script type='text/javascript'>
-        var $vecDlg, $vecBtn, $vecDlgLic, $vecDlgLicUl, $vecDlgCustSelect;
-        var $addChoice = 'existing';
+    {% if flow.getCurrentStepNumber() == 2 %}
+        // ==========================================
+        // New Product JQuery Function
+        // ==========================================
+        var $prodDlg //Dialog Box
+        var $prodForm // Product Form
+        
+        jQuery(document).ready(function() {
+            $prodDlg = $( "#{{ prod_dlg_div_id }}" );
+            $prodForm = $('#{{ parts_form.vars.attr.id }}');
+            
+            refreshProductList();
+            
+            // Init New Product Dialog Box
+            $prodDlg.dialog({
+                autoOpen: false, height: 200, width: 500, modal: true,
+                buttons: {
+                    "{{ 'btn.save'|trans }}": function() {
+                        var btn_id = $prodDlg.data('btn_id');
+                        postForm( $prodForm, function( response ) {
+                            if (response.success) {
+                                $('button[id="' + btn_id + '"]').replaceWith(
+                                    {% image '@MorusFasBundle/Resources/public/images/ok_icon_16x16.png' %}
+                                        "<img src='{{ asset_url }}' alt='OK' style='width: 16px'/>"
+                                    {% endimage %}
+                                );
+                                refreshProductList();
+                                $prodDlg.dialog( "close" );
+                            } else {
+                                alert('Error adding product to database, please try again.');
+                            }
+
+                        });
+                    },
+                    "{{ 'btn.cancel'|trans }}": function() {
+                        $prodDlg.dialog( "close" );
+                    }
+                },
+                show: { effect: "fade", duration: 500 },
+                hide: { effect: "fade", duration: 500 }
+            });
+            
+            // Add New Item button
+            $( 'button[id^="{{ prod_dlg_btn_prfx }}"]' ).on('click', function( event ){
+                event.preventDefault();
+                
+                var index = this.id.substring(this.id.lastIndexOf('_') + 1);
+                var itemcode = this.id.replace("{{ prod_dlg_btn_prfx }}","").replace('_' + index, "" );
+                var itemname = this.name;
+                $prodForm.find('#{{ prod_dlg_idx_id }}').val(index);
+                $prodForm.find('#{{ parts_form.itemcode.vars.id }}').val(itemcode);
+                $prodForm.find('#{{ parts_form.itemname.vars.id }}').val(itemname);
+                $prodForm.find('#{{ parts_form.defaultDiscount.vars.id }}').val('');
+                
+                $prodDlg.data('btn_id', this.id)
+                        .dialog( "open" );
+            });
+            
+            // Apply input mask to default discount box
+            $('#{{ parts_form.defaultDiscount.vars.id }}').inputmask("decimal", { 
+                radixPoint: ".", groupSeparator: ",", groupSize: 3, digits: 2,
+                autoGroup: true, placeholder: "0.00"
+            });
+        });
+        
+        // Post Form and get result
+        function postForm( $form, callback ){
+
+            // Get all form values
+            var values = {};
+            var index = $form.find('#{{ prod_dlg_idx_id }}').val();
+            values['index'] = index;
+            $.each( $form.serializeArray(), function(i, field) {
+              values[field.name] = field.value;
+            });
+
+            // Throw the form values to the server
+            $.ajax({
+                type        : $form.attr( 'method' ),
+                url         : $form.attr( 'action' ),
+                data        : values,
+                success     : function(response) {
+                    callback( jQuery.parseJSON(response) );
+                }
+            });
+        }
+        
+        // Make Ajax Call to refresh Customer Vehicle List 
+        function refreshProductList() { 
+            var parts = {};
+                
+            {% for key, value in flow.stmtProdList %}
+            parts['{{ key }}'] = '{{ value }}';
+            {% endfor %}
+
+            var values = {};
+            values['parts'] = parts;
+
+            $.ajax({
+                url         : "{{ path('morus_fas_statement_export_parts_list')}}",
+                type        : "GET",
+                data        : values,
+                success     : function(data) {
+                    $('#{{ prod_list_div_id }}').html(data);
+                }
+            });
+        }
+        
+    {% elseif flow.getCurrentStepNumber() == 3 %}
+        var $vecDlg, $vecBtn //Dialog Box & Trigger Button
+        var $vecDlgLicUl; // Licence List in Dialog box
+        var $vecDlgCustSelect; //Customer Combo Box
+        var $addChoice = 'existing'; // Hold Option for adding vehicle to "new" or "existing" customer
+        var $vecListDiv; // Registered Vehicle List
+        
         // ==========================================
         // Assign Vehicle JQuery Function
         // ==========================================
+        function refreshUnitVehicleList() { // Make Ajax Call to refresh Customer Vehicle List 
+            var licences = {};
+                
+            {% for key, value in flow.stmtVecList %}
+            licences['{{ key }}'] = '{{ value }}';
+            {% endfor %}
+
+            var values = {};
+            values['registration_numbers'] = licences;
+
+            $.ajax({
+                url         : "{{ path('morus_fas_statement_export_unit_vehicle_list')}}",
+                type        : "GET",
+                data        : values,
+                success     : function(data) {
+                    $('#{{ vec_list_div_id }}').html(data);
+                }
+            });
+        }
+        
+        // Post Form and get result
+        function addVehicleToUnit( unitId, licences, callback ){
+            // Get all form values
+            var values = {};
+
+            values['id'] = unitId;
+            values['licences'] = licences;
+
+            // Throw the form values to the server
+            $.ajax({
+                url         : "{{ path('morus_fas_statement_add_vehicle_to_customer_ajax') }}",
+                type        : "POST",
+                data        : values,
+                success     : function(response) {
+                    callback( jQuery.parseJSON(response) );
+                }
+            });
+        }
+            
         jQuery(document).ready(function() {
-            $vecDlg = $( "#{{ vec_dlg_div_id }}" );
+            $vecListDiv = $('#{{ vec_list_div_id }}');
+            $vecDlg = $( '#{{ vec_dlg_div_id }}' );
             $vecBtn = $( '#{{ vec_dlg_btn_id }}');
-            $vecDlgLic = $( '#{{ vec_dlg_btn_id }}');
             $vecDlgLicUl = $( '#{{ vec_dlg_lic_ul_id }}');
             $vecDlgCustSelect = $( '#{{ vec_dlg_cust_select_id }}');
             
+            refreshUnitVehicleList();
             $vecDlg.css({overflow:"auto"}); // Make dialog scrollable
             $vecDlg.dialog({ //Init Dialog Box
                 autoOpen: false, height: 300, width: 900, modal: true,
@@ -63,18 +223,17 @@
                         if ($addChoice === 'existing') {
                             var unitname = $vecDlgCustSelect.find('option:selected').text();
                             var unitid = $vecDlgCustSelect.find('option:selected').val();
-                            alert('test');
-                            addToCustomer( unitid, licAry, function( response ){
-                                alert('response');
+                            
+                            addVehicleToUnit( unitid, licAry, function( response ) {
                                 if (response.success) {
                                     $.each(licAry, function(key, value){
                                         $('input[id="'+key+'"]').replaceWith(
                                             {% image '@MorusFasBundle/Resources/public/images/ok_icon_16x16.png' %}
                                                 "<img src='{{ asset_url }}' alt='OK' style='width: 16px'/>"
                                             {% endimage %}
-                                                );
+                                        );
                                     });
-                                    
+                                    refreshUnitVehicleList();
                                     $vecDlg.dialog( "close" );
                                 }
                             });
@@ -116,170 +275,18 @@
             // Choose Customer Radio Button
             $('input[id="{{ vec_dlg_cust_radio_id }}"]').change(function(){
                 if (this.value === 'new') {
-                    $('#{{ vec_dlg_new_cust_div_id }}').show();
+                    $('#{{ vec_dlg_cust_new_div_id }}').show();
                     $('#{{ vec_dlg_exist_cust_div_id }}').hide();
                     $addChoice = this.value;
                 } else {
-                    $('#{{ vec_dlg_new_cust_div_id }}').hide();
+                    $('#{{ vec_dlg_cust_new_div_id }}').hide();
                     $('#{{ vec_dlg_exist_cust_div_id }}').show();
                     $addChoice = this.value;
                 }
             })
-            
-            
-            
-            // Post Form and get result
-            function addToCustomer( unitId, licences, callback ){
-                alert('inside function addToCustomer');
-                // Get all form values
-                var values = {};
-
-                values['id'] = unitId;
-                values['licences'] = licences;
-                alert('{{ path('morus_fas_statement_add_vehicle_to_customer_ajax') }}');
-                // Throw the form values to the server
-                $.ajax({
-                    url         : "{{ path('morus_fas_statement_add_vehicle_to_customer_ajax') }}",
-                    type        : "POST",
-                    data        : values,
-                    success     : function(response) {
-                        callback( jQuery.parseJSON(response) );
-                    }
-                });
-            }
         });
-        
-        
-        // ==========================================
-        // New Product JQuery Function
-        // ==========================================
-        jQuery(document).ready(function() {
-            var newProdAry = [];
-
-            // Loop New Product Table
-            $('#{{ prod_new_tbl_id }} > tbody  > tr').each(function() {
-                newProdAry.push(this.id);
-            });
-            
-            // Init New Product Dialog Box
-            $( "#{{ prod_dlg_div_id }}" ).dialog({
-                autoOpen: false,
-                height: 200,
-                width: 500,
-                modal: true,
-                buttons: {
-                    "{{ 'btn.save'|trans }}": function() {
-                        
-                        $('#{{ parts_form.vars.attr.id }}').find(':submit').click();
-                    },
-                    "{{ 'btn.cancel'|trans }}": function() {
-                        $( "#{{ prod_dlg_div_id }}" ).dialog( "close" );
-                    }
-                },
-                show: {
-                    effect: "fade",
-                    duration: 500
-                },
-                hide: {
-                    effect: "fade",
-                    duration: 500
-                }
-            });
-            
-            // Add New Item button
-            $( 'button[id^="{{ prod_dlg_btn_prfx }}"]' ).on('click', function( event ){
-                event.preventDefault();
-                
-                var index = this.id.substring(this.id.lastIndexOf('_') + 1);
-                var itemcode = this.id.replace("{{ prod_dlg_btn_prfx }}","").replace('_' + index, "" );
-                var itemname = this.name;
-                $('#{{ parts_form.vars.attr.id }}').find('#{{ prod_dlg_idx_id }}').val(index);
-                $('#{{ parts_form.vars.attr.id }}').find('#{{ parts_form.itemcode.vars.id }}').val(itemcode);
-                $('#{{ parts_form.vars.attr.id }}').find('#{{ parts_form.itemname.vars.id }}').val(itemname);
-                $('#{{ parts_form.vars.attr.id }}').find('#{{ parts_form.defaultDiscount.vars.id }}').val('');
-                
-                $( "#{{ prod_dlg_div_id }}" ).dialog( "open" );
-            });
-            
-            // Init Dialog Box -> New item form submit action
-            $('#{{ parts_form.vars.attr.id }}').submit(function(event) {
-                event.preventDefault();
-                
-                postForm( $(this), function( response ){
-                    
-                    if (response.success) {
-                        var rIndex, rItemcode, rItemname, rDiscount;
-                        rIndex = response.index;
-                        rItemcode = response.itemcode;
-                        rItemname = response.itemname;
-                        rDiscount = response.discount;
-                        updateProd(rIndex, rItemcode, rItemname, rDiscount);
-                        $( "#{{ prod_dlg_div_id }}" ).dialog( "close" );
-                    } else {
-                        
-                    }
-                    
-                });
-
-                return false;
-            }); 
-            
-            // Apply input mask to default discount box
-            $('#{{ parts_form.defaultDiscount.vars.id }}').inputmask("decimal", { 
-                radixPoint: ".", 
-                groupSeparator: ",",
-                groupSize: 3,
-                digits: 2,
-                autoGroup: true,
-                placeholder: "0.00"
-            });
-            
-            // Add New Row to Database Table
-            function updateProd( index, itemcode, itemname, discount) {
-                
-                // Prepare Row and add to product table
-               {% image '@MorusFasBundle/Resources/public/images/ok_icon.png' %}
-                    var ok_icon_img = $("<img src='{{ asset_url }}' alt='OK' style='width: 15px'/>");
-               {% endimage %}
-               
-                var jRow = $('<tr><td></td><td>' + itemcode + '</td><td>' + itemname + '</td><td>' + discount + '</td></tr>');
-                $('td:last', jRow).append(ok_icon_img);
-                $('#{{ prod_db_tbl_id }} tr:last').after(jRow);
-                
-                
-                
-                
-                // Remove new product and update List 
-                $( 'tr[id="' + index + '"]' ).remove();
-                var i = newProdAry.indexOf(index);
-                if ( i > -1 ) { newProdAry.splice(i, 1); }
-                if ( newProdAry.length <= 0) {
-                    $('div[id="{{ prod_new_div }}"]').remove();
-                }
-            }
-            
-            // Post Form and get result
-            function postForm( $form, callback ){
-                
-                // Get all form values
-                var values = {};
-                var index = $form.find('#{{ prod_dlg_idx_id }}').val();
-                values['index'] = index;
-                $.each( $form.serializeArray(), function(i, field) {
-                  values[field.name] = field.value;
-                });
-
-                // Throw the form values to the server
-                $.ajax({
-                    type        : $form.attr( 'method' ),
-                    url         : $form.attr( 'action' ),
-                    data        : values,
-                    success     : function(response) {
-                        callback( jQuery.parseJSON(response) );
-                    }
-                });
-            }
-        });
+    {% endif %}
+    
     </script>
 {% endblock %}
 
@@ -295,37 +302,23 @@
     {{ form_start(export_form) }}
         {{ form_errors(export_form) }}        
         
-        {% if flow.getCurrentStepNumber() == 1 %} {# Product Search Step #}
-            <h1>{{ 'export_step.search_result'|trans }}</h1>
-            <hr/>
+        {% if flow.getCurrentStepNumber() == 1 %} {# Analysis Statement #}
+            Total Product Discovered: {{ flow.stmtProdList|length }}<br/>
             
-           <h3>{{ 'export_step.database_product'|trans }}</h3>
-           <table id="{{ prod_db_tbl_id }}">
-                <tr>
-                    <th></th>
-                    <th>{{ 'inventory.itemcode'|trans }}</th>
-                    <th>{{ 'inventory.itemname'|trans }}</th>
-                    <th>{{'inventory.default_discount'|trans }}</th>
-                </tr>
+            Total Vehicle Discovered: {{ flow.stmtVecList|length }}<br/>
+            
+            Total record procssed: {{ flow.stmtRowCnt }} row.<br/>
+            
+            click next to continue.
+            
+        {% elseif flow.getCurrentStepNumber() == 2 %}  {# Query Product #}
+            {# Listing Existing Unit with Vehicle Number #}
+            <div id="{{ prod_list_div_id }}" style="float: left">
+                {# Please see /Statement/export_product_list.html.twig #}
+            </div> 
 
-                {% for prod in flow.prodList %}
-                <tr>
-                    <td>{{ prod.parts.itemcode }}</td>
-                    <td>{{ prod.parts.itemname }}</td>
-                    <td>${{ prod.defaultDiscount|number_format(2, '.', ',') }}</td>
-                    <td>
-                        {% image '@MorusFasBundle/Resources/public/images/ok_icon.png' %}
-                            <img src="{{ asset_url }}" alt="OK" style="width: 15px"/>
-                        {% endimage %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-            
-            <br/><br/>
-            
-
-            <div id="{{ prod_new_div }}">
+            {# Listing New Product #}
+            <div id="{{ prod_new_div }}"  style="float: right">
                 <h3>{{ 'export_step.new_product'|trans }}</h3>
                 <table id="{{ prod_new_tbl_id }}">
                     {% for itemcode, itemname in flow.newProdList %}
@@ -343,19 +336,32 @@
                     {% endfor %}
                 </table>
             </div>
-        {% elseif flow.getCurrentStepNumber() == 2 %}  {# Licence Search Step #}
-            <button id="{{ vec_dlg_btn_id }}" >Add New Customer</button>
-            <table>
-                {% for row in flow.newVceList|batch(5) %}
-                    <tr>
-                        {% for vcecode, vcename in row %}
-                        <td>
-                            <input id="{{ vcecode }}" name="licence_number_input" type="checkbox" value="{{ vcename }}" />{{ vcename }}
-                        </td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </table>
+        {% elseif flow.getCurrentStepNumber() == 3 %}  {# Query Licence #}
+            {# Listing Existing Unit with Vehicle Number #}
+            <div id="{{ vec_list_div_id }}" style="float: left">
+                {# Please see /Statement/export_unit_vehicle_list.html.twig #}
+            </div> 
+            
+            {# Display New Vehicle Number #}
+            <div style="float: right">
+                <a id="{{ vec_dlg_btn_id }}" href="#">{{ 'btn.register_to_customer'|trans }}</a>
+                <table>
+                    {% for row in flow.newVecList|batch(5) %}
+                        <tr>
+                            {% for veccode, vecname in row %}
+                            <td>
+                                <input id="{{ veccode }}" name="licence_number_input" type="checkbox" value="{{ vecname }}" />{{ vecname }}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            <div>
+            
+        {% elseif flow.getCurrentStepNumber() == 4 %}  {# Summary Step #}
+            
+            
+            
         {% endif %}
 
         {{ form_rest(export_form) }}
@@ -364,7 +370,7 @@
     {{ form_end(export_form) }} 
     
     {#  New Product Popup #}
-    <div id="{{ prod_dlg_div_id }}" title="{{ 'inventory.new.new_inventory_item'|trans }}" style="display:none">  
+    <div id="{{ prod_dlg_div_id }}" title="{{ 'inventory.new_inventory_item'|trans }}" style="display:none">  
         {{ form_start(parts_form) }}
             {{ form_errors(parts_form) }}
             <input type="hidden" id="{{ prod_dlg_idx_id  }}" value="" />
@@ -406,7 +412,7 @@
                 </div>
 
                 {# Division for creating new customer #}
-                <div id="{{ vec_dlg_new_cust_div_id }}" style="display:none">
+                <div id="{{ vec_dlg_cust_new_div_id }}" style="display:none">
                     {{ form_start(unit_form) }}
                     {{ form_errors(unit_form) }}
                         <fieldset>

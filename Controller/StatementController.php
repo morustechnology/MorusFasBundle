@@ -79,7 +79,7 @@ class StatementController extends Controller
             
             $em = $this->getDoctrine()->getManager();
             $em->persist($parts);
-            //$em->flush();
+            $em->flush();
             
             $response = array(
                 "success" => true, 
@@ -108,6 +108,7 @@ class StatementController extends Controller
      */
     public function addVehicleToCustomerAjaxAction(Request $request) {
         try {
+            
             $id = $request->get('id');
             $em = $this->getDoctrine()->getManager();
         
@@ -127,13 +128,58 @@ class StatementController extends Controller
             }
             
             $em->persist($unit);
-//            $em->flush();
+            $em->flush();
             $response = array("success" => true);
         } catch (Exception $ex) {
             $response = array("success" => false);
         }
         
         return new Response(json_encode($response));
+    }
+    
+    /**
+     * Lists Unit entities.
+     *
+     */
+    public function unitVehicleListAction(Request $request)
+    {
+        $registrationNumbers = $request->get('registration_numbers');
+        $qb = $this->getDoctrine()
+                ->getManager()
+                ->getRepository('MorusFasBundle:Unit')
+                ->createQueryBuilder('u');
+            
+        $query = $qb
+                ->join('u.vehicles', 'v')
+                ->where($qb->expr()->in('v.registrationNumber', $registrationNumbers));
+        
+        $units = $query->getQuery()->getResult();
+        
+        return $this->render('MorusFasBundle:Statement:export_unit_vehicle_list.html.twig', array(
+            'units' => $units,
+        ));
+    }
+    
+    /**
+     * Lists parts entities.
+     *
+     */
+    public function partsListAction(Request $request)
+    {
+        $itemnames = $request->get('parts');
+        $qb = $this->getDoctrine()
+                ->getManager()
+                ->getRepository('MorusFasBundle:Parts')
+                ->createQueryBuilder('p');
+            
+        $query = $qb
+                ->where($qb->expr()->in('p.itemname', $itemnames));
+        
+        $parts = $query->getQuery()->getResult();
+        
+        return $this->render('MorusFasBundle:Statement:export_product_list.html.twig', array(
+            'parts' => $parts,
+        ));
     }
     
     /**
@@ -210,15 +256,20 @@ class StatementController extends Controller
                 ));
             
             // ----------------------------------------------------
-            // New Existing Unit Form
+            // Customer List for combo box
             // ----------------------------------------------------
             $unitRepos = $aem->getUnitRepository();
             
-            $qb = $unitRepos->createQueryBuilder('u')
-                ->select('u.id, u.name');
-                ;
-            
-            $existingUnits = $qb->getQuery()->getResult();
+            $qb = $this->getDoctrine()
+                ->getManager()
+                ->getRepository('MorusFasBundle:Unit')
+                ->createQueryBuilder('u');
+            $query = $qb
+                    ->leftJoin('u.unitClasses', 'uc')
+                    ->where($qb->expr()->eq('uc.controlCode', ':controlCode'))
+                    ->setParameter('controlCode', 'CUSTOMER');
+        
+            $existingUnits = $query->getQuery()->getResult();
             
             return $this->render('MorusFasBundle:Statement:export.html.twig', array(
                 'export_form' => $export_form->createView(),

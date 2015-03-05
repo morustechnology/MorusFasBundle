@@ -60,6 +60,7 @@ statement:
         net_amount: Net Amount
         
 btn:
+    register_to_customer: Register to Customer
     export_invoices: Export Invoices
     upload_new_statement: Upload New Statement
     export_invoice: Export Invoice
@@ -71,6 +72,8 @@ btn:
     back: Back
 
 export_step:
+    registered_vehicle_list: Registered Vehicle List
+    analysis_summary: Analysis Summary
     product_search: Product Search
     vehicle_search: Vehicle Search
     confirm_export: Confirm Export

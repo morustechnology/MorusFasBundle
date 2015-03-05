@@ -9,11 +9,18 @@ morus_fas_statement_import:
 morus_fas_statement_export:
     path:     /export
     defaults: { _controller: "MorusFasBundle:Statement:export" }
+    
+morus_fas_statement_export_unit_vehicle_list:
+    path:     /unit_vehicle_list
+    defaults: { _controller: "MorusFasBundle:Statement:unitVehicleList" }
  
+morus_fas_statement_export_parts_list:
+    path:     /parts_list
+    defaults: { _controller: "MorusFasBundle:Statement:partsList" }
+    
 morus_fas_statement_export_create_product_ajax:
     path:     /newProduct
     defaults: { _controller: "MorusFasBundle:Statement:createProductAjax" }
-    
     
 morus_fas_statement_add_vehicle_to_customer_ajax:
     path:     /addVehicleToCustomer

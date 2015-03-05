@@ -59,6 +59,7 @@ statement:
         unit_price: 價格
         net_amount: 總計
 btn:
+    register_to_customer: 登記客戶車牌
     export_invoice: 滙出發票
     upload_new_statement: 上載新月結單
     export_invoice: 滙出發票
@@ -70,6 +71,8 @@ btn:
     back: 返回
 
 export_step:
+    registered_vehicle_list: 已登記車牌清單
+    analysis_summary: 分析摘要
     product_search: 貨品搜索
     vehicle_search: 車牌搜索
     confirm_export: 確認滙出

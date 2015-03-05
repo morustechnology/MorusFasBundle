@@ -59,6 +59,7 @@ statement:
         unit_price: 价格
         net_amount: 总计
 btn:
+    register_to_customer: 登记客户车牌
     export_invoices: 汇出发票
     upload_new_statement: 上载新月结单
     export_invoice: 汇出发票
@@ -70,6 +71,8 @@ btn:
     back: 返回
 
 export_step:
+    registered_vehicle_list: 已登记车牌清单
+    analysis_summary: 分析摘要
     product_search: 货品搜索
     vehicle_search: 牌照搜索
     confirm_export: 确认汇出

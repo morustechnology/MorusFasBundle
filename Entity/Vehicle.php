@@ -25,7 +25,7 @@ class Vehicle
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="registrationNumber", type="string", length=255, nullable=true)
      */
     private $registrationNumber;
 
