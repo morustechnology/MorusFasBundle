@@ -19,42 +19,48 @@ class Invoice extends BaseInvoice
      *
      * @ORM\Column(name="card_number", type="string", length=100, nullable=false)
      */
-    private $cardNumber;
+    protected $cardNumber;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="trans_date", type="date", nullable=false)
      */
-    private $transDate;
+    protected $transDate;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="trans_time", type="date", nullable=false)
      */
-    private $transTime;
+    protected $transTime;
 
     /**
      * @var string
      *
      * @ORM\Column(name="site", type="string", length=255, nullable=false)
      */
-    private $site;
+    protected $site;
 
     /**
      * @var string
      *
      * @ORM\Column(name="receipt_number", type="string", length=255, nullable=false)
      */
-    private $receiptNumber;
+    protected $receiptNumber;
     
     /**
      * @var
      * 
      * @ORM\Column(name="cost", type="decimal", precision=10, scale=2, nullable=true)
      */
-    private $cost;
+    protected $cost;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Vehicle", inversedBy="invoices", cascade={"persist"})
+     * @ORM\JoinColumn(name="vehicle_id", referencedColumnName="id")
+     **/
+    protected $vehicle;
     
     /**
      * Set cardNumber
@@ -192,5 +198,28 @@ class Invoice extends BaseInvoice
     public function getCost()
     {
         return $this->cost;
+    }
+    
+    /**
+     * Set vehicle
+     *
+     * @param \Morus\AcceticBundle\Entity\Vehicle $vehicle
+     * @return Vehicle
+     */
+    public function setVehicle(\Morus\AcceticBundle\Entity\Vehicle $vehicle = null)
+    {
+        $this->vehicle = $vehicle;
+
+        return $this;
+    }
+
+    /**
+     * Get vehicle
+     *
+     * @return \Morus\AcceticBundle\Entity\Vehicle 
+     */
+    public function getVehicle()
+    {
+        return $this->vehicle;
     }
 }

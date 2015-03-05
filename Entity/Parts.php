@@ -22,6 +22,11 @@ class Parts extends BaseParts
     private $defaultDiscount;
     
     /**
+     * @ORM\OneToMany(targetEntity="UnitParts", mappedBy="parts", cascade={"persist"})
+     **/
+    protected $unitParts;
+    
+    /**
      * Set defaultDiscount
      *
      * @param float $defaultDiscount
@@ -42,5 +47,38 @@ class Parts extends BaseParts
     public function getDefaultDiscount()
     {
         return $this->defaultDiscount;
+    }
+    
+    /**
+     * Add unitParts
+     *
+     * @param \Morus\FasBundle\Entity\UnitParts $unitParts
+     * @return Parts
+     */
+    public function addUnitParts(\Morus\FasBundle\Entity\UnitParts $unitParts)
+    {
+        $this->unitParts[] = $unitParts;
+
+        return $this;
+    }
+
+    /**
+     * Remove unitParts
+     *
+     * @param \Morus\FasBundle\Entity\UnitParts $unitParts
+     */
+    public function removeUnitParts(\Morus\FasBundle\Entity\UnitParts $unitParts)
+    {
+        $this->unitParts->removeElement($unitParts);
+    }
+
+    /**
+     * Get unitParts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUnitParts()
+    {
+        return $this->unitParts;
     }
 }

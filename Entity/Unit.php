@@ -27,7 +27,7 @@ class Unit extends BaseUnit
     /**
      * @ORM\OneToMany(targetEntity="UnitParts", mappedBy="unit", cascade={"persist"})
      **/
-    protected $UnitParts;
+    protected $unitParts;
     
     /**
      * Add statement
