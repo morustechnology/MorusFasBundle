@@ -235,10 +235,10 @@ class UnitParts {
     /**
      * Set unit
      *
-     * @param \Morus\AcceticBundle\Entity\Unit $unit
+     * @param \Morus\FasBundle\Entity\Unit $unit
      * @return UnitParts
      */
-    public function setUnit(\Morus\AcceticBundle\Entity\Unit $unit = null)
+    public function setUnit(\Morus\FasBundle\Entity\Unit $unit = null)
     {
         $this->unit = $unit;
 
@@ -248,7 +248,7 @@ class UnitParts {
     /**
      * Get unit
      *
-     * @return \Morus\AcceticBundle\Entity\Unit 
+     * @return \Morus\FasBundle\Entity\Unit 
      */
     public function getUnit()
     {
@@ -258,10 +258,10 @@ class UnitParts {
     /**
      * Set parts
      *
-     * @param \Morus\AcceticBundle\Entity\Parts $parts
+     * @param \Morus\FasBundle\Entity\Parts $parts
      * @return UnitParts
      */
-    public function setParts(\Morus\AcceticBundle\Entity\Parts $parts = null)
+    public function setParts(\Morus\FasBundle\Entity\Parts $parts = null)
     {
         $this->parts = $parts;
 
@@ -271,7 +271,7 @@ class UnitParts {
     /**
      * Get parts
      *
-     * @return \Morus\AcceticBundle\Entity\Parts 
+     * @return \Morus\FasBundle\Entity\Parts 
      */
     public function getParts()
     {

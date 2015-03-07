@@ -25,7 +25,8 @@
 {% set prod_db_tbl_id = 'fas_prod_db_tbl' %}
 
 {# Step 3 #}
-{% set vec_list_div_id = 'fas_inv_vec_list_div' %}
+{% set vec_list_div_id = 'fas_vec_list_div' %}
+{% set vec_select_all = 'fas_vec_select_all' %}
 
 {% block stylesheets %}
     {% stylesheets '@CraueFormFlowBundle/Resources/assets/css/buttons.css' %}
@@ -139,7 +140,7 @@
         function refreshProductList() { 
             var parts = {};
                 
-            {% for key, value in flow.stmtProdList %}
+            {% for key, value in flow.stmtProd %}
             parts['{{ key }}'] = '{{ value }}';
             {% endfor %}
 
@@ -166,45 +167,6 @@
         // ==========================================
         // Assign Vehicle JQuery Function
         // ==========================================
-        function refreshUnitVehicleList() { // Make Ajax Call to refresh Customer Vehicle List 
-            var licences = {};
-                
-            {% for key, value in flow.stmtVecList %}
-            licences['{{ key }}'] = '{{ value }}';
-            {% endfor %}
-
-            var values = {};
-            values['registration_numbers'] = licences;
-
-            $.ajax({
-                url         : "{{ path('morus_fas_statement_export_unit_vehicle_list')}}",
-                type        : "GET",
-                data        : values,
-                success     : function(data) {
-                    $('#{{ vec_list_div_id }}').html(data);
-                }
-            });
-        }
-        
-        // Post Form and get result
-        function addVehicleToUnit( unitId, licences, callback ){
-            // Get all form values
-            var values = {};
-
-            values['id'] = unitId;
-            values['licences'] = licences;
-
-            // Throw the form values to the server
-            $.ajax({
-                url         : "{{ path('morus_fas_statement_add_vehicle_to_customer_ajax') }}",
-                type        : "POST",
-                data        : values,
-                success     : function(response) {
-                    callback( jQuery.parseJSON(response) );
-                }
-            });
-        }
-            
         jQuery(document).ready(function() {
             $vecListDiv = $('#{{ vec_list_div_id }}');
             $vecDlg = $( '#{{ vec_dlg_div_id }}' );
@@ -267,13 +229,21 @@
                     $vecDlgLicUl.append('<li>'+value+'</li>'); 
                 });
                 
-                
                 $vecDlg.data('licences', licAry)
                         .dialog( "open" );
             });
             
+            // Select all checkbox action
+            $('input[id="{{ vec_select_all }}"]').change( function() {
+                if (this.checked) {
+                    $('input[name="licence_number_input"]').prop('checked', true);
+                } else {
+                    $('input[name="licence_number_input"]').prop('checked', false);
+                }
+            });
+            
             // Choose Customer Radio Button
-            $('input[id="{{ vec_dlg_cust_radio_id }}"]').change(function(){
+            $('input[id="{{ vec_dlg_cust_radio_id }}"]').change( function() {
                 if (this.value === 'new') {
                     $('#{{ vec_dlg_cust_new_div_id }}').show();
                     $('#{{ vec_dlg_exist_cust_div_id }}').hide();
@@ -283,8 +253,47 @@
                     $('#{{ vec_dlg_exist_cust_div_id }}').show();
                     $addChoice = this.value;
                 }
-            })
+            });
         });
+        
+        function refreshUnitVehicleList() { // Make Ajax Call to refresh Customer Vehicle List 
+            var licences = {};
+                
+            {% for key, value in flow.stmtVec %}
+            licences['{{ key }}'] = '{{ value }}';
+            {% endfor %}
+
+            var values = {};
+            values['registration_numbers'] = licences;
+
+            $.ajax({
+                url         : "{{ path('morus_fas_statement_export_unit_vehicle_list')}}",
+                type        : "GET",
+                data        : values,
+                success     : function(data) {
+                    $('#{{ vec_list_div_id }}').html(data);
+                }
+            });
+        }
+        
+        // Post Form and get result
+        function addVehicleToUnit( unitId, licences, callback ){
+            // Get all form values
+            var values = {};
+
+            values['id'] = unitId;
+            values['licences'] = licences;
+
+            // Throw the form values to the server
+            $.ajax({
+                url         : "{{ path('morus_fas_statement_add_vehicle_to_customer_ajax') }}",
+                type        : "POST",
+                data        : values,
+                success     : function(response) {
+                    callback( jQuery.parseJSON(response) );
+                }
+            });
+        }
     {% endif %}
     
     </script>
@@ -303,9 +312,9 @@
         {{ form_errors(export_form) }}        
         
         {% if flow.getCurrentStepNumber() == 1 %} {# Analysis Statement #}
-            Total Product Discovered: {{ flow.stmtProdList|length }}<br/>
+            Total Product Discovered: {{ flow.stmtProd|length }}<br/>
             
-            Total Vehicle Discovered: {{ flow.stmtVecList|length }}<br/>
+            Total Vehicle Discovered: {{ flow.stmtVec|length }}<br/>
             
             Total record procssed: {{ flow.stmtRowCnt }} row.<br/>
             
@@ -345,6 +354,7 @@
             {# Display New Vehicle Number #}
             <div style="float: right">
                 <a id="{{ vec_dlg_btn_id }}" href="#">{{ 'btn.register_to_customer'|trans }}</a>
+                <input id="{{ vec_select_all }}" type="checkbox"/>{{ 'export_step.select_all'|trans }}
                 <table>
                     {% for row in flow.newVecList|batch(5) %}
                         <tr>
@@ -360,7 +370,16 @@
             
         {% elseif flow.getCurrentStepNumber() == 4 %}  {# Summary Step #}
             
-            
+            {% for unit in flow.units %}
+                {{ unit.name }}<br/>
+                {% for vehicle in unit.vehicles %}
+                    {{ vehicle.registrationNumber }}<br/>
+                    {% for invoice in vehicle.invoices %}
+                        {{ invoice.description }}-{{ invoice.transDate }} {{ invoice.transTime }} {{ invoice.site }} {{ invoice.ReceiptNumber }} {{ invoice.qty }} {{ invoice.sellprice }}<br/>
+                    {% endfor %}
+                {% endfor %}
+                <br/>
+            {% endfor %}
             
         {% endif %}
 

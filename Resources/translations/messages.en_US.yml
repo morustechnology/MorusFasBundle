@@ -82,6 +82,7 @@ export_step:
     database_product: Product(s) already in database
     new_vehicle: New Vehicle
     database_vehicle: Vehicle number already in database
+    select_all: Select All
     
 error:
     import:

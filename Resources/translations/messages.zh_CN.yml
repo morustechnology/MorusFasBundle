@@ -81,6 +81,7 @@ export_step:
     database_product: 数据库中可配对货品
     new_vehicle: 尚未登记车牌
     database_vehicle: 已登记车牌
+    select_all: 全选
     
 error:
     import:

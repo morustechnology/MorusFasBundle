@@ -235,10 +235,10 @@ class Vehicle
     /**
      * Set unit
      *
-     * @param \Morus\AcceticBundle\Entity\Unit $unit
+     * @param \Morus\FasBundle\Entity\Unit $unit
      * @return Vehicle
      */
-    public function setUnit(\Morus\AcceticBundle\Entity\Unit $unit = null)
+    public function setUnit(\Morus\FasBundle\Entity\Unit $unit = null)
     {
         $this->unit = $unit;
 
@@ -248,7 +248,7 @@ class Vehicle
     /**
      * Get unit
      *
-     * @return \Morus\AcceticBundle\Entity\Unit 
+     * @return \Morus\FasBundle\Entity\Unit 
      */
     public function getUnit()
     {

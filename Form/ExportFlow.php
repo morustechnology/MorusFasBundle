@@ -14,11 +14,16 @@ class ExportFlow extends FormFlow {
     
     protected $revalidatePreviousSteps = false;
     
+    public $units = array();
+    public $parts = array();
+    
     public $stmtList = array();
     public $stmtRowCnt = 0;
     
-    public $stmtProdList = array();
-    public $stmtVecList = array();
+    public $stmtProd = array();
+    public $stmtVec = array();
+    
+    
     
     public $existProdList = array();
     public $newProdList = array();
@@ -57,10 +62,13 @@ class ExportFlow extends FormFlow {
                 $this->analyzeStatement();
                 break;
             case 2:
-                $this->queryProduct($this->stmtProdList);
+                $this->queryProduct($this->stmtProd);
                 break;
             case 3:
-                $this->queryVehicle($this->stmtVecList);
+                $this->queryVehicle($this->stmtVec);
+                break;
+            case 4:
+                $this->fasPL();
                 break;
         }
         
@@ -68,11 +76,145 @@ class ExportFlow extends FormFlow {
     }
     
     /**
+     * Generate FAS Profit and Loss Summary
+     */
+    private function fasPL() {
+        // Get Product which appear in statements
+        $pqb = $this->entityManager
+                ->getRepository('MorusFasBundle:Parts')
+                ->createQueryBuilder('p');
+            
+        $pQuery = $pqb
+                ->where($pqb->expr()->in('p.itemname', $this->stmtProd));
+        
+        $this->parts = $pQuery->getQuery()->getResult(); 
+        
+        // Get All unit who has vehicle appear in statements
+        $uqb = $this->entityManager
+                ->getRepository('MorusFasBundle:Unit')
+                ->createQueryBuilder('u');
+            
+        $uQuery = $uqb
+                ->join('u.vehicles', 'v')
+                ->where($uqb->expr()->in('v.registrationNumber', $this->stmtVec));
+        
+        $this->units = $uQuery->getQuery()->getResult();
+        
+        // 1. Process Statment, create Invoice for each row.
+        $stmts = $this->getFormData()->getStatements();
+        $export = $this->getFormData();
+        foreach( $stmts as $stmt) {
+            $file = new SplFileObject($stmt->getWebPath());
+            $reader = new CsvReader($file);
+            $reader->setHeaderRowNumber(0);
+            
+            foreach ($reader as $rowNum => $row) {
+                $invoice = new \Morus\FasBundle\Entity\Invoice();
+                $invoice->setCardNumber($row[$stmt->getCardNumberHeader()]);
+                
+                $invoice->setSite($row[$stmt->getSiteHeader()]);
+                $invoice->setReceiptNumber($row[$stmt->getReceiptNumberHeader()]);
+                $invoice->setQty($row[$stmt->getVolumeHeader()]);
+                $invoice->setCost($row[$stmt->getNetAmountHeader()]);
+                $invoice->setSellprice($row[$stmt->getUnitPriceHeader()]);
+                //$invoice->setDescription($row[$stmt->getLicenceNumberHeader()]);
+                if ($stmt->getSplitDateTime() == true) {
+                    // Convert Date Fomat
+                    $date = $row[$stmt->getTransactionDateHeader()];
+                    $dateFormat = $stmt->getDateFormat();
+                    $transDate = \DateTime::createFromFormat($dateFormat, $date);
+                    $invoice->setTransDate($transDate);
+                    
+                    $time = $row[$stmt->getTransactionTimeHeader()];
+                    $timeFormat = $stmt->getTimeFormat();
+                    $transTime = \DateTime::createFromFormat($timeFormat, $time);
+                    $invoice->setTransTime($transTime);
+                } else {
+                    $datetimeFormat = $stmt->getDatetimeFormat();
+                    $dateTime = $row[$stmt->getTransactionDatetimeHeader()];
+                    $transDatetime = \DateTime::createFromFormat($datetimeFormat, $dateTime);
+                    $invoice->setTransDate($transDatetime->format('Y-m-d'));
+                    $invoice->setTransTime($transDatetime->format('H:i:s'));
+                    
+                }
+                
+                // 2. Search Units with the same vehicle number
+                $registrationNumber = $row[$stmt->getLicenceNumberHeader()];
+                
+                
+                foreach ($this->units as $unit ) {
+                    $flag = false;
+                    foreach ($unit->getVehicles() as $vehicle) {
+                        if ($vehicle->getRegistrationNumber() == $registrationNumber) {
+                            $vehicle->addInvoice($invoice);
+                            $invoice->setVehicle($vehicle);
+                            $flag = true;
+                        }
+                        if ($flag == true) break;
+                    }
+                    if ($flag == true) break;
+                }
+                
+                //3. Search Product and add to invoice
+                $itemname = $row[$stmt->getProductNameHeader()];
+                foreach ($this->parts as $parts ) {
+                    $flag = false;
+                    if ($parts->getItemname() == $itemname) {
+                        $invoice->setParts($parts);
+                        $parts->addInvoice($invoice);
+                        $invoice->setDescription($parts->getItemName());
+                        $flag = true;
+                    }
+                    if ($flag == true) break;
+                }
+            }
+        } // End process statement
+        
+        // Create Transaction and AR then add to this export
+        foreach( $this->units as $unit) {
+            // One transaction + ar per custome
+            $transaction = new \Morus\FasBundle\Entity\Transaction();
+            $ar = new \Morus\FasBundle\Entity\Ar();
+            
+            // Set relationship
+            $transaction->setAr($ar);
+            $transaction->setUnit($unit);
+            $ar->setTransaction($transaction);
+            
+            // Set Invoice Number
+            $invPrefix = $this->entityManager
+                    ->getRepository('MorusFasBundle:AcceticConfig')
+                    ->findOneByControlCode('INV_PREFIX');
+            $invNextNumber = $this->entityManager
+                    ->getRepository('MorusFasBundle:AcceticConfig')
+                    ->findOneByControlCode('INV_NEXT_NUM');
+            
+            $num = $invNextNumber->getValue();
+            if ($invPrefix && $invNextNumber) {
+                $ar->setInvnumber($invPrefix->getValue() . $num);
+            }
+            
+            $invNextNumber->setValue($num + 1);
+            $this->entityManager->persist($invNextNumber);
+            $this->entityManager->flush();
+            
+            // Add invoice line to transaction.
+            foreach ($unit->getVehicles() as $vehicle) {
+                foreach ($vehicle->getInvoices() as $invoice) {
+                    $transaction->addInvoice($invoice);
+                }
+            }
+            $export->addTransaction($transaction);
+        }
+        
+    }
+    
+    /**
      * Search for Product and Vehicle in statement
      */
     private function analyzeStatement() {
-        $this->stmtVecList = array();
-        $this->stmtProdList = array();
+        $this->stmtVec = array();
+        $this->stmtProd = array();
         
         $stmts = $this->getFormData()->getStatements();
         foreach( $stmts as $stmt) {
@@ -85,22 +227,22 @@ class ExportFlow extends FormFlow {
                 
                 // Find Unique Product Name in statement
                 $pName = $row[$stmt->getProductNameHeader()];
-                if (!in_array($pName, $this->stmtProdList)) {
+                if (!in_array($pName, $this->stmtProd)) {
                     $pCode = strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $pName)));
-                    $this->stmtProdList[$pCode] = $pName;
+                    $this->stmtProd[$pCode] = $pName;
                 }
 
                 // Find Unique License number in statement
                 $vNum = $row[$stmt->getLicenceNumberHeader()];
-                if (!in_array($vNum, $this->stmtVecList)) {
+                if (!in_array($vNum, $this->stmtVec)) {
                     $vCode = strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $vNum)));
-                    $this->stmtVecList[$vCode] = $vNum;
+                    $this->stmtVec[$vCode] = $vNum;
                 }
             }
         }
         
-        asort($this->stmtVecList);
-        asort($this->stmtProdList);
+        asort($this->stmtVec);
+        asort($this->stmtProd);
     }
     
     /**

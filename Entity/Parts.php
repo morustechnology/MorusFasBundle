@@ -17,7 +17,7 @@ class Parts extends BaseParts
     /**
      * @var float
      *
-     * @ORM\Column(name="default_discount", type="decimal")
+     * @ORM\Column(name="default_discount", type="decimal", precision=10, scale=2, nullable=true)
      */
     private $defaultDiscount;
     

@@ -60,6 +60,27 @@ class Statement
     /**
      * @var string
      *
+     * @ORM\Column(name="datetime_format", type="string", length=50, nullable=false)
+     */
+    protected $datetimeFormat;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="date_format", type="string", length=50, nullable=false)
+     */
+    protected $dateFormat;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="time_format", type="string", length=50, nullable=false)
+     */
+    protected $timeFormat;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="headers", type="text", nullable=false)
      */
     protected $headers;
@@ -566,6 +587,75 @@ class Statement
     public function getSplitDateTime()
     {
         return $this->splitDateTime;
+    }
+    
+    /**
+     * Set datetimeFormat
+     *
+     * @param string $datetimeFormat
+     * @return Statement
+     */
+    public function setDatetimeFormat($datetimeFormat)
+    {
+        $this->datetimeFormat = $datetimeFormat;
+
+        return $this;
+    }
+
+    /**
+     * Get datetimeFormat
+     *
+     * @return string 
+     */
+    public function getDatetimeFormat()
+    {
+        return $this->datetimeFormat;
+    }
+    
+    /**
+     * Set dateFormat
+     *
+     * @param string $dateFormat
+     * @return Statement
+     */
+    public function setDateFormat($dateFormat)
+    {
+        $this->dateFormat = $dateFormat;
+
+        return $this;
+    }
+
+    /**
+     * Get dateFormat
+     *
+     * @return string 
+     */
+    public function getDateFormat()
+    {
+        return $this->dateFormat;
+    }
+    
+    /**
+     * Set timeFormat
+     *
+     * @param string $timeFormat
+     * @return Statement
+     */
+    public function setTimeFormat($timeFormat)
+    {
+        $this->timeFormat = $timeFormat;
+
+        return $this;
+    }
+
+    /**
+     * Get timeFormat
+     *
+     * @return string 
+     */
+    public function getTimeFormat()
+    {
+        return $this->timeFormat;
     }
     
     /**

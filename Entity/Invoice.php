@@ -203,10 +203,10 @@ class Invoice extends BaseInvoice
     /**
      * Set vehicle
      *
-     * @param \Morus\AcceticBundle\Entity\Vehicle $vehicle
+     * @param \Morus\FasBundle\Entity\Vehicle $vehicle
      * @return Vehicle
      */
-    public function setVehicle(\Morus\AcceticBundle\Entity\Vehicle $vehicle = null)
+    public function setVehicle(\Morus\FasBundle\Entity\Vehicle $vehicle = null)
     {
         $this->vehicle = $vehicle;
 
@@ -216,7 +216,7 @@ class Invoice extends BaseInvoice
     /**
      * Get vehicle
      *
-     * @return \Morus\AcceticBundle\Entity\Vehicle 
+     * @return \Morus\FasBundle\Entity\Vehicle 
      */
     public function getVehicle()
     {
