@@ -57,7 +57,7 @@ class ImportStep2Type extends AbstractType {
                     'choices' => $headers
                 ));
                 
-                $form->add('productCodeHeader', 'choice', array(
+                $form->add('unitDiscountHeader', 'choice', array(
                     'empty_value' => 'statement.choose_column',
                     'choices' => $headers
                 ));

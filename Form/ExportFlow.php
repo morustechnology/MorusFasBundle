@@ -27,7 +27,6 @@ class ExportFlow extends FormFlow {
     public $stmtVec = array();
     
     
-    
     public $existProdList = array();
     public $newProdList = array();
     

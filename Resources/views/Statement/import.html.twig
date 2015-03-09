@@ -95,7 +95,7 @@
                     {{ 'statement.headers.transaction_datetime'|trans }} {{ form_widget(form.transactionDatetimeHeader) }} {{ form_errors(form.transactionDatetimeHeader) }}<br/>
                 {% endif %}
                 {{ 'statement.headers.product_name'|trans }} {{ form_widget(form.productNameHeader) }} {{ form_errors(form.productNameHeader) }}<br/>
-                {{ 'statement.headers.product_code'|trans }} {{ form_widget(form.productCodeHeader) }} {{ form_errors(form.productCodeHeader) }}<br/>
+                {{ 'statement.headers.unit_discount'|trans }} {{ form_widget(form.unitDiscountHeader) }} {{ form_errors(form.unitDiscountHeader) }}<br/>
                 {{ 'statement.headers.volume'|trans }} {{ form_widget(form.volumeHeader) }} {{ form_errors(form.volumeHeader) }}<br/>
                 {{ 'statement.headers.unit_price'|trans }} {{ form_widget(form.unitPriceHeader) }} {{ form_errors(form.unitPriceHeader) }}<br/>
                 {{ 'statement.headers.net_amount'|trans }} {{ form_widget(form.netAmountHeader) }} {{ form_errors(form.netAmountHeader) }}<br/>
@@ -133,7 +133,7 @@
                                 <th>{{ 'statement.headers.transaction_datetime'|trans }}</th>
                             {% endif %}
                             <th>{{ 'statement.headers.product_name'|trans }}</th>
-                            <th>{{ 'statement.headers.product_code'|trans }}</th>
+                            <th>{{ 'statement.headers.unit_discount'|trans }}</th>
                             <th>{{ 'statement.headers.volume'|trans }}</th>
                             <th>{{ 'statement.headers.unit_price'|trans }}</th>
                             <th>{{ 'statement.headers.net_amount'|trans }}</th>
@@ -265,7 +265,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                {% if errorLog.nullProductCode %}
+                                {% if errorLog.nullUnitDiscount %}
                                     {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
                                         <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
                                     {% endimage %}

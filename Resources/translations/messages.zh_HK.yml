@@ -58,7 +58,7 @@ statement:
         transaction_time: 時間
         transaction_datetime: 日期/時間
         product_name: 貨品名稱
-        product_code: 貨品編號
+        unit_discount: 價格折扣
         volume: 數量
         unit_price: 價格
         net_amount: 總計

@@ -58,7 +58,7 @@ statement:
         transaction_time: Transaction Time
         transaction_datetime: Transaction Date & time
         product_name: Product Name
-        product_code: Product Code
+        unit_discount: Unit Discount
         volume: Volume
         unit_price: Unit Price
         net_amount: Net Amount

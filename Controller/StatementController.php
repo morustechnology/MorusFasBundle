@@ -101,7 +101,6 @@ class StatementController extends Controller
         try {
             $em = $this->getDoctrine()->getManager();
             
-            
             $aUnit = $request->get('fas_unit');
             $aName = $aUnit['name'];
             $aLastName = $aUnit['persons'][0]['lastName'];
@@ -417,27 +416,10 @@ class StatementController extends Controller
                     'attr' => array('style' => 'display:none')
                 ));
             
-            // ----------------------------------------------------
-            // Customer List for combo box
-            // ----------------------------------------------------
-            $unitRepos = $aem->getUnitRepository();
-            
-            $qb = $this->getDoctrine()
-                ->getManager()
-                ->getRepository('MorusFasBundle:Unit')
-                ->createQueryBuilder('u');
-            $query = $qb
-                    ->leftJoin('u.unitClasses', 'uc')
-                    ->where($qb->expr()->eq('uc.controlCode', ':controlCode'))
-                    ->setParameter('controlCode', 'CUSTOMER');
-        
-            $existingUnits = $query->getQuery()->getResult();
-            
             return $this->render('MorusFasBundle:Statement:export.html.twig', array(
                 'export_form' => $export_form->createView(),
                 'parts_form' => $parts_form->createView(),
                 'unit_form' => $unit_form->createView(),
-                'existing_units' => $existingUnits,
                 'flow' => $flow,
             ));
         } else {
@@ -480,7 +462,7 @@ class StatementController extends Controller
 
                 $flow->reset(); // remove step data from the session
 
-                return $this->redirect($this->generateUrl('morus_fas_homepage'));
+                return $this->redirect($this->generateUrl('morus_fas_statement'));
             }
         }
 

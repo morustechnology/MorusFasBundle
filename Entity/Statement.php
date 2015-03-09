@@ -158,8 +158,8 @@ class Statement
 //        $this->name = 'Import ' . $datetimeStr;
         $this->name = $month.'月份 '.$year;
         $this->splitDateTime = false;
-        $this->datetimeFormat = 'd/m/Y H:i:s';
-        $this->dateFormat = 'd/m/Y';
+        $this->datetimeFormat = 'd-m-Y H:i:s';
+        $this->dateFormat = 'd-m-Y';
         $this->timeFormat = 'H:i:s';
         $this->createDate = new \DateTime("now");
         $this->active = true;
@@ -350,26 +350,26 @@ class Statement
     }
     
     /**
-     * Set productCodeHeader
+     * Set unitDiscountHeader
      *
-     * @param string $productCodeHeader
+     * @param string $unitDiscountHeader
      * @return Statement
      */
-    public function setProductCodeHeader($productCodeHeader)
+    public function setUnitDiscountHeader($unitDiscountHeader)
     {
-        $this->setCodeHeader(HeaderKey::PRODUCT_CODE, $productCodeHeader);
+        $this->setCodeHeader(HeaderKey::UNIT_DISCOUNT, $unitDiscountHeader);
 
         return $this;
     }
 
     /**
-     * Get productCodeHeader
+     * Get unitDiscountHeader
      *
      * @return string 
      */
-    public function getProductCodeHeader()
+    public function getUnitDiscountHeader()
     {
-        return $this->getCodeHeader(HeaderKey::PRODUCT_CODE);
+        return $this->getCodeHeader(HeaderKey::UNIT_DISCOUNT);
     }
     
     /**

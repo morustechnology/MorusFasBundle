@@ -28,6 +28,10 @@ class UnitType extends AbstractType
             ))
             ->add('contacts', 'collection', array(
                 'type' => 'accetic_contact'
+            ))
+            ->add('unitParts', 'collection', array(
+                'type' => 'fas_unit_parts',
+                'allow_add' => true,
             ));
     }
     

@@ -77,7 +77,7 @@ class ImportLog {
     /**
      * @var boolean
      */
-    private $nullProductCode;
+    private $nullUnitDiscount;
     
     /**
      * @var boolean
@@ -110,7 +110,7 @@ class ImportLog {
      * @return ImportLog
      */
     public function setLog($nullCardNumber, $nullLicenceNumber, $nullSite, $nullReceiptNumber, $nullTransactionDateTime,
-            $nullTransactionDate, $nullTransactionTime, $nullProductName, $nullProductCode, $nullVolume, $nullUnitPrice, 
+            $nullTransactionDate, $nullTransactionTime, $nullProductName, $nullUnitDiscount, $nullVolume, $nullUnitPrice, 
             $nullNetAmount, $invalidTransactionDateTime, $invalidTransactionDate, $invalidTransactionTime)
     {
         $this->nullCardNumber = $nullCardNumber;
@@ -254,13 +254,13 @@ class ImportLog {
     }
     
     /**
-     * Get nullProductCode
+     * Get nullUnitDiscount
      *
      * @return boolean
      */
-    public function getNullProductCode()
+    public function getNullUnitDiscount()
     {
-        return $this->nullProductCode;
+        return $this->nullUnitDiscount;
     }
     
     /**

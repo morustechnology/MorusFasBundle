@@ -158,17 +158,17 @@ class ImportFlow extends FormFlow {
                 $invalidTranDateTime = (!$transDatetime ? true : false);
            }
            $nullPdtName = ($this->isNullOrEmpty($row[$statement->getProductNameHeader()]) ? true : false );
-           $nullPdtCode = ($this->isNullOrEmpty($row[$statement->getProductCodeHeader()]) ? true : false );
+           $nullUnitDis = ($this->isNullOrEmpty($row[$statement->getUnitDiscountHeader()]) ? true : false );
            $nullVolume = ($this->isNullOrEmpty($row[$statement->getVolumeHeader()]) ? true : false );
            $nullPx = ($this->isNullOrEmpty($row[$statement->getUnitPriceHeader()]) ? true : false );
            $nullAmt = ($this->isNullOrEmpty($row[$statement->getNetAmountHeader()]) ? true : false );
            
            if ($nullCard || $nullLic || $nullSite || $nullRpt || $nullTranDateTime || $nullTranDate || $nullTranTime
-                        || $nullPdtName || $nullPdtCode || $nullVolume || $nullPx || $nullAmt || $invalidTranDateTime || $invalidTranDate || $invalidTranTime ) {
+                        || $nullPdtName || $nullUnitDis || $nullVolume || $nullPx || $nullAmt || $invalidTranDateTime || $invalidTranDate || $invalidTranTime ) {
                $importLog = new ImportLog($rowNum);
                
                $importLog->setLog($nullCard, $nullLic, $nullSite, $nullRpt, $nullTranDateTime, $nullTranDate, $nullTranTime
-                       , $nullPdtName, $nullPdtCode, $nullVolume, $nullPx, $nullAmt, $invalidTranDateTime, $invalidTranDate, $invalidTranTime );
+                       , $nullPdtName, $nullUnitDis, $nullVolume, $nullPx, $nullAmt, $invalidTranDateTime, $invalidTranDate, $invalidTranTime );
                array_push($this->errorLogs, $importLog);
                $this->hasError = true;
            }

@@ -32,6 +32,11 @@ services:
         class: Morus\FasBundle\Form\Type\UnitType
         tags:
             - { name: form.type, alias: fas_unit }
+    
+    morus_fas.form.type.unit_parts:
+        class: Morus\FasBundle\Form\Type\UnitPartsType
+        tags:
+            - { name: form.type, alias: fas_unit_parts }
             
     # Utility Classes
     morus_fas.classes.importlog:

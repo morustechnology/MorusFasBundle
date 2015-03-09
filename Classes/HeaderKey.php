@@ -17,7 +17,7 @@ class HeaderKey {
     const TRANSACTION_DATE = 'TRANSACTION_DATE';
     const TRANSACTION_TIME = 'TRANSACTION_TIME';
     const PRODUCT_NAME = 'PRODUCT_NAME';
-    const PRODUCT_CODE = 'PRODUCT_CODE';
+    const UNIT_DISCOUNT = 'UNIT_DISCOUNT';
     const VOLUME = 'VOLUME';
     const UNIT_PRICE = 'UNIT_PRICE';
     const NET_AMOUNT = 'NET_AMOUNT';
