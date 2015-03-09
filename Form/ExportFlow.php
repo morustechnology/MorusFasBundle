@@ -6,6 +6,9 @@ use Symfony\Component\DependencyInjection\Container;
 use Doctrine\ORM\EntityManager;
 use Craue\FormFlowBundle\Form\FormFlow;
 use Ddeboer\DataImport\Reader\CsvReader;
+use Ddeboer\DataImport\Workflow;
+use Ddeboer\DataImport\Writer;
+use Ddeboer\DataImport\Filter;
 use SplFileObject;
 
 
@@ -107,6 +110,13 @@ class ExportFlow extends FormFlow {
             $file = new SplFileObject($stmt->getWebPath());
             $reader = new CsvReader($file);
             $reader->setHeaderRowNumber(0);
+            $reader->setStrict(false);
+            
+            $workflow = new Workflow($reader);
+            $result = $workflow
+                ->setSkipItemOnFailure(true)
+                ->process();
+            
             
             foreach ($reader as $rowNum => $row) {
                 $invoice = new \Morus\FasBundle\Entity\Invoice();
@@ -221,6 +231,7 @@ class ExportFlow extends FormFlow {
             $file = new SplFileObject($stmt->getWebPath());
             $reader = new CsvReader($file);
             $reader->setHeaderRowNumber(0);
+            $reader->setStrict(false);
             $rowCnt = 0;
             foreach ($reader as $rowNum => $row) {
                 $this->stmtRowCnt = $this->stmtRowCnt + 1;

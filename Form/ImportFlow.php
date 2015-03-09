@@ -116,6 +116,9 @@ class ImportFlow extends FormFlow {
         // 2. Validate statement content 
         // ------------------------------------------------------------------------------
         $this->totalProcessedCount = 0;
+        $datetimeFormat = $statement->getDatetimeFormat();
+        $dateFormat = $statement->getDateFormat();
+        $timeFormat = $statement->getTimeFormat();
         foreach ($this->reader as $rowNum => $row) {    
            $this->totalProcessedCount = $this->totalProcessedCount + 1;
            $nullCard = false; $nullLic = false; $nullSite = false; 
@@ -130,10 +133,29 @@ class ImportFlow extends FormFlow {
                $nullTranDate = ($this->isNullOrEmpty($row[$statement->getTransactionDateHeader()]) ? true : false );
                 $nullTranTime = ($this->isNullOrEmpty($row[$statement->getTransactionTimeHeader()]) ? true : false );
                 $nullTranDateTime = false;
+                
+                // Check if datetime is valid
+                $date = $row[$statement->getTransactionDateHeader()];
+                $time = $row[$statement->getTransactionTimeHeader()];
+                $transDate = \DateTime::createFromFormat($dateFormat, $date);
+                $transTime = \DateTime::createFromFormat($timeFormat, $time);
+                
+                $invalidTranDate = (!$transDate ? true : false);
+                $invalidTranTime = (!$transTime ? true : false);
+                $invalidTranDateTime = false;
            } else { 
                 $nullTranDate = false;
                 $nullTranTime = false;
+                
                 $nullTranDateTime = ($this->isNullOrEmpty($row[$statement->getTransactionDatetimeHeader()]) ? true : false );
+                
+                // Check if datetime is valid
+                $dateTime = $row[$statement->getTransactionDatetimeHeader()];
+                $transDatetime = \DateTime::createFromFormat($datetimeFormat, $dateTime);
+                
+                $invalidTranDate = false;
+                $invalidTranTime = false;
+                $invalidTranDateTime = (!$transDatetime ? true : false);
            }
            $nullPdtName = ($this->isNullOrEmpty($row[$statement->getProductNameHeader()]) ? true : false );
            $nullPdtCode = ($this->isNullOrEmpty($row[$statement->getProductCodeHeader()]) ? true : false );
@@ -142,14 +164,16 @@ class ImportFlow extends FormFlow {
            $nullAmt = ($this->isNullOrEmpty($row[$statement->getNetAmountHeader()]) ? true : false );
            
            if ($nullCard || $nullLic || $nullSite || $nullRpt || $nullTranDateTime || $nullTranDate || $nullTranTime
-                        || $nullPdtName || $nullPdtCode || $nullVolume || $nullPx || $nullAmt ){
+                        || $nullPdtName || $nullPdtCode || $nullVolume || $nullPx || $nullAmt || $invalidTranDateTime || $invalidTranDate || $invalidTranTime ) {
                $importLog = new ImportLog($rowNum);
                
                $importLog->setLog($nullCard, $nullLic, $nullSite, $nullRpt, $nullTranDateTime, $nullTranDate, $nullTranTime
-                       , $nullPdtName, $nullPdtCode, $nullVolume, $nullPx, $nullAmt);
-               array_unshift($this->errorLogs, $importLog);
+                       , $nullPdtName, $nullPdtCode, $nullVolume, $nullPx, $nullAmt, $invalidTranDateTime, $invalidTranDate, $invalidTranTime );
+               array_push($this->errorLogs, $importLog);
                $this->hasError = true;
            }
+           
+           asort($this->errorLogs);
         }
     }
     

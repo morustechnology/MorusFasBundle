@@ -60,21 +60,21 @@ class Statement
     /**
      * @var string
      *
-     * @ORM\Column(name="datetime_format", type="string", length=50, nullable=false)
+     * @ORM\Column(name="datetime_format", type="string", length=50, nullable=true)
      */
     protected $datetimeFormat;
     
     /**
      * @var string
      *
-     * @ORM\Column(name="date_format", type="string", length=50, nullable=false)
+     * @ORM\Column(name="date_format", type="string", length=50, nullable=true)
      */
     protected $dateFormat;
     
     /**
      * @var string
      *
-     * @ORM\Column(name="time_format", type="string", length=50, nullable=false)
+     * @ORM\Column(name="time_format", type="string", length=50, nullable=true)
      */
     protected $timeFormat;
     
@@ -158,6 +158,9 @@ class Statement
 //        $this->name = 'Import ' . $datetimeStr;
         $this->name = $month.'月份 '.$year;
         $this->splitDateTime = false;
+        $this->datetimeFormat = 'd/m/Y H:i:s';
+        $this->dateFormat = 'd/m/Y';
+        $this->timeFormat = 'H:i:s';
         $this->createDate = new \DateTime("now");
         $this->active = true;
     }

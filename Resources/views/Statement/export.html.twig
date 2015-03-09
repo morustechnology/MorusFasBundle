@@ -11,7 +11,6 @@
 {# Unit/Vehicle Pupup Dialog #}
 {% set vec_dlg_div_id = 'fas_vec_dlg_div' %}
 {% set vec_dlg_cust_new_div_id = 'fas_vec_dlg_cust_new_div' %}
-{% set vec_dlg_exist_cust_div_id = 'fas_vec_dlg_exist_cust_div' %}
 {% set vec_dlg_cust_select_id = 'fas_vec_dlg_cust_select' %}
 {% set vec_dlg_cust_radio_id = 'fas_vec_dlg_cust_radio' %}
 {% set vec_dlg_lic_ul_id = 'fas_vec_dlg_lic_ul' %}
@@ -158,6 +157,7 @@
         }
         
     {% elseif flow.getCurrentStepNumber() == 3 %}
+        var $vecNewCustForm;  // New Customer form in dialog box
         var $vecDlg, $vecBtn //Dialog Box & Trigger Button
         var $vecDlgLicUl; // Licence List in Dialog box
         var $vecDlgCustSelect; //Customer Combo Box
@@ -168,6 +168,7 @@
         // Assign Vehicle JQuery Function
         // ==========================================
         jQuery(document).ready(function() {
+            $vecNewCustForm = $('#{{ unit_form.vars.attr.id }}');
             $vecListDiv = $('#{{ vec_list_div_id }}');
             $vecDlg = $( '#{{ vec_dlg_div_id }}' );
             $vecBtn = $( '#{{ vec_dlg_btn_id }}');
@@ -177,7 +178,7 @@
             refreshUnitVehicleList();
             $vecDlg.css({overflow:"auto"}); // Make dialog scrollable
             $vecDlg.dialog({ //Init Dialog Box
-                autoOpen: false, height: 300, width: 900, modal: true,
+                autoOpen: false, height: 600, width: 900, modal: true,
                 buttons: {
                     "{{ 'btn.save'|trans }}": function() {
                         var licAry = $vecDlg.data('licences');
@@ -201,7 +202,20 @@
                             });
                             
                         } else if ($addChoice === 'new') {
-                            $vecDlg.dialog( "close" );
+                            //$vecNewCustForm.find(':submit').click(); 
+                            creatCustomerAddVehicle( licAry, function( response ) {
+                                if (response.success) {
+                                    $.each(licAry, function(key, value){
+                                        $('input[id="'+key+'"]').replaceWith(
+                                            {% image '@MorusFasBundle/Resources/public/images/ok_icon_16x16.png' %}
+                                                "<img src='{{ asset_url }}' alt='OK' style='width: 16px'/>"
+                                            {% endimage %}
+                                        );
+                                    });
+                                    refreshUnitVehicleList();
+                                    $vecDlg.dialog( "close" );
+                                }
+                            });
                         } 
                         
                     },
@@ -219,9 +233,12 @@
                 
                 //  Get selected licences
                 var licAry = {};
+                var licAryLength = 0;
                 $('input[name="licence_number_input"]:checked').each(function(event) {
+                    licAryLength += 1;
                     licAry[this.id] = this.value;
                  });
+                if (licAryLength <= 0) return false;  // Do nothing if nothing select.
                 
                 // Show Licences to dialog box list
                 $vecDlgLicUl.empty();
@@ -229,8 +246,22 @@
                     $vecDlgLicUl.append('<li>'+value+'</li>'); 
                 });
                 
-                $vecDlg.data('licences', licAry)
-                        .dialog( "open" );
+                getCustomerList(function( response ) {
+                    if (response.success) {
+                        $('#{{ vec_dlg_cust_select_id }}').empty();
+                        
+                        var units = response.units;
+                        $.each(units, function(key, unit){
+                            $('#{{ vec_dlg_cust_select_id }}')
+                                .append($("<option value='id' >name</option>")
+                                .attr("value", unit.id)
+                                .text(unit.name));
+                        });
+                        
+                        $vecDlg.data('licences', licAry)
+                            .dialog( "open" );
+                    }
+                });
             });
             
             // Select all checkbox action
@@ -245,16 +276,52 @@
             // Choose Customer Radio Button
             $('input[id="{{ vec_dlg_cust_radio_id }}"]').change( function() {
                 if (this.value === 'new') {
-                    $('#{{ vec_dlg_cust_new_div_id }}').show();
-                    $('#{{ vec_dlg_exist_cust_div_id }}').hide();
                     $addChoice = this.value;
                 } else {
-                    $('#{{ vec_dlg_cust_new_div_id }}').hide();
-                    $('#{{ vec_dlg_exist_cust_div_id }}').show();
                     $addChoice = this.value;
                 }
             });
+            
+            
         });
+        
+        function getCustomerList( callback ) {
+            $.ajax({
+                type        : "POST",
+                url         : "{{ path('morus_fas_statement_export_get_customers_ajax') }}",
+                
+                success     : function(response) {
+                    callback( jQuery.parseJSON(response) );
+                }
+            });
+        }
+        
+        // Post Form to add customer, assign vehicle and get result
+        function creatCustomerAddVehicle(licences, callback ) {
+            /*
+             * Get all form values
+             */
+            var values = {};
+            $.each( $vecNewCustForm.serializeArray(), function(i, field) {
+                var id = $('input[name="' + field.name + '"]').attr("id");
+                values[field.name] = field.value;
+            });
+            
+            values['licences'] = licences;
+            
+            
+            /*
+             * Throw the form values to the server!
+             */
+            $.ajax({
+                type        : $vecNewCustForm.attr( 'method' ),
+                url         : $vecNewCustForm.attr( 'action' ),
+                data        : values,
+                success     : function(response) {
+                    callback( jQuery.parseJSON(response) );
+                }
+            });
+        }
         
         function refreshUnitVehicleList() { // Make Ajax Call to refresh Customer Vehicle List 
             var licences = {};
@@ -410,28 +477,17 @@
                 {# Division to hold licence numbers #}
                 <div>
                     {{ 'statement.selected_licence_list'|trans }} :
-                    <ul id="{{ vec_dlg_lic_ul_id }}">
-
-                    </ul>
+                    <ul id="{{ vec_dlg_lic_ul_id }}"/>
                 </div>
                 {{ 'statement.add_to'|trans }}
                 <fieldset >
                     <input type="radio" id="{{ vec_dlg_cust_radio_id }}" name="{{ vec_dlg_cust_radio_id }}"  value="existing" checked="checked" >{{ 'statement.existing_customer'|trans }}</input>
+                    <select id="{{ vec_dlg_cust_select_id }}"/><br/>
                     <input type="radio" id="{{ vec_dlg_cust_radio_id }}" name="{{ vec_dlg_cust_radio_id }}"  value="new">{{ 'statement.new_customer'|trans }}</input>
                 </fieldset>
 
-                
-                {# Division for existing customer #}
-                <div id="{{ vec_dlg_exist_cust_div_id }}" >
-                    <select id="{{ vec_dlg_cust_select_id }}">
-                        {% for unit in existing_units %}
-                            <option value="{{ unit.id }}" >{{ unit.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
                 {# Division for creating new customer #}
-                <div id="{{ vec_dlg_cust_new_div_id }}" style="display:none">
+                <div id="{{ vec_dlg_cust_new_div_id }}">
                     {{ form_start(unit_form) }}
                     {{ form_errors(unit_form) }}
                         <fieldset>

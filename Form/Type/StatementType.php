@@ -21,6 +21,9 @@ class StatementType extends AbstractType
             ))
             
             ->add('name', 'text')
+            ->add('datetimeFormat', 'text')
+            ->add('dateFormat', 'text')
+            ->add('timeFormat', 'text')
             ->add('file', 'file')
             ;
     }

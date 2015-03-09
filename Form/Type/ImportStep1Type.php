@@ -18,6 +18,9 @@ class ImportStep1Type extends AbstractType {
                 'required' => false
             ))
             ->add('name', 'text')
+            ->add('datetimeFormat', 'text')
+            ->add('dateFormat', 'text')
+            ->add('timeFormat', 'text')
             ->add('file', 'file')
             ;
     }

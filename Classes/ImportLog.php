@@ -57,6 +57,21 @@ class ImportLog {
     /**
      * @var boolean
      */
+    private $invalidTransactionDateTime;
+    
+    /**
+     * @var boolean
+     */
+    private $invalidTransactionDate;
+    
+    /**
+     * @var boolean
+     */
+    private $invalidTransactionTime;
+    
+    /**
+     * @var boolean
+     */
     private $nullProductName;
     
     /**
@@ -95,7 +110,8 @@ class ImportLog {
      * @return ImportLog
      */
     public function setLog($nullCardNumber, $nullLicenceNumber, $nullSite, $nullReceiptNumber, $nullTransactionDateTime,
-            $nullTransactionDate, $nullTransactionTime, $nullProductName, $nullProductCode, $nullVolume, $nullUnitPrice, $nullNetAmount)
+            $nullTransactionDate, $nullTransactionTime, $nullProductName, $nullProductCode, $nullVolume, $nullUnitPrice, 
+            $nullNetAmount, $invalidTransactionDateTime, $invalidTransactionDate, $invalidTransactionTime)
     {
         $this->nullCardNumber = $nullCardNumber;
         $this->nullLicenceNumber = $nullLicenceNumber;
@@ -108,6 +124,9 @@ class ImportLog {
         $this->nullVolume = $nullVolume;
         $this->nullUnitPrice = $nullUnitPrice;
         $this->nullNetAmount = $nullNetAmount;
+        $this->invalidTransactionDateTime = $invalidTransactionDateTime;
+        $this->invalidTransactionDate = $invalidTransactionDate;
+        $this->invalidTransactionTime = $invalidTransactionTime;
         
         return $this;
     }
@@ -192,6 +211,36 @@ class ImportLog {
     public function getNullTransactionTime()
     {
         return $this->nullTransactionTime;
+    }
+    
+    /**
+     * Get invalidTransactionDateTime
+     *
+     * @return boolean
+     */
+    public function getInvalidTransactionDateTime()
+    {
+        return $this->invalidTransactionDateTime;
+    }
+    
+    /**
+     * Get invalidTransactionDate
+     *
+     * @return boolean
+     */
+    public function getInvalidTransactionDate()
+    {
+        return $this->invalidTransactionDate;
+    }
+    
+    /**
+     * Get invalidTransactionTime
+     *
+     * @return boolean
+     */
+    public function getInvalidTransactionTime()
+    {
+        return $this->invalidTransactionTime;
     }
     
     /**

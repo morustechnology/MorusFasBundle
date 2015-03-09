@@ -18,12 +18,20 @@ morus_fas_statement_export_parts_list:
     path:     /parts_list
     defaults: { _controller: "MorusFasBundle:Statement:partsList" }
     
+morus_fas_statement_export_get_customers_ajax:
+    path:     /customers
+    defaults: { _controller: "MorusFasBundle:Statement:getCustomers" }    
+    
 morus_fas_statement_export_create_product_ajax:
-    path:     /newProduct
+    path:     /new_product
     defaults: { _controller: "MorusFasBundle:Statement:createProductAjax" }
     
+morus_fas_statement_export_create_unit_vehicle_ajax:
+    path:     /new_customer_and_vehicle
+    defaults: { _controller: "MorusFasBundle:Statement:createUnitVehicleAjax" }
+    
 morus_fas_statement_add_vehicle_to_customer_ajax:
-    path:     /addVehicleToCustomer
+    path:     /add_vehicle_to_customer
     defaults: { _controller: "MorusFasBundle:Statement:addVehicleToCustomerAjax" }
     
 morus_fas_statement_show:

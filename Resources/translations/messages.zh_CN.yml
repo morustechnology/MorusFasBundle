@@ -16,6 +16,10 @@ menu:
 statement:
     upload_new_statement: 上载新月结单
     separate_date_time_column: 日期/时间分行
+    date_time_format: 日期时间格式
+    date_format: 日期格式
+    time_format: 时间格式
+    date_time_help: d = 日, m = 月, Y = 年, H = 时, i = 分, s = 秒
     statement_list: 已上载月结单
     supplier: 供应商
     choose_supplier: '[ 选择供应商 ]'

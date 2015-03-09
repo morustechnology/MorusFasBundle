@@ -16,6 +16,10 @@ menu:
 statement:
     upload_new_statement: Upload New Statement
     separate_date_time_column: Separate Date Time Column
+    date_time_format: DateTime Format
+    date_format: Date Format
+    time_format: Time Format
+    date_time_help: d = Day, m = Month, Y = Year, H = Hour, i = Minute, s = Second
     statement_list: Statement List
     supplier: Supplier
     choose_supplier: '[ Choose Supplier ]'
