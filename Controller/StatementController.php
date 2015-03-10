@@ -97,11 +97,14 @@ class StatementController extends Controller
      * Handle Ajax call for creating new unit and add vehicle
      *
      */
-    public function createUnitVehicleAjaxAction(Request $request) {
+    public function customerCreateAction(Request $request) {
         try {
             $em = $this->getDoctrine()->getManager();
+            $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+            
             
             $aUnit = $request->get('fas_unit');
+            
             $aName = $aUnit['name'];
             $aLastName = $aUnit['persons'][0]['lastName'];
             $aFirstName = $aUnit['persons'][0]['firstName'];
@@ -151,7 +154,14 @@ class StatementController extends Controller
                 }
             }
             
-            $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+            if( array_key_exists('unitParts', $aUnit )) {
+                $aUnitParts = $aUnit['unitParts'];
+            } else { $aUnitParts = null; }
+            if( array_key_exists('vehicles', $aUnit )) {
+                $aVehicles = $aUnit['vehicles'];
+            } else { $aVehicles = null; }
+            
+            
             $unit = $aem->createUnit('customer');
             
             $unit->setName($aName);
@@ -188,24 +198,28 @@ class StatementController extends Controller
                 }
             }
             
-            $licences = $request->get('licences');
-            if (is_array($licences)) {
-                // Create Vehicle
-                foreach ($licences as $licence) {
-                    $vehicle = new \Morus\FasBundle\Entity\Vehicle();
-                    $vehicle->setRegistrationNumber($licence);
-                    $vehicle->setUnit($unit);
-                    $unit->addVehicle($vehicle);
-                    $em->persist($vehicle);
+            if ($aUnitParts) {
+                foreach($aUnitParts as $up){
+
+                    $parts = $em->getRepository('MorusFasBundle:Parts')->find($up['parts']);
+                    if ($parts) {
+                        $unitParts = new \Morus\FasBundle\Entity\UnitParts();
+                        $unitParts->setDiscount($up['discount']);
+                        $unitParts->setParts($parts);
+                        $unit->addUnitParts($unitParts);
+                        $unitParts->setUnit($unit);
+                    }
                 }
-            } else {
-                $vehicle = new \Morus\FasBundle\Entity\Vehicle();
-                    $vehicle->setRegistrationNumber($licences);
-                    $vehicle->setUnit($unit);
-                    $unit->addVehicle($vehicle);
-                    $em->persist($vehicle);
             }
             
+            if ($aUnitParts) {
+                foreach($aVehicles as $v){
+                    $vehicle = new \Morus\FasBundle\Entity\Vehicle();
+                    $vehicle->setRegistrationNumber($v['registrationNumber']);
+                    $unit->addVehicle($vehicle);
+                    $vehicle->setUnit($unit);
+                }
+            }
             
             $em->persist($unit);
             $em->flush();
@@ -218,46 +232,47 @@ class StatementController extends Controller
         return new Response(json_encode($response));
     }
     
-    /**
-     * Handle Ajax call for adding vehicle to unit
-     * 
-     */
-    public function addVehicleToCustomerAjaxAction(Request $request) {
-        try {
-            
-            $id = $request->get('id');
-            $em = $this->getDoctrine()->getManager();
+    public function customerDialogAction(Request $request) {
+        $action = $request->get('ACTION');
+        $licenses = json_decode($request->get('LICENCES'));
+       
+        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+        $unit = $aem->createUnit('customer');
         
-            $unit = $em
-                ->getRepository('MorusFasBundle:Unit')
-                ->find($id);
-            
-            $licences = $request->get('licences');
-            if (is_array($licences)) {
-                foreach ( $licences as $l) {
-                    $v = new \Morus\FasBundle\Entity\Vehicle();
-                    $v->setRegistrationNumber($l);
-                    $unit->addVehicle($v);
-                    $v->setUnit($unit);
-                    $em->persist($v);
-                }
-            }
-            
-            $em->persist($unit);
-            $em->flush();
-            $response = array("success" => true);
-        } catch (Exception $ex) {
-            $response = array("success" => false);
+        
+        
+        
+        foreach ($licenses as $license) {
+            $vehicle = new \Morus\FasBundle\Entity\Vehicle();
+            $vehicle->setRegistrationNumber($license);
+            $unit->addVehicle($vehicle);
+            $vehicle->setUnit($unit);
         }
+            
         
-        return new Response(json_encode($response));
+        $form = $this->createForm('fas_unit', $unit, array(
+            'attr' => array('id' => 'fas_customer_update_form'),
+            'action' => $this->generateUrl('morus_fas_statement_customer_create'),
+            'method' => 'POST',
+        ));
+        
+        $form->add('submit', 'submit', array(
+                'label' => $this->get('translator')->trans('btn.save'),
+                'attr' => array('style' => 'display:none')
+                ));
+        
+        return $this->render('MorusFasBundle:Statement:customer.dialog.html.twig', array(
+            'unit' => $unit,
+            'form'   => $form->createView(),
+        ));
     }
+    
     
     /**
      * Get Customer List
      * 
      */
-    public function getCustomersAction(Request $request) {
+    public function customerListAction(Request $request) {
         // ----------------------------------------------------
         // Customer List for combo box
         // ----------------------------------------------------
@@ -275,26 +290,15 @@ class StatementController extends Controller
 
         $units = $query->getQuery()->getResult();
         
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new GetSetMethodNormalizer());
-
-        $serializer = new Serializer($normalizers, $encoders);
-        
-        
-//        $jsonUnits = $serializer->serialize($units, 'json');
-        
         //return new Response($jsonUnits);
         $unitArray = array();
         foreach($units as $unit){
-            $unitArray[] = array(
-                    'id' => $unit->getId(),
-                    'name' => $unit->getName(),
-                    );
+            $unitArray[$unit->getId()] = $unit->getName();
         }
         $response = array("success" => true, 
-            'units' => $unitArray);
-        $jResponse = json_encode($response);
-        return new Response($jResponse);
+            "units" => $unitArray);
+        
+        return new Response(json_encode($response));
     }
     
     /**
@@ -315,7 +319,7 @@ class StatementController extends Controller
         
         $units = $query->getQuery()->getResult();
         
-        return $this->render('MorusFasBundle:Statement:export_unit_vehicle_list.html.twig', array(
+        return $this->render('MorusFasBundle:Statement:export.customer.vehicle.list.html.twig', array(
             'units' => $units,
         ));
     }
@@ -337,7 +341,7 @@ class StatementController extends Controller
         
         $parts = $query->getQuery()->getResult();
         
-        return $this->render('MorusFasBundle:Statement:export_product_list.html.twig', array(
+        return $this->render('MorusFasBundle:Statement:export.product.list.html.twig', array(
             'parts' => $parts,
         ));
     }
@@ -397,29 +401,10 @@ class StatementController extends Controller
                     'label' => $this->get('translator')->trans('btn.save'),
                     'attr' => array('style' => 'display:none')
                 ));
-
-            
-            // ----------------------------------------------------
-            // New Unit Form
-            // ----------------------------------------------------
-            $aem = $this->get('morus_accetic.entity_manager');
-            $unit = $aem->createUnit('customer');
-            
-            $unit_form = $this->createForm('fas_unit', $unit, array(
-                'attr' => array('id' => 'fas_stmt_unit_form'),
-                'action' => $this->generateUrl('morus_fas_statement_export_create_unit_vehicle_ajax'),
-                'method' => 'POST',
-            ));
-
-            $unit_form->add('submit', 'submit', array(
-                    'label' => $this->get('translator')->trans('btn.save'),
-                    'attr' => array('style' => 'display:none')
-                ));
             
             return $this->render('MorusFasBundle:Statement:export.html.twig', array(
                 'export_form' => $export_form->createView(),
                 'parts_form' => $parts_form->createView(),
-                'unit_form' => $unit_form->createView(),
                 'flow' => $flow,
             ));
         } else {

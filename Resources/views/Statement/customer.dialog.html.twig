@@ -1,0 +1,124 @@
+{% form_theme form 'MorusFasBundle:Statement:layout.html.twig' %}
+
+{% javascripts 
+    '@MorusFasBundle/Resources/public/js/jquery-1.9.1.min.js'
+    '@MorusFasBundle/Resources/public/js/jquery-ui.min.js'
+    '@MorusFasBundle/Resources/public/js/jquery.inputmask.js'
+    '@MorusFasBundle/Resources/public/js/jquery.inputmask.numeric.extensions.js'
+%}
+    <script type="text/ecmascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+    
+<script type='text/javascript'>
+    var $collectionHolder;
+    var $addTagLink = $('<a href="#" class="add_tag_link">{{ 'btn.add_new_product_discount'|trans }}</a>');
+    var $newLinkLi = $('<li></li>').append($addTagLink);
+    
+    // Dialog Functions
+    jQuery(document).ready(function() {
+        
+        // Get the ul that holds the collection of tags
+        $collectionHolder = $('ul.tags');
+
+        // add the "add a tag" anchor and li to the tags ul
+        $collectionHolder.append($newLinkLi);
+
+        // count the current form inputs we have (e.g. 2), use that as the new
+        // index when inserting a new item (e.g. 2)
+        $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+        $addTagLink.on('click', function(e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            // add a new tag form (see next code block)
+            addTagForm($collectionHolder, $newLinkLi);
+        });
+    });
+    
+    function addTagForm($collectionHolder, $newLinkLi) {
+        // Get the data-prototype explained earlier
+        var prototype = $collectionHolder.data('prototype');
+
+        // get the new index
+        var index = $collectionHolder.data('index');
+
+        // Replace '__name__' in the prototype's HTML to
+        // instead be a number based on how many items we have
+        var newForm = prototype.replace(/__name__/g, index);
+
+        // increase the index with one for the next item
+        $collectionHolder.data('index', index + 1);
+
+        // Display the form in the page in an li, before the "Add a tag" link li
+        var $newFormLi = $('<li></li>').append(newForm);
+        $newLinkLi.before($newFormLi);
+    }
+        
+</script>
+
+<div id="container-box" class="contact-new">
+    <div class="section-form inset form">
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+                {# Division to hold licence numbers #}
+                <div class="field long">
+                    <label>{{ 'contact.display_name'|trans }}</label>
+                    {{ form_widget(form.name) }} {{ form_errors(form.name) }}
+                </div>
+
+                <div id="entity_persons" data-prototype-persons="">
+                    {% for person in form.persons %}
+                        {% if loop.index == 1 %}
+                            <h4>{{ 'contact.primary_person'|trans }}</h4>
+                        {% endif %}
+                        <div id="entity_person_contacts" data-prototype-contacts="">
+                            <fieldset>
+                                {{ form_widget(person) }}
+                                {% for contact in person.contacts %}
+                                    <div class="field inline long">{{ form_widget(contact) }}</div>
+                                {% endfor %}
+                            </fieldset>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="column">
+                    {% for location in form.locations %}
+                        {{ form_widget(location) }}
+                    {% endfor %}
+                    <div class="col-1-3 last">
+                        <fieldset id="numbers">
+                            <h6>{{ 'contact.others'|trans }}</h6>
+                            {% for contact in form.contacts %}
+                                <div class="field">{{ form_widget(contact) }}</div>
+                            {% endfor %}
+                        </fieldset>
+                    </div>
+
+                </div>
+
+                <div>
+                    {{ 'contact.vehicle_list'|trans }} :
+                    <ul id="licences" >
+                        {% for vehicle in form.vehicles %}
+                        <li>{{ 'contact.registration_number'|trans }} {{ form_widget(vehicle.registrationNumber) }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div>
+                    {{ 'contact.product_discount'|trans }} :
+                    <ul class="tags" data-prototype="{{ form_widget(form.unitParts.vars.prototype)|e }}">
+                        {% for up in form.unitParts %}
+                            {{ 'contact.product'|trans }} {{ form_widget(up.parts) }} {{ 'contact.discount'|trans }} {{ form_widget(up.discount) }}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>
+                    {{ form_widget(form.submit) }}
+                </div>
+                {{ form_rest(form) }}
+        {{ form_end(form) }}
+    </div>
+</div>

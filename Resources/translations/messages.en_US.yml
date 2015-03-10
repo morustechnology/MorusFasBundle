@@ -40,8 +40,7 @@ statement:
     existing_customer: Existing Customer
     choose_customer: '[ Choose Customer ]'
     customer_info: Customer Info
-    selected_licence_list: With your selected Licence Number
-    add_to: add to
+    
     msg:
         statement_error: Statement contain error, please fix the error to proceed next step.
         statement_valid: Statement contains no error, please press "finish" to proceed.
@@ -64,6 +63,7 @@ statement:
         net_amount: Net Amount
         
 btn:
+    add_new_product_discount: Add New Product Discount
     register_to_customer: Register to Customer
     export_invoices: Export Invoices
     upload_new_statement: Upload New Statement
@@ -74,8 +74,11 @@ btn:
     cancel: Cancel
     delete: Delete
     back: Back
+    go: Go
 
 export_step:
+    export_invoice: Export Invoice
+    register_selected_vehicle_to: Register selected vehicle to
     registered_vehicle_list: Registered Vehicle List
     analysis_summary: Analysis Summary
     product_search: Product Search
@@ -83,10 +86,21 @@ export_step:
     confirm_export: Confirm Export
     search_result: Search Result
     new_product: New Product
+    new_customer: '[ New Customer ]'
     database_product: Product(s) already in database
     new_vehicle: New Vehicle
     database_vehicle: Vehicle number already in database
     select_all: Select All
+    licence_list: 'Licence Number(s)'
+    add_to: add to
+    
+contact:
+    vehicle_list: Vehicle List
+    product_discount: Product Discount
+    update_customer: Update Customer
+    product: Product
+    registration_number: Registration Number
+    discount: Discount
     
 error:
     import:

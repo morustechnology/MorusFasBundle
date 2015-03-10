@@ -38,6 +38,10 @@ services:
         tags:
             - { name: form.type, alias: fas_unit_parts }
             
+    morus_fas.form.type.vehicle:
+        class: Morus\FasBundle\Form\Type\VehicleType
+        tags:
+            - { name: form.type, alias: fas_vehicle } 
     # Utility Classes
     morus_fas.classes.importlog:
         class: Morus\FasBundle\Classes\ImportLog

@@ -32,6 +32,10 @@ class UnitType extends AbstractType
             ->add('unitParts', 'collection', array(
                 'type' => 'fas_unit_parts',
                 'allow_add' => true,
+            ))
+            ->add('vehicles', 'collection', array(
+                'type' => 'fas_vehicle',
+                'allow_add' => false,
             ));
     }
     

@@ -1,31 +1,21 @@
 {% extends '::base.html.twig' %}
 
-{% form_theme unit_form 'MorusFasBundle:Statement:layout.html.twig' %}
-
-{# Product Popup Dialog #}
+{# Step 2 #}
 {% set prod_dlg_btn_prfx = 'fas_inv_dlg_btn_' %}
 {% set prod_dlg_btn_id = prod_dlg_btn_prfx ~ '%itemcode%_%index%' %}
 {% set prod_dlg_idx_id = 'fas_inv_dlg_idx' %}
 {% set prod_dlg_div_id = 'fas_inv_dlg_div' %}
-
-{# Unit/Vehicle Pupup Dialog #}
-{% set vec_dlg_div_id = 'fas_vec_dlg_div' %}
-{% set vec_dlg_cust_new_div_id = 'fas_vec_dlg_cust_new_div' %}
-{% set vec_dlg_cust_select_id = 'fas_vec_dlg_cust_select' %}
-{% set vec_dlg_cust_radio_id = 'fas_vec_dlg_cust_radio' %}
-{% set vec_dlg_lic_ul_id = 'fas_vec_dlg_lic_ul' %}
-{% set vec_dlg_btn_id = 'fas_vec_dlg_btn' %}
-
-{# Step 2 #}
 {% set prod_new_div = 'fas_new_div' %}
 {% set prod_list_div_id = 'fas_prod_div' %}
 {% set prod_new_tbl_id = 'fas_prod_new_tbl' %}
-
 {% set prod_db_tbl_id = 'fas_prod_db_tbl' %}
 
 {# Step 3 #}
-{% set vec_list_div_id = 'fas_vec_list_div' %}
+{% set vec_btn = 'fas_vec_btn' %}
+{% set cust_combo = 'fas_vec_dlg_cust_combo' %}
 {% set vec_select_all = 'fas_vec_select_all' %}
+{% set cust_dlg = 'fas_cust_dlg' %}
+{% set cust_vec_list_div = 'fas_vec_list_div' %}
 
 {% block stylesheets %}
     {% stylesheets '@CraueFormFlowBundle/Resources/assets/css/buttons.css' %}
@@ -67,7 +57,7 @@
                 buttons: {
                     "{{ 'btn.save'|trans }}": function() {
                         var btn_id = $prodDlg.data('btn_id');
-                        postForm( $prodForm, function( response ) {
+                        postProdForm( $prodForm, function( response ) {
                             if (response.success) {
                                 $('button[id="' + btn_id + '"]').replaceWith(
                                     {% image '@MorusFasBundle/Resources/public/images/ok_icon_16x16.png' %}
@@ -114,7 +104,7 @@
         });
         
         // Post Form and get result
-        function postForm( $form, callback ){
+        function postProdForm( $form, callback ){
 
             // Get all form values
             var values = {};
@@ -157,127 +147,60 @@
         }
         
     {% elseif flow.getCurrentStepNumber() == 3 %}
-        var $collectionHolder;
-        var $addTagLink = $('<a href="#" class="add_tag_link">Add a tag</a>');
-        var $newLinkLi = $('<li></li>').append($addTagLink);
-        
-        
-        jQuery(document).ready(function() {
-            // Get the ul that holds the collection of tags
-            $collectionHolder = $('ul.tags');
-
-            // add the "add a tag" anchor and li to the tags ul
-            $collectionHolder.append($newLinkLi);
-
-            // count the current form inputs we have (e.g. 2), use that as the new
-            // index when inserting a new item (e.g. 2)
-            $collectionHolder.data('index', $collectionHolder.find(':input').length);
-
-            $addTagLink.on('click', function(e) {
-                // prevent the link from creating a "#" on the URL
-                e.preventDefault();
-
-                // add a new tag form (see next code block)
-                addTagForm($collectionHolder, $newLinkLi);
-            });
-        });
-        
-        function addTagForm($collectionHolder, $newLinkLi) {
-            // Get the data-prototype explained earlier
-            var prototype = $collectionHolder.data('prototype');
-
-            // get the new index
-            var index = $collectionHolder.data('index');
-
-            // Replace '__name__' in the prototype's HTML to
-            // instead be a number based on how many items we have
-            var newForm = prototype.replace(/__name__/g, index);
-
-            // increase the index with one for the next item
-            $collectionHolder.data('index', index + 1);
-
-            // Display the form in the page in an li, before the "Add a tag" link li
-            var $newFormLi = $('<li></li>').append(newForm);
-            $newLinkLi.before($newFormLi);
-        }
-
-
-        
-        var $vecNewCustForm;  // New Customer form in dialog box
-        var $vecDlg, $vecBtn //Dialog Box & Trigger Button
-        var $vecDlgLicUl; // Licence List in Dialog box
-        var $vecDlgCustSelect; //Customer Combo Box
-        var $addChoice = 'existing'; // Hold Option for adding vehicle to "new" or "existing" customer
-        var $vecListDiv; // Registered Vehicle List
+        var $vecBtn // Trigger update customer form button
+        var $custDlg; // Update customer dialog box
+        var $custCombo; //Customer Combo Box
+        var $custVecListDiv; // Registered Vehicle List
         
         // ==========================================
         // Assign Vehicle JQuery Function
         // ==========================================
         jQuery(document).ready(function() {
-            $vecNewCustForm = $('#{{ unit_form.vars.attr.id }}');
-            $vecListDiv = $('#{{ vec_list_div_id }}');
-            $vecDlg = $( '#{{ vec_dlg_div_id }}' );
-            $vecBtn = $( '#{{ vec_dlg_btn_id }}');
-            $vecDlgLicUl = $( '#{{ vec_dlg_lic_ul_id }}');
-            $vecDlgCustSelect = $( '#{{ vec_dlg_cust_select_id }}');
+            $vecBtn = $( '#{{ vec_btn }}');
+            $custCombo = $( '#{{ cust_combo }}');
+            $custDlg = $('#{{ cust_dlg }}');
+            $custVecListDiv = $('#{{ cust_vec_list_div }}');
             
             refreshUnitVehicleList();
-            $vecDlg.css({overflow:"auto"}); // Make dialog scrollable
-            $vecDlg.dialog({ //Init Dialog Box
+            refreshUnitSelectBox();
+            
+            // Update customer dialog box
+            $custDlg.dialog({ 
                 autoOpen: false, height: 600, width: 900, modal: true,
-                buttons: {
+                buttons: {  
                     "{{ 'btn.save'|trans }}": function() {
-                        var licAry = $vecDlg.data('licences');
-                        
-                        if ($addChoice === 'existing') {
-                            var unitname = $vecDlgCustSelect.find('option:selected').text();
-                            var unitid = $vecDlgCustSelect.find('option:selected').val();
-                            
-                            addVehicleToUnit( unitid, licAry, function( response ) {
-                                if (response.success) {
-                                    $.each(licAry, function(key, value){
-                                        $('input[id="'+key+'"]').replaceWith(
-                                            {% image '@MorusFasBundle/Resources/public/images/ok_icon_16x16.png' %}
-                                                "<img src='{{ asset_url }}' alt='OK' style='width: 16px'/>"
-                                            {% endimage %}
-                                        );
-                                    });
-                                    refreshUnitVehicleList();
-                                    $vecDlg.dialog( "close" );
-                                }
-                            });
-                            
-                        } else if ($addChoice === 'new') {
-                            //$vecNewCustForm.find(':submit').click(); 
-                            creatCustomerAddVehicle( licAry, function( response ) {
-                                if (response.success) {
-                                    $.each(licAry, function(key, value){
-                                        $('input[id="'+key+'"]').replaceWith(
-                                            {% image '@MorusFasBundle/Resources/public/images/ok_icon_16x16.png' %}
-                                                "<img src='{{ asset_url }}' alt='OK' style='width: 16px'/>"
-                                            {% endimage %}
-                                        );
-                                    });
-                                    refreshUnitVehicleList();
-                                    $vecDlg.dialog( "close" );
-                                }
-                            });
-                        } 
-                        
+                        postForm($custDlg.find('form'), function(response){
+                            if (response.success) {
+                                var licAry = $custDlg.data('LICENCES');
+
+                                $.each(licAry, function(key, value){
+                                    $('input[id="'+key+'"]').replaceWith(
+                                        {% image '@MorusFasBundle/Resources/public/images/ok_icon_16x16.png' %}
+                                            "<img src='{{ asset_url }}' alt='OK' style='width: 16px'/>"
+                                        {% endimage %}
+                                    );
+                                });
+                                refreshUnitVehicleList();
+                                refreshUnitSelectBox();
+                                $custDlg.dialog( "close" );
+                            } else {
+                                alert('Error');
+                            }
+                        });
                     },
                     "{{ 'btn.cancel'|trans }}": function() {
-                        $vecDlg.dialog( "close" );
+                        $custDlg.dialog( "close" );
                     }
                 },
                 show: { effect: "fade", duration: 500 },
                 hide: { effect: "fade", duration: 500 }
             });
-            
+
             // New Unit Popup Button
             $vecBtn.on('click', function(event){
                 event.preventDefault();
-                
-                //  Get selected licences
+
+                 //  Get selected licences
                 var licAry = {};
                 var licAryLength = 0;
                 $('input[name="licence_number_input"]:checked').each(function(event) {
@@ -286,28 +209,13 @@
                  });
                 if (licAryLength <= 0) return false;  // Do nothing if nothing select.
                 
-                // Show Licences to dialog box list
-                $vecDlgLicUl.empty();
-                $.each(licAry, function(key, value){
-                    $vecDlgLicUl.append('<li>'+value+'</li>'); 
-                });
+                var jsonLic = JSON.stringify(licAry);
                 
-                getCustomerList(function( response ) {
-                    if (response.success) {
-                        $('#{{ vec_dlg_cust_select_id }}').empty();
-                        
-                        var units = response.units;
-                        $.each(units, function(key, unit){
-                            $('#{{ vec_dlg_cust_select_id }}')
-                                .append($("<option value='id' >name</option>")
-                                .attr("value", unit.id)
-                                .text(unit.name));
-                        });
-                        
-                        $vecDlg.data('licences', licAry)
-                            .dialog( "open" );
-                    }
-                });
+                $custDlg.empty();
+                $custDlg.load('{{ path('morus_fas_statement_customer_dialog')}}', 
+                            { ACTION: 'NEW', LICENCES: jsonLic }, function(data){}) 
+                        .data('LICENCES', licAry)  // Pass selected licences to dialog
+                        .dialog('open');
             });
             
             // Select all checkbox action
@@ -318,50 +226,20 @@
                     $('input[name="licence_number_input"]').prop('checked', false);
                 }
             });
-            
-            // Choose Customer Radio Button
-            $('input[id="{{ vec_dlg_cust_radio_id }}"]').change( function() {
-                if (this.value === 'new') {
-                    $addChoice = this.value;
-                } else {
-                    $addChoice = this.value;
-                }
-            });
-            
-            
         });
         
-        function getCustomerList( callback ) {
-            $.ajax({
-                type        : "POST",
-                url         : "{{ path('morus_fas_statement_export_get_customers_ajax') }}",
-                
-                success     : function(response) {
-                    callback( jQuery.parseJSON(response) );
-                }
-            });
-        }
-        
-        // Post Form to add customer, assign vehicle and get result
-        function creatCustomerAddVehicle(licences, callback ) {
-            /*
-             * Get all form values
-             */
+        // Post Form and get result
+        function postForm( $form, callback ){
+
+            // Get all form values
             var values = {};
-            $.each( $vecNewCustForm.serializeArray(), function(i, field) {
-                var id = $('input[name="' + field.name + '"]').attr("id");
-                values[field.name] = field.value;
+            $.each( $form.serializeArray(), function(i, field) {
+              values[field.name] = field.value;
             });
-            
-            values['licences'] = licences;
-            
-            
-            /*
-             * Throw the form values to the server!
-             */
+            // Throw the form values to the server
             $.ajax({
-                type        : $vecNewCustForm.attr( 'method' ),
-                url         : $vecNewCustForm.attr( 'action' ),
+                type        : $form.attr( 'method' ),
+                url         : $form.attr( 'action' ),
                 data        : values,
                 success     : function(response) {
                     callback( jQuery.parseJSON(response) );
@@ -369,6 +247,30 @@
             });
         }
         
+        // Refresh Customer Select Box
+        function refreshUnitSelectBox() {
+            $custCombo.empty();
+            $custCombo.append($("<option value='id' >name</option>")
+                    .attr("value", 'NEW')
+                    .text("{{ 'export_step.new_customer'|trans }}"));
+            $.ajax({
+                type        : "GET",
+                url         : "{{ path('morus_fas_statement_customer_list') }}",
+                success     : function(response) {
+                    var data = jQuery.parseJSON(response); 
+                    if (data.success) {
+                        var units = data.units;
+                        $.each(units, function(key, value){
+                            $custCombo.append($("<option value='id' >name</option>")
+                                .attr("value", key)
+                                .text(value));
+                        });
+                    }
+                }
+            });
+        }
+        
+        // Refresh Customer List
         function refreshUnitVehicleList() { // Make Ajax Call to refresh Customer Vehicle List 
             var licences = {};
                 
@@ -384,36 +286,20 @@
                 type        : "GET",
                 data        : values,
                 success     : function(data) {
-                    $('#{{ vec_list_div_id }}').html(data);
+                    $('#{{ cust_vec_list_div }}').html(data);
                 }
             });
+            
+            
         }
         
-        // Post Form and get result
-        function addVehicleToUnit( unitId, licences, callback ){
-            // Get all form values
-            var values = {};
-
-            values['id'] = unitId;
-            values['licences'] = licences;
-
-            // Throw the form values to the server
-            $.ajax({
-                url         : "{{ path('morus_fas_statement_add_vehicle_to_customer_ajax') }}",
-                type        : "POST",
-                data        : values,
-                success     : function(response) {
-                    callback( jQuery.parseJSON(response) );
-                }
-            });
-        }
     {% endif %}
     
     </script>
 {% endblock %}
 
 {% block body_title -%}
-    {{ 'statement.export_invoice'|trans }}
+    {{ 'export_step.export_invoice'|trans }}
 {% endblock %}
 
 {% block body -%}
@@ -436,7 +322,7 @@
         {% elseif flow.getCurrentStepNumber() == 2 %}  {# Query Product #}
             {# Listing Existing Unit with Vehicle Number #}
             <div id="{{ prod_list_div_id }}" style="float: left">
-                {# Please see /Statement/export_product_list.html.twig #}
+                {# Please see /Statement/export.product.list.html.twig #}
             </div> 
 
             {# Listing New Product #}
@@ -460,13 +346,16 @@
             </div>
         {% elseif flow.getCurrentStepNumber() == 3 %}  {# Query Licence #}
             {# Listing Existing Unit with Vehicle Number #}
-            <div id="{{ vec_list_div_id }}" style="float: left">
-                {# Please see /Statement/export_unit_vehicle_list.html.twig #}
+            <div id="{{ cust_vec_list_div }}" style="float: left">
+                {# layout see /Statement/export.customer.vehicle.list.html.twig #}
             </div> 
             
             {# Display New Vehicle Number #}
             <div style="float: right">
-                <a id="{{ vec_dlg_btn_id }}" href="#">{{ 'btn.register_to_customer'|trans }}</a>
+                {{ 'export_step.register_selected_vehicle_to'|trans }}
+                <select id="{{ cust_combo }}" ></select>
+                <button id="{{ vec_btn }}" >{{ 'btn.go'|trans }}</button>
+                <br/>
                 <input id="{{ vec_select_all }}" type="checkbox"/>{{ 'export_step.select_all'|trans }}
                 <table>
                     {% for row in flow.newVecList|batch(5) %}
@@ -480,8 +369,13 @@
                     {% endfor %}
                 </table>
             <div>
-        {% elseif flow.getCurrentStepNumber() == 4 %}  {# Summary Step #}
             
+            {# Update Customer Popup div #}
+            <div id="{{ cust_dlg }}" title="{{ 'contact.update_customer'|trans }}" >
+                {# layout see /Statement/customer.dialog.html.twig #}
+            </div>
+        {% elseif flow.getCurrentStepNumber() == 4 %}  {# Summary Step #}
+            {# 
             {% for unit in flow.units %}
                 {{ unit.name }}<br/>
                 {% for vehicle in unit.vehicles %}
@@ -492,7 +386,7 @@
                 {% endfor %}
                 <br/>
             {% endfor %}
-            
+            #}
         {% endif %}
 
         {{ form_rest(export_form) }}
@@ -515,80 +409,4 @@
         {{ form_end(parts_form) }}
     </div>
     
-    {# Assign Licence to Customer Popup #}
-    <div id="{{ vec_dlg_div_id }}" title="{{ 'contact.add_contact'|trans }}" style="display:none">
-        <div id="container-box" class="contact-new">
-            <div class="section-form inset form">
-                {# Division to hold licence numbers #}
-                <div>
-                    {{ 'statement.selected_licence_list'|trans }} :
-                    <ul id="{{ vec_dlg_lic_ul_id }}"/>
-                </div>
-                {{ 'statement.add_to'|trans }}
-                <fieldset >
-                    <input type="radio" id="{{ vec_dlg_cust_radio_id }}" name="{{ vec_dlg_cust_radio_id }}"  value="existing" checked="checked" >{{ 'statement.existing_customer'|trans }}</input>
-                    <select id="{{ vec_dlg_cust_select_id }}"/><br/>
-                    <input type="radio" id="{{ vec_dlg_cust_radio_id }}" name="{{ vec_dlg_cust_radio_id }}"  value="new">{{ 'statement.new_customer'|trans }}</input>
-                </fieldset>
-
-                {# Division for creating new customer #}
-                <div id="{{ vec_dlg_cust_new_div_id }}">
-                    {{ form_start(unit_form) }}
-                    {{ form_errors(unit_form) }}
-                        <fieldset>
-                            <div class="field long">
-                                <label>{{ 'contact.display_name'|trans }}</label>
-
-                                {{ form_widget(unit_form.name) }} {{ form_errors(unit_form.name) }}
-                            </div>
-                        </fieldset>
-
-
-                        <div id="entity_persons" data-prototype-persons="">
-                            {% for person in unit_form.persons %}
-                                {% if loop.index == 1 %}
-                                    <h4>{{ 'contact.primary_person'|trans }}</h4>
-                                {% endif %}
-                                <div id="entity_person_contacts" data-prototype-contacts="">
-                                    <fieldset>
-                                        {{ form_widget(person) }}
-                                        {% for contact in person.contacts %}
-                                            <div class="field inline long">{{ form_widget(contact) }}</div>
-                                        {% endfor %}
-                                    </fieldset>
-                                </div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="column">
-
-                            {% for location in unit_form.locations %}
-                                {{ form_widget(location) }}
-                            {% endfor %}
-
-                            <div class="col-1-3 last">
-                                <fieldset id="numbers">
-                                    <h6>{{ 'contact.others'|trans }}</h6>
-                                    {% for contact in unit_form.contacts %}
-                                        <div class="field">{{ form_widget(contact) }}</div>
-                                    {% endfor %}
-                                </fieldset>
-                            </div>
-
-                        </div>
-
-                        <div>
-                            <ul class="tags" data-prototype="{{ form_widget(unit_form.unitParts.vars.prototype)|e }}">
-                                
-                            </ul>
-                        </div>
-                        {{ form_widget(unit_form.submit) }}
-
-                        {{ form_rest(unit_form) }}
-                    {{ form_end(unit_form) }}
-                </div>
-            </div>
-        </div>
-    </div>
-        
 {% endblock %}

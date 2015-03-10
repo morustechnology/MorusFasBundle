@@ -24,7 +24,7 @@ class UnitParts {
     /**
      * @var float
      *
-     * @ORM\Column(name="discount", type="decimal")
+     * @ORM\Column(name="discount", type="decimal", precision=10, scale=2)
      */
     protected $discount;
     
