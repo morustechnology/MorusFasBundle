@@ -21,7 +21,14 @@ class Export
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
-
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ignore_keywords", type="string", length=255, nullable=true)
+     */
+    protected $ignoreKeywords;
+    
     /**
      * @var integer
      *
@@ -73,6 +80,7 @@ class Export
     public function __construct()
     {
         $this->statements = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ignoreKeywords = 'AIRPORT';
     }
 
     /**
@@ -85,6 +93,29 @@ class Export
         return $this->id;
     }
 
+    /**
+     * Set ignoreKeywords
+     *
+     * @param string $ignoreKeywords
+     * @return Export
+     */
+    public function setIgnoreKeywords($ignoreKeywords)
+    {
+        $this->ignoreKeywords = $ignoreKeywords;
+
+        return $this;
+    }
+
+    /**
+     * Get ignoreKeywords
+     *
+     * @return string 
+     */
+    public function getIgnoreKeywords()
+    {
+        return $this->ignoreKeywords;
+    }
+    
     /**
      * Set sortOrder
      *

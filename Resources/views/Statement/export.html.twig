@@ -161,27 +161,36 @@
             $custDlg = $('#{{ cust_dlg }}');
             $custVecListDiv = $('#{{ cust_vec_list_div }}');
             
-            refreshUnitVehicleList();
-            refreshUnitSelectBox();
+            refreshCustomerVehicleList();
+            refreshComboBox();
+            
+            
             
             // Update customer dialog box
             $custDlg.dialog({ 
                 autoOpen: false, height: 600, width: 900, modal: true,
                 buttons: {  
                     "{{ 'btn.save'|trans }}": function() {
-                        postForm($custDlg.find('form'), function(response){
+                        var action = $custDlg.data('ACTION');
+                        postCustomerUpdateForm(action, $custDlg.find('form'), function(response){
                             if (response.success) {
-                                var licAry = $custDlg.data('LICENCES');
-
-                                $.each(licAry, function(key, value){
-                                    $('input[id="'+key+'"]').replaceWith(
+                                var deleted = response.deletedLicences;
+                                var updated = response.updatedLicences;
+                                
+                                $.each(updated, function(key, value){
+                                    $('input[id="'+value+'"]').replaceWith(
                                         {% image '@MorusFasBundle/Resources/public/images/ok_icon_16x16.png' %}
                                             "<img src='{{ asset_url }}' alt='OK' style='width: 16px'/>"
                                         {% endimage %}
                                     );
                                 });
-                                refreshUnitVehicleList();
-                                refreshUnitSelectBox();
+                                
+                                
+                                
+                                
+                                
+                                refreshCustomerVehicleList();
+                                refreshComboBox();
                                 $custDlg.dialog( "close" );
                             } else {
                                 alert('Error');
@@ -199,8 +208,11 @@
             // New Unit Popup Button
             $vecBtn.on('click', function(event){
                 event.preventDefault();
-
-                 //  Get selected licences
+                
+                // Get selected customer option, either customer id or "NEW"
+                var comboboxValue = $custCombo.find(":selected").prop('value');
+                
+                //  Get selected licences
                 var licAry = {};
                 var licAryLength = 0;
                 $('input[name="licence_number_input"]:checked').each(function(event) {
@@ -213,8 +225,8 @@
                 
                 $custDlg.empty();
                 $custDlg.load('{{ path('morus_fas_statement_customer_dialog')}}', 
-                            { ACTION: 'NEW', LICENCES: jsonLic }, function(data){}) 
-                        .data('LICENCES', licAry)  // Pass selected licences to dialog
+                            { ACTION: comboboxValue, LICENCES: jsonLic }, function(data){}) 
+                        .data('ACTION', comboboxValue)  // Pass selected licences to dialog
                         .dialog('open');
             });
             
@@ -229,13 +241,17 @@
         });
         
         // Post Form and get result
-        function postForm( $form, callback ){
-
+        function postCustomerUpdateForm( action, $form, callback ){
+            
             // Get all form values
             var values = {};
             $.each( $form.serializeArray(), function(i, field) {
               values[field.name] = field.value;
             });
+            
+            // Pass customer id / "NEW" action code to update
+            values['ACTION'] = action;
+            
             // Throw the form values to the server
             $.ajax({
                 type        : $form.attr( 'method' ),
@@ -248,7 +264,7 @@
         }
         
         // Refresh Customer Select Box
-        function refreshUnitSelectBox() {
+        function refreshComboBox() {
             $custCombo.empty();
             $custCombo.append($("<option value='id' >name</option>")
                     .attr("value", 'NEW')
@@ -271,7 +287,7 @@
         }
         
         // Refresh Customer List
-        function refreshUnitVehicleList() { // Make Ajax Call to refresh Customer Vehicle List 
+        function refreshCustomerVehicleList() { // Make Ajax Call to refresh Customer Vehicle List 
             var licences = {};
                 
             {% for key, value in flow.stmtVec %}
@@ -311,6 +327,8 @@
         {{ form_errors(export_form) }}        
         
         {% if flow.getCurrentStepNumber() == 1 %} {# Analysis Statement #}
+            {{ 'export_step.station_discount_ignore_keywords'|trans }} {{ form_widget(export_form.ignoreKeywords) }}<br/>
+            
             Total Product Discovered: {{ flow.stmtProd|length }}<br/>
             
             Total Vehicle Discovered: {{ flow.stmtVec|length }}<br/>
@@ -318,6 +336,8 @@
             Total record procssed: {{ flow.stmtRowCnt }} row.<br/>
             
             click next to continue.
+            
+            
             
         {% elseif flow.getCurrentStepNumber() == 2 %}  {# Query Product #}
             {# Listing Existing Unit with Vehicle Number #}
@@ -402,6 +422,10 @@
             {{ 'inventory.itemcode'|trans }} {{ form_widget(parts_form.itemcode) }}{{ form_errors(parts_form.itemcode) }}
             {{ 'inventory.itemname'|trans }} {{ form_widget(parts_form.itemname) }} {{ form_errors(parts_form.itemname) }}
             <hr/>
+            {{ 'inventory.othername'|trans }} {{ form_widget(parts_form.othername) }}
+            
+            {{ 'inventory.use_othername'|trans }} {{ form_widget(parts_form.useOthername) }}
+            <br/>
             {{ 'inventory.default_discount'|trans }} {{ form_widget(parts_form.defaultDiscount) }}
             <br/>
             {{ form_widget( parts_form.submit ) }}

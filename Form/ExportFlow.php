@@ -42,6 +42,7 @@ class ExportFlow extends FormFlow {
         return array(
             array(
                 'label' => 'export_step.analysis_summary',
+                'type' => new Type\ExportStep1Type(),
             ),
             array(
                 'label' => 'export_step.product_search',

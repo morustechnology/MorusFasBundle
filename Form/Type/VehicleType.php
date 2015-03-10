@@ -15,9 +15,7 @@ class VehicleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('registrationNumber' , 'text', array(
-                'read_only' => true
-            ));
+            ->add('registrationNumber' , 'text');
     }
     
     /**

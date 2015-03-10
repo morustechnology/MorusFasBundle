@@ -1,4 +1,6 @@
 inventory:
+    use_othername: 使用列印名称
+    othername: 列印名称
     itemcode: 货品编号
     itemname: 货品名称
     default_discount: 默认折扣
@@ -61,6 +63,7 @@ statement:
         unit_price: 价格
         net_amount: 总计
 btn:
+    add_new_vehicle: 添加客户车辆
     add_new_product_discount: 新客户货品折扣
     register_to_customer: 登记客户车牌
     export_invoices: 汇出发票
@@ -75,8 +78,9 @@ btn:
     go: 去
 
 export_step:
+    station_discount_ignore_keywords: 不包括折扣油站关键词
     export_invoice: 汇出发票
-    register_selected_vehicle_to: 登记以下已拣选车牌至
+    register_selected_vehicle_to: 登记车牌至
     registered_vehicle_list: 已登记车牌清单
     analysis_summary: 分析摘要
     product_search: 货品搜索

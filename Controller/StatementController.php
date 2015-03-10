@@ -4,16 +4,10 @@ namespace Morus\FasBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Session;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Morus\FasBundle\Entity\Export;
 use Morus\FasBundle\Entity\Statement;
 use Morus\FasBundle\Entity\Parts;
-use Morus\FasBundle\Entity\Unit;
 
 
 
@@ -22,9 +16,7 @@ use Morus\FasBundle\Entity\Unit;
  *
  */
 class StatementController extends Controller
-{
-    private $expStmts;
-    
+{    
     /**
      * Lists all Statement entities.
      *
@@ -77,6 +69,8 @@ class StatementController extends Controller
             $parts = new Parts();
             $parts->setItemcode($data['itemcode']);
             $parts->setItemname($data['itemname']);
+            $parts->setOthername($data['othername']);
+            $parts->setUseOthername($data['useOthername']);
             $parts->setUnit('L');
             $parts->setDefaultDiscount($data['defaultDiscount']);
             
@@ -93,25 +87,40 @@ class StatementController extends Controller
 
     }
     
+    private function updateUnitFromArray($unit, $aUnit, $addList, $deleteList) {
+        
+        
+    }
+    
     /**
      * Handle Ajax call for creating new unit and add vehicle
      *
      */
-    public function customerCreateAction(Request $request) {
+    public function customerUpdateAction(Request $request) {
         try {
             $em = $this->getDoctrine()->getManager();
             $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
-            
-            
+            $action = $request->get('ACTION');
             $aUnit = $request->get('fas_unit');
             
+            if ($action == 'NEW') {
+                
+                $unit = $aem->createUnit('customer');
+            } else {
+                
+                $unit = $em->getRepository('MorusFasBundle:Unit')->find($action);
+            }
+            
+            $addList = array();
+            $deleteList = array();
+            // Get data
             $aName = $aUnit['name'];
             $aLastName = $aUnit['persons'][0]['lastName'];
             $aFirstName = $aUnit['persons'][0]['firstName'];
             $aEmail = $aUnit['persons'][0]['contacts'][0]['description'];
-            
+
             $aLocation = $aUnit['locations'];
-            
+
             foreach( $aLocation as $l ) {
                 switch($l['locationClassControlCode']) {
                     case 'POSTAL':
@@ -132,7 +141,7 @@ class StatementController extends Controller
                         break;
                 }
             }
-            
+
             $aContacts = $aUnit['contacts'];
             foreach($aContacts as $c) {
                 switch($c['contactClassControlCode']) {
@@ -153,17 +162,16 @@ class StatementController extends Controller
                         break;
                 }
             }
-            
+
             if( array_key_exists('unitParts', $aUnit )) {
                 $aUnitParts = $aUnit['unitParts'];
             } else { $aUnitParts = null; }
             if( array_key_exists('vehicles', $aUnit )) {
                 $aVehicles = $aUnit['vehicles'];
             } else { $aVehicles = null; }
-            
-            
-            $unit = $aem->createUnit('customer');
-            
+
+
+            // Update Unit
             $unit->setName($aName);
             foreach($unit->getPersons() as $person) {
                 if ($person->getIsPrimary() == true) {
@@ -194,37 +202,102 @@ class StatementController extends Controller
                         $location->setZipCode($aPhysicalZipCode);
                         $location->setCountry($aPhysicalCountry);
                         break;
-                    
+
                 }
             }
-            
-            if ($aUnitParts) {
-                foreach($aUnitParts as $up){
 
-                    $parts = $em->getRepository('MorusFasBundle:Parts')->find($up['parts']);
-                    if ($parts) {
-                        $unitParts = new \Morus\FasBundle\Entity\UnitParts();
-                        $unitParts->setDiscount($up['discount']);
-                        $unitParts->setParts($parts);
-                        $unit->addUnitParts($unitParts);
-                        $unitParts->setUnit($unit);
+            if ($aVehicles && count($aVehicles) > 0 && count($unit->getVehicles()) > 0) {
+                // search for delete Vehicles
+                foreach($unit->getVehicles() as $vehicle){
+                    $found = false;
+                    foreach($aVehicles as $av) {
+                        if ($vehicle->getRegistrationNumber() == $av['registrationNumber']){
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $deleteList[] = $vehicle->getRegistrationNumber();
+                        $em->remove($vehicle);
                     }
                 }
-            }
-            
-            if ($aUnitParts) {
+
+                // Search for new vehicles
+                foreach($aVehicles as $av) {
+                    $found = false;
+                    foreach($unit->getVehicles() as $vehicle){
+                        if ($vehicle->getRegistrationNumber() == $av['registrationNumber']){
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $addList[] = $av['registrationNumber'];
+                        $newVehicle = new \Morus\FasBundle\Entity\Vehicle();
+                        $newVehicle->setRegistrationNumber($av['registrationNumber']);
+                        $unit->addVehicle($newVehicle);
+                        $newVehicle->setUnit($unit);
+                    }
+                }
+            } elseif ($aVehicles) {
                 foreach($aVehicles as $v){
-                    $vehicle = new \Morus\FasBundle\Entity\Vehicle();
-                    $vehicle->setRegistrationNumber($v['registrationNumber']);
-                    $unit->addVehicle($vehicle);
-                    $vehicle->setUnit($unit);
+                    $newVehicle = new \Morus\FasBundle\Entity\Vehicle();
+                    $newVehicle->setRegistrationNumber($v['registrationNumber']);
+                    $unit->addVehicle($newVehicle);
+                    $newVehicle->setUnit($unit);
                 }
             }
+            
+            if ($aUnitParts && count($aUnitParts) > 0 && count($unit->getUnitParts()) > 0) {
+                // search for delete unit parts
+                foreach($unit->getUnitParts() as $unitParts){
+                    $found = false;
+                    foreach($aUnitParts as $aup) {
+                        if ($unitParts->getParts()->getId() == $aup['parts']){
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $em->remove($unitParts);
+                    }
+                }
+
+                // Search for new unit parts
+                foreach($aUnitParts as $aup) {
+                    $found = false;
+                    foreach($unit->getUnitParts() as $unitParts){
+                        if ($unitParts->getParts()->getId() == $aup['parts']){
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $newUnitParts = new \Morus\FasBundle\Entity\UnitParts();
+                        $parts = $em->getRepository('MorusFasBundle:Parts')->find($aup['parts']);
+                        $newUnitParts->setDiscount($aup['discount']);
+                        $newUnitParts->setParts($parts);
+                        $unit->addUnitParts($newUnitParts);
+                        $newUnitParts->setUnit($unit);
+                    }
+                }
+            } elseif ($aUnitParts) {
+                foreach($aUnitParts as $aup){
+                    $newUnitParts = new \Morus\FasBundle\Entity\UnitParts();
+                    $parts = $em->getRepository('MorusFasBundle:Parts')->find($aup['parts']);
+                    $newUnitParts->setDiscount($aup['discount']);
+                    $newUnitParts->setParts($parts);
+                    $unit->addUnitParts($newUnitParts);
+                    $newUnitParts->setUnit($unit);
+                }
+            }
+            
+            
             
             $em->persist($unit);
             $em->flush();
             
-            $response = array("success" => true);
+            $response = array("success" => true, 'updatedLicences' => $addList, 'deletedLicences' => $deleteList);
         } catch (Exception $ex) {
             $response = array("success" => false);
         }
@@ -232,15 +305,31 @@ class StatementController extends Controller
         return new Response(json_encode($response));
     }
     
+    /**
+     * Return customer update form to dialog
+     *
+     */
     public function customerDialogAction(Request $request) {
         $action = $request->get('ACTION');
-        $licenses = json_decode($request->get('LICENCES'));
-       
+        $licenses = json_decode($request->get('LICENCES'), true);
+        
         $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
-        $unit = $aem->createUnit('customer');
         
-        
-        
+        if ($action == 'NEW') {
+            
+            $unit = $aem->createUnit('customer');
+
+        } else { 
+            $em = $this->getDoctrine()->getManager();
+            $unit = $em->getRepository('MorusFasBundle:Unit')->find($action);
+            foreach( $unit->getVehicles() as $vehicle) {
+                if(($key = array_search($vehicle->getRegistrationNumber(), $licenses)) !== false) {
+                    unset($licenses[$key]);
+                }
+            }
+            
+            
+        }
         
         foreach ($licenses as $license) {
             $vehicle = new \Morus\FasBundle\Entity\Vehicle();
@@ -248,11 +337,10 @@ class StatementController extends Controller
             $unit->addVehicle($vehicle);
             $vehicle->setUnit($unit);
         }
-            
         
         $form = $this->createForm('fas_unit', $unit, array(
             'attr' => array('id' => 'fas_customer_update_form'),
-            'action' => $this->generateUrl('morus_fas_statement_customer_create'),
+            'action' => $this->generateUrl('morus_fas_statement_customer_update'),
             'method' => 'POST',
         ));
         
@@ -267,18 +355,14 @@ class StatementController extends Controller
         ));
     }
     
-    
     /**
-     * Get Customer List
+     * Get Customer List id : name
      * 
      */
     public function customerListAction(Request $request) {
         // ----------------------------------------------------
         // Customer List for combo box
         // ----------------------------------------------------
-        $aem = $this->get('morus_accetic.entity_manager');
-        $unitRepos = $aem->getUnitRepository();
-
         $qb = $this->getDoctrine()
             ->getManager()
             ->getRepository('MorusFasBundle:Unit')

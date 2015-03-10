@@ -15,6 +15,12 @@ class PartsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('othername' , 'text', array(
+                'required' => false
+            ))
+            ->add('useOthername' , 'checkbox', array(
+                'required' => false
+            ))
             ->add('defaultDiscount' , 'money', array(
                 'currency' => 'HKD',
                 'precision' => 2,

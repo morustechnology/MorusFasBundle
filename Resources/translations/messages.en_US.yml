@@ -1,4 +1,6 @@
 inventory:
+    use_othername: Use Print Name
+    othername: Print Name
     itemcode: Item Code
     itemname: Item Name
     default_discount: Default Discount
@@ -63,6 +65,7 @@ statement:
         net_amount: Net Amount
         
 btn:
+    add_new_vehicle: Add New Vehicle
     add_new_product_discount: Add New Product Discount
     register_to_customer: Register to Customer
     export_invoices: Export Invoices
@@ -77,8 +80,9 @@ btn:
     go: Go
 
 export_step:
+    station_discount_ignore_keywords: Station Discount Ignore Keywords
     export_invoice: Export Invoice
-    register_selected_vehicle_to: Register selected vehicle to
+    register_selected_vehicle_to: Register vehicle to
     registered_vehicle_list: Registered Vehicle List
     analysis_summary: Analysis Summary
     product_search: Product Search

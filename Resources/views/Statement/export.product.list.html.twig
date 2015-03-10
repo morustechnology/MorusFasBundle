@@ -1,21 +1,25 @@
 <h2>{{ 'export_step.database_product'|trans }}</h2>
 <table>
      <tr>
-         <th></th>
          <th>{{ 'inventory.itemcode'|trans }}</th>
          <th>{{ 'inventory.itemname'|trans }}</th>
+         <th>{{ 'inventory.othername'|trans }}</th>
+         <th>{{ 'inventory.use_othername'|trans }}</th>
          <th>{{'inventory.default_discount'|trans }}</th>
      </tr>
 
      {% for p in parts %}
      <tr>
-         <td>
-             {% image '@MorusFasBundle/Resources/public/images/ok_icon.png' %}
-                 <img src="{{ asset_url }}" alt="OK" style="width: 15px"/>
-             {% endimage %}
-         </td>
          <td>{{ p.itemcode }}</td>
          <td>{{ p.itemname }}</td>
+         <td>{{ p.othername }}</td>
+         <td>
+             {% if (p.useOthername) %}
+                 {% image '@MorusFasBundle/Resources/public/images/ok_icon.png' %}
+                    <img src="{{ asset_url }}" alt="OK" style="width: 15px"/>
+                {% endimage %}
+            {% endif %}
+         </td>
          <td>${{ p.defaultDiscount|number_format(2, '.', ',') }}</td>
      </tr>
      {% endfor %}

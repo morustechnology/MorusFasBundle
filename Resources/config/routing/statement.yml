@@ -27,9 +27,9 @@ morus_fas_statement_customer_list:
     path:     /customer/list
     defaults: { _controller: "MorusFasBundle:Statement:customerList" }  
 
-morus_fas_statement_customer_create:
+morus_fas_statement_customer_update:
     path:     /customer/create
-    defaults: { _controller: "MorusFasBundle:Statement:customerCreate" }
+    defaults: { _controller: "MorusFasBundle:Statement:customerUpdate" }
 
 morus_fas_statement_customer_dialog:
     path:     /customer/dialog

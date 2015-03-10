@@ -1,3 +1,6 @@
+{% set unit_parts_ul = 'fas_unit_parts_ul' %}
+{% set vehicle_ul = 'fas_vehicle_ul' %}
+
 {% form_theme form 'MorusFasBundle:Statement:layout.html.twig' %}
 
 {% javascripts 
@@ -10,51 +13,139 @@
 {% endjavascripts %}
     
 <script type='text/javascript'>
-    var $collectionHolder;
-    var $addTagLink = $('<a href="#" class="add_tag_link">{{ 'btn.add_new_product_discount'|trans }}</a>');
-    var $newLinkLi = $('<li></li>').append($addTagLink);
+    var $unitPartsCollectionHolder;
+    var $addUnitPartsLink = $('<a href="#" class="add_link">{{ 'btn.add_new_product_discount'|trans }}</a>');
+    var $newUnitPartsLinkLi = $('<li></li>').append($addUnitPartsLink);
     
-    // Dialog Functions
+    // Add Parts Discount Functions
     jQuery(document).ready(function() {
         
         // Get the ul that holds the collection of tags
-        $collectionHolder = $('ul.tags');
-
+        $unitPartsCollectionHolder = $('ul[id={{ unit_parts_ul }}');
+        
         // add the "add a tag" anchor and li to the tags ul
-        $collectionHolder.append($newLinkLi);
+        $unitPartsCollectionHolder.after($addUnitPartsLink);
 
         // count the current form inputs we have (e.g. 2), use that as the new
         // index when inserting a new item (e.g. 2)
-        $collectionHolder.data('index', $collectionHolder.find(':input').length);
+        $unitPartsCollectionHolder.data('index', $unitPartsCollectionHolder.find(':input').length);
 
-        $addTagLink.on('click', function(e) {
+        $addUnitPartsLink.on('click', function(e) {
             // prevent the link from creating a "#" on the URL
             e.preventDefault();
-
+            
             // add a new tag form (see next code block)
-            addTagForm($collectionHolder, $newLinkLi);
+            addUnitPartsForm($unitPartsCollectionHolder, $newUnitPartsLinkLi);
+        });
+        
+        // add a delete link to all of the existing tag form li elements
+        $unitPartsCollectionHolder.find('li').each(function() {
+            addUnitPartsFormDeleteLink($(this));
         });
     });
     
-    function addTagForm($collectionHolder, $newLinkLi) {
+    function addUnitPartsForm($unitPartsCollectionHolder, $newUnitPartsLinkLi) {
         // Get the data-prototype explained earlier
-        var prototype = $collectionHolder.data('prototype');
+        var prototype = $unitPartsCollectionHolder.data('prototype');
 
         // get the new index
-        var index = $collectionHolder.data('index');
+        var index = $unitPartsCollectionHolder.data('index');
 
         // Replace '__name__' in the prototype's HTML to
         // instead be a number based on how many items we have
         var newForm = prototype.replace(/__name__/g, index);
 
         // increase the index with one for the next item
-        $collectionHolder.data('index', index + 1);
+        $unitPartsCollectionHolder.data('index', index + 1);
 
         // Display the form in the page in an li, before the "Add a tag" link li
         var $newFormLi = $('<li></li>').append(newForm);
-        $newLinkLi.before($newFormLi);
-    }
         
+        addUnitPartsFormDeleteLink($newFormLi);
+        
+        $unitPartsCollectionHolder.append($newFormLi);
+    }
+    
+    function addUnitPartsFormDeleteLink($unitPartsFormLi) {
+        var $removeFormA = $('<a href="#">X</a>');
+        $unitPartsFormLi.append($removeFormA);
+
+        $removeFormA.on('click', function(e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            // remove the li for the tag form
+            $unitPartsFormLi.remove();
+        });
+    }
+    
+    
+    
+    var $vehicleCollectionHolder;
+    var $addVehicleLink = $('<a href="#" class="add_link">{{ 'btn.add_new_vehicle'|trans }}</a>');
+    var $newVehicleLinkLi = $('<li></li>').append($addVehicleLink);
+    
+    // Add Parts Discount Functions
+    jQuery(document).ready(function() {
+        
+        // Get the ul that holds the collection of tags
+        $vehicleCollectionHolder = $('ul[id={{ vehicle_ul }}');
+        
+        // add the "add a tag" anchor and li to the tags ul
+        $vehicleCollectionHolder.after($addVehicleLink);
+
+        // count the current form inputs we have (e.g. 2), use that as the new
+        // index when inserting a new item (e.g. 2)
+        $vehicleCollectionHolder.data('index', $vehicleCollectionHolder.find(':input').length);
+
+        $addVehicleLink.on('click', function(e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            // add a new tag form (see next code block)
+            addVehicleForm($vehicleCollectionHolder, $newVehicleLinkLi);
+        });
+        
+        // add a delete link to all of the existing tag form li elements
+        $vehicleCollectionHolder.find('li').each(function() {
+            addVehicleFormDeleteLink($(this));
+        });
+    });
+    
+    function addVehicleForm($vehicleCollectionHolder, $newVehicleLinkLi) {
+        // Get the data-prototype explained earlier
+        var prototype = $vehicleCollectionHolder.data('prototype');
+
+        // get the new index
+        var index = $vehicleCollectionHolder.data('index');
+
+        // Replace '__name__' in the prototype's HTML to
+        // instead be a number based on how many items we have
+        var newForm = prototype.replace(/__name__/g, index);
+
+        // increase the index with one for the next item
+        $vehicleCollectionHolder.data('index', index + 1);
+
+        // Display the form in the page in an li, before the "Add a tag" link li
+        var $newFormLi = $('<li></li>').append(newForm);
+        
+        addVehicleFormDeleteLink($newFormLi);
+        $vehicleCollectionHolder.append($newFormLi);
+    }
+    
+    function addVehicleFormDeleteLink($vehicleFormLi) {
+        
+        var $removeFormA = $('<a href="#">X</a>');
+        $vehicleFormLi.append($removeFormA);
+
+        $removeFormA.on('click', function(e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            // remove the li for the tag form
+            $vehicleFormLi.remove();
+        });
+    }
 </script>
 
 <div id="container-box" class="contact-new">
@@ -100,7 +191,7 @@
 
                 <div>
                     {{ 'contact.vehicle_list'|trans }} :
-                    <ul id="licences" >
+                    <ul id="{{ vehicle_ul }}" data-prototype="{{ form_widget(form.vehicles.vars.prototype)|e }}">
                         {% for vehicle in form.vehicles %}
                         <li>{{ 'contact.registration_number'|trans }} {{ form_widget(vehicle.registrationNumber) }}</li>
                         {% endfor %}
@@ -109,9 +200,9 @@
 
                 <div>
                     {{ 'contact.product_discount'|trans }} :
-                    <ul class="tags" data-prototype="{{ form_widget(form.unitParts.vars.prototype)|e }}">
+                    <ul id="{{ unit_parts_ul }}" data-prototype="{{ form_widget(form.unitParts.vars.prototype)|e }}">
                         {% for up in form.unitParts %}
-                            {{ 'contact.product'|trans }} {{ form_widget(up.parts) }} {{ 'contact.discount'|trans }} {{ form_widget(up.discount) }}
+                            <li>{{ 'contact.product'|trans }} {{ form_widget(up.parts) }} {{ 'contact.discount'|trans }} {{ form_widget(up.discount) }}</li>
                         {% endfor %}
                     </ul>
                 </div>
