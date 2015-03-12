@@ -81,6 +81,8 @@ class Export
     {
         $this->statements = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ignoreKeywords = 'AIRPORT';
+        $this->createDate = new \DateTime("now");
+        $this->active = true;
     }
 
     /**

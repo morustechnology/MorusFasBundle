@@ -16,6 +16,7 @@ class ExportFlow extends FormFlow {
     
     protected $revalidatePreviousSteps = false;
     
+    public $step;
     public $transactions = array(); // Transaction for summary step
     
     public $stmtList = array(); // Statements to be exported
@@ -53,7 +54,7 @@ class ExportFlow extends FormFlow {
     public function getFormOptions($step, array $options = array()) {
         $options = parent::getFormOptions($step, $options);
         
-        
+        $this->step = $step;
         switch($step) {
             case 1:
                 $this->analyzeStatement();
@@ -153,6 +154,7 @@ class ExportFlow extends FormFlow {
      * Generate FAS Profit and Loss Summary
      */
     private function fasPL() {
+        $this->transactions = array();
         // Set Invoice Number
         $invPrefix = $this->entityManager
                 ->getRepository('MorusFasBundle:AcceticConfig')
@@ -198,13 +200,15 @@ class ExportFlow extends FormFlow {
             
             // Set relationship
             $ar->setTransaction($transaction);
+            $transaction->setAr($ar);
             $transaction->setUnit($unit);
+            $unit->addTransaction($transaction);
 
             $invoicenumber = str_pad($num, 6, '0', STR_PAD_LEFT);
             $ar->setInvnumber($prefix . $invoicenumber);
             $num = $num + 1;
             
-            $export->addTransaction($transaction);
+//            $export->addTransaction($transaction);
         }
         
         foreach( $stmts as $stmt) {
@@ -271,7 +275,7 @@ class ExportFlow extends FormFlow {
                     }
                 }
                 
-                // Get All unit who has vehicle appear in statements
+                // search unit with registration number
                 $qb = $this->entityManager
                         ->getRepository('MorusFasBundle:Unit')
                         ->createQueryBuilder('u');
@@ -279,22 +283,20 @@ class ExportFlow extends FormFlow {
                         ->join('u.vehicles', 'v', 'WITH', 'v.registrationNumber = :registrationNumber')
                         ->setParameter('registrationNumber', $registrationNumber);
 
-                $unit = $query->getQuery()->getSingleResult();
+                $sunit = $query->getQuery()->getSingleResult();
                 
                 foreach ($this->transactions as $t) {
-                    if ($t->getUnit() === $unit) {
+                    if ($t->getUnit() == $sunit) {
                         $t->addInvoice($invoice);
 //                        $invoice->setTransaction($t);
                     }
                 }
                 
-                if (!$ignore) {
-                    $this->getUnitPartsDiscount($unit, $invoice, $productName);
-                }
+
                 
                 // 2. Search Units with the same vehicle number / also check for discount
                 if (!$ignore) {
-                    $this->getUnitPartsDiscount($unit, $invoice, $productName);
+                    $this->getUnitPartsDiscount($sunit, $invoice, $productName);
                 }
 
             }

@@ -8,7 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Morus\FasBundle\Entity\Export;
 use Morus\FasBundle\Entity\Statement;
 use Morus\FasBundle\Entity\Parts;
-
+use Ddeboer\DataImport\Reader\CsvReader;
+use Ddeboer\DataImport\Reader\ExcelReader;
+use Ddeboer\DataImport\Workflow;
+use SplFileObject;
 
 
 /**
@@ -41,9 +44,13 @@ class StatementController extends Controller
         
         if ($form->isValid()) {
             if ($form->get('export_invoice')->isClicked()) {
+                $expStmtsId = array();
                 $expStmts = $form->getData()['id'];
+                foreach ($expStmts as $expStmt) {
+                    $expStmtsId[] = $expStmt->getId();
+                }
                 $session = $this->get('session');
-                $session->set('expStmts', $expStmts);
+                $session->set('expStmts', $expStmtsId);
                 
                 return $this->redirect($this->generateUrl('morus_fas_statement_export'));
             } elseif ($form->get('delete_invoice')->isClicked()) {
@@ -104,7 +111,6 @@ class StatementController extends Controller
             $aUnit = $request->get('fas_unit');
             
             if ($action == 'NEW') {
-                
                 $unit = $aem->createUnit('customer');
             } else {
                 
@@ -113,7 +119,8 @@ class StatementController extends Controller
             
             $addList = array();
             $deleteList = array();
-            // Get data
+            
+            // Get request data
             $aName = $aUnit['name'];
             $aLastName = $aUnit['persons'][0]['lastName'];
             $aFirstName = $aUnit['persons'][0]['firstName'];
@@ -241,6 +248,7 @@ class StatementController extends Controller
                 }
             } elseif ($aVehicles) {
                 foreach($aVehicles as $v){
+                    $addList[] = $v['registrationNumber'];
                     $newVehicle = new \Morus\FasBundle\Entity\Vehicle();
                     $newVehicle->setRegistrationNumber($v['registrationNumber']);
                     $unit->addVehicle($newVehicle);
@@ -443,9 +451,21 @@ class StatementController extends Controller
             $export = new Export();
             
             $expStmts = $session->get('expStmts');
-            foreach($expStmts as $expStmt) {
-                $export->addStatement($expStmt);
+            
+            // Get statements to be exported
+            $sqb = $this->getDoctrine()->getManager()
+                    ->getRepository('MorusFasBundle:Statement')
+                    ->createQueryBuilder('s');
+            $uQuery = $sqb
+                    ->where($sqb->expr()->in('s.id', $expStmts));
+
+            $statements = $uQuery->getQuery()->getResult();
+        
+            
+            foreach($statements as $statement) {
+                $export->addStatement($statement);
             }
+            
             
             // ----------------------------------------------------
             // Export Form Flow
@@ -455,6 +475,7 @@ class StatementController extends Controller
             
             // form of the current step
             $export_form = $flow->createForm();
+            
             if ($flow->isValid($export_form)) {
                 $flow->saveCurrentStepData($export_form);
 
@@ -463,9 +484,13 @@ class StatementController extends Controller
                     $export_form = $flow->createForm();
                 } else {
                     // flow finished
-//                    $em = $this->getDoctrine()->getManager();
-//                    $em->persist($formData);
-//                    $em->flush();
+                    $em = $this->getDoctrine()->getManager();
+                    
+                    foreach($flow->transactions as $transaction){
+                        $export->addTransaction($transaction);
+                    }
+                    $em->persist($export);
+                    $em->flush();
                     $flow->reset(); // remove step data from the session
 
                     return $this->redirect($this->generateUrl('morus_fas_homepage')); // redirect when done

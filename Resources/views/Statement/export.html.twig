@@ -185,10 +185,6 @@
                                     );
                                 });
                                 
-                                
-                                
-                                
-                                
                                 refreshCustomerVehicleList();
                                 refreshComboBox();
                                 $custDlg.dialog( "close" );
@@ -410,7 +406,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                     {% set unitname = null %}
+                    {% set unitname = null %}
                     {% for transaction in flow.transactions %}
                             <tr>
                                 <td>{{ transaction.unit.name }}</td>
