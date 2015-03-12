@@ -5,6 +5,7 @@ namespace Morus\FasBundle\Form;
 
 use Craue\FormFlowBundle\Form\FormFlow;
 use Ddeboer\DataImport\Reader\CsvReader;
+use Ddeboer\DataImport\Reader\ExcelReader;
 use SplFileObject;
 use Morus\FasBundle\Classes\ImportLog;
 use Doctrine\ORM\EntityManager;
@@ -17,12 +18,12 @@ class ImportFlow extends FormFlow {
     protected $allowDynamicStepNavigation = true;
     protected $handleFileUploads = true;
     
+
     protected $entityManager;
-    private $container;
+    protected $container;
     protected $reader;
-    
+
     public $isSplitDateTime = false;
-    public $result;
     public $hasError = false;
     public $totalProcessedCount;
     public $errorLogs = array();
@@ -75,7 +76,15 @@ class ImportFlow extends FormFlow {
         
         // 1. Save header in array
         $file = new SplFileObject($statement->getFile());
-        $this->reader = new CsvReader($file);
+        $mineType = mime_content_type($file->getFileInfo()->getPathname());
+        
+        if ($mineType == 'application/vnd.ms-excel') {
+            $this->reader = new ExcelReader($file);
+        } else {
+            $this->reader = new CsvReader($file);
+        }
+        
+        // Get headers and store in statment
         $this->reader->setHeaderRowNumber(0);
         $headerAry = array();
         foreach($this->reader->getColumnHeaders() as $h) {
@@ -83,6 +92,7 @@ class ImportFlow extends FormFlow {
         }
         $statement->setHeaders($headerAry);
         
+        // get split datetime option and pass to view
         $this->isSplitDateTime = $statement->getSplitDateTime();
         
         // 2. Get last header pairing record and set to statement

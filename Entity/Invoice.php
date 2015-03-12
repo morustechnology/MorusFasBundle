@@ -45,6 +45,13 @@ class Invoice extends BaseInvoice
     /**
      * @var string
      *
+     * @ORM\Column(name="licence", type="string", length=255, nullable=false)
+     */
+    protected $licence;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="receipt_number", type="string", length=255, nullable=false)
      */
     protected $receiptNumber;
@@ -52,21 +59,36 @@ class Invoice extends BaseInvoice
     /**
      * @var
      * 
-     * @ORM\Column(name="cost", type="decimal", precision=10, scale=2, nullable=true)
+     * @ORM\Column(name="unit_price", type="decimal", precision=10, scale=2, nullable=true)
      */
-    protected $cost;
+    protected $unitprice;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Vehicle", inversedBy="invoices", cascade={"persist"})
-     * @ORM\JoinColumn(name="vehicle_id", referencedColumnName="id")
-     **/
-    protected $vehicle;
+     * @var
+     * 
+     * @ORM\Column(name="unit_discount", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    protected $unitdiscount;
+    
+    /**
+     * @var
+     * 
+     * @ORM\Column(name="net_amount", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    protected $netamount;
+    
+    /**
+     * @var
+     * 
+     * @ORM\Column(name="sell_discount", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    protected $selldiscount;
     
     /**
      * Set cardNumber
      *
      * @param string $cardNumber
-     * @return InvoiceExt
+     * @return Invoice
      */
     public function setCardNumber($cardNumber)
     {
@@ -89,7 +111,7 @@ class Invoice extends BaseInvoice
      * Set transDate
      *
      * @param \DateTime $transDate
-     * @return InvoiceExt
+     * @return Invoice
      */
     public function setTransDate($transDate)
     {
@@ -112,7 +134,7 @@ class Invoice extends BaseInvoice
      * Set transTime
      *
      * @param \DateTime $transTime
-     * @return InvoiceExt
+     * @return Invoice
      */
     public function setTransTime($transTime)
     {
@@ -135,7 +157,7 @@ class Invoice extends BaseInvoice
      * Set site
      *
      * @param string $site
-     * @return InvoiceExt
+     * @return Invoice
      */
     public function setSite($site)
     {
@@ -155,10 +177,33 @@ class Invoice extends BaseInvoice
     }
 
     /**
+     * Set licence
+     *
+     * @param string $licence
+     * @return Invoice
+     */
+    public function setLicence($licence)
+    {
+        $this->licence = $licence;
+
+        return $this;
+    }
+
+    /**
+     * Get licence
+     *
+     * @return string 
+     */
+    public function getLicence()
+    {
+        return $this->licence;
+    }
+    
+    /**
      * Set receiptNumber
      *
      * @param string $receiptNumber
-     * @return InvoiceExt
+     * @return Invoice
      */
     public function setReceiptNumber($receiptNumber)
     {
@@ -178,48 +223,94 @@ class Invoice extends BaseInvoice
     }
     
     /**
-     * Set cost
+     * Set unitprice
      *
-     * @param string $cost
+     * @param string $unitprice
      * @return Invoice
      */
-    public function setCost($cost)
+    public function setUnitprice($unitprice)
     {
-        $this->cost = $cost;
+        $this->unitprice = $unitprice;
 
         return $this;
     }
 
     /**
-     * Get cost
+     * Get unitprice
      *
      * @return string 
      */
-    public function getCost()
+    public function getUnitprice()
     {
-        return $this->cost;
+        return $this->unitprice;
     }
     
     /**
-     * Set vehicle
+     * Set unitdiscount
      *
-     * @param \Morus\FasBundle\Entity\Vehicle $vehicle
-     * @return Vehicle
+     * @param string $unitdiscount
+     * @return Invoice
      */
-    public function setVehicle(\Morus\FasBundle\Entity\Vehicle $vehicle = null)
+    public function setUnitdiscount($unitdiscount)
     {
-        $this->vehicle = $vehicle;
+        $this->unitdiscount = $unitdiscount;
 
         return $this;
     }
 
     /**
-     * Get vehicle
+     * Get unitdiscount
      *
-     * @return \Morus\FasBundle\Entity\Vehicle 
+     * @return float 
      */
-    public function getVehicle()
+    public function getUnitdiscount()
     {
-        return $this->vehicle;
+        return $this->unitdiscount;
+    }
+    
+    /**
+     * Set netamount
+     *
+     * @param string $netamount
+     * @return Invoice
+     */
+    public function setNetamount($netamount)
+    {
+        $this->netamount = $netamount;
+
+        return $this;
+    }
+
+    /**
+     * Get netamount
+     *
+     * @return float 
+     */
+    public function getNetamount()
+    {
+        return $this->netamount;
+    }
+    
+    /**
+     * Set selldiscount
+     *
+     * @param string $selldiscount
+     * @return Invoice
+     */
+    public function setSelldiscount($selldiscount)
+    {
+        $this->selldiscount = $selldiscount;
+
+        return $this;
+    }
+
+    /**
+     * Get selldiscount
+     *
+     * @return float 
+     */
+    public function getSelldiscount()
+    {
+        return $this->selldiscount;
     }
 }

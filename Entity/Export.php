@@ -272,7 +272,7 @@ class Export
      */
     public function addTransaction(\Morus\FasBundle\Entity\Transaction $transaction)
     {
-        $this->statements[] = $transaction;
+        $this->transactions[] = $transaction;
 
         return $this;
     }
@@ -284,7 +284,7 @@ class Export
      */
     public function removeTransaction(\Morus\FasBundle\Entity\Transaction $transaction)
     {
-        $this->statements->removeElement($transaction);
+        $this->transactions->removeElement($transaction);
     }
 
     /**
@@ -294,7 +294,7 @@ class Export
      */
     public function getTransactions()
     {
-        return $this->statements;
+        return $this->transactions;
     }
     /**
      * @ORM\PrePersist

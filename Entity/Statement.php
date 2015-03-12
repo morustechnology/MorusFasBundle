@@ -42,7 +42,14 @@ class Statement
      * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
     protected $name;
-
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mine_type", type="string", length=255, nullable=true)
+     */
+    protected $mineType;
+    
     /**
      * @var string
      *
@@ -465,6 +472,9 @@ class Statement
     public function setFile(UploadedFile $file = null)
     {
         $this->file = $file;
+        $fileInfo = $this->getFile()->getFileInfo();
+        $this->mineType = mime_content_type($fileInfo->getPathname());
+        
         // check if we have an old image path
         if (isset($this->path)) {
             // store the old name to delete after the update
@@ -544,6 +554,29 @@ class Statement
     public function getName()
     {
         return $this->name;
+    }
+    
+    /**
+     * Set mineType
+     *
+     * @param string $mineType
+     * @return Statement
+     */
+    public function setMineType($mineType)
+    {
+        $this->mineType = $mineType;
+
+        return $this;
+    }
+
+    /**
+     * Get mineType
+     *
+     * @return string 
+     */
+    public function getMineType()
+    {
+        return $this->mineType;
     }
     
     /**

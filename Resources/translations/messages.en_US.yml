@@ -72,6 +72,7 @@ btn:
     upload_new_statement: Upload New Statement
     export_invoice: Export Invoice
     delete_invoice: Delete Invoice
+    delete_statement: Delete Statement
     save: Save
     edit: Edit
     cancel: Cancel
@@ -97,6 +98,27 @@ export_step:
     select_all: Select All
     licence_list: 'Licence Number(s)'
     add_to: add to
+    
+pl:
+    customer: Customer
+    licence_number: Licence Number
+    nett: Nett
+    receivable: Receivable
+    pl: 'P/L'
+    percentage: '%'
+
+invoice:
+    date: Date
+    time: Time
+    site: Site
+    licence_number: Licence Number
+    receipt_number: Receipt Number
+    product: Product
+    qty: 'Qty(L)'
+    sell_price: Px
+    sell_discount: Discount
+    net_price: Net Px
+    total: 'Total HK$'
     
 contact:
     vehicle_list: Vehicle List

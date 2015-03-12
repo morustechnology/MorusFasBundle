@@ -23,6 +23,7 @@ morus_fas_statement_export_create_product_ajax:
     defaults: { _controller: "MorusFasBundle:Statement:createProductAjax" }
 
 
+    
 morus_fas_statement_customer_list:
     path:     /customer/list
     defaults: { _controller: "MorusFasBundle:Statement:customerList" }  
@@ -36,30 +37,6 @@ morus_fas_statement_customer_dialog:
     defaults: { _controller: "MorusFasBundle:Statement:customerDialog" }
 
 
-
-morus_fas_statement_show:
-    path:     /{id}/show
-    defaults: { _controller: "MorusFasBundle:Statement:show" }
-
-morus_fas_statement_new:
-    path:     /new
-    defaults: { _controller: "MorusFasBundle:Statement:new" }
-
-morus_fas_statement_create:
-    path:     /create
-    defaults: { _controller: "MorusFasBundle:Statement:create" }
-    requirements: { _method: post }
-
-morus_fas_statement_edit:
-    path:     /{id}/edit
-    defaults: { _controller: "MorusFasBundle:Statement:edit" }
-
-morus_fas_statement_update:
-    path:     /{id}/update
-    defaults: { _controller: "MorusFasBundle:Statement:update" }
-    requirements: { _method: post|put }
-
 morus_fas_statement_delete:
-    path:     /{id}/delete
+    path:     /delete
     defaults: { _controller: "MorusFasBundle:Statement:delete" }
-    requirements: { _method: post|delete }

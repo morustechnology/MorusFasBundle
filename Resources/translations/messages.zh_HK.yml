@@ -69,6 +69,7 @@ btn:
     export_invoice: 滙出發票
     upload_new_statement: 上載新月結單
     export_invoice: 滙出發票
+    delete_statement: 刪除月結單
     delete_invoice: 刪除發票
     save: 儲存
     edit: 修改
@@ -95,6 +96,27 @@ export_step:
     select_all: 全選
     licence_list: 車牌
     add_to: 添加到
+
+pl:
+    customer: 客戶
+    licence_number: 車牌號碼
+    nett: Nett
+    receivable: 收客
+    pl: 'P/L'
+    percentage: '%'
+
+invoice:
+    date: 日期
+    time: 時間
+    site: 油站名稱
+    licence_number: 車牌號碼
+    receipt_number: 收據號碼
+    product: 貨品
+    qty: '數量(L)'
+    sell_price: 每公升油價
+    sell_discount: 折扣
+    net_price: 每公升淨價
+    total: '總額 HK$'
 
 contact:
     vehicle_list: 車輛名單
