@@ -155,7 +155,7 @@ class ExportFlow extends FormFlow {
      * Generate FAS Profit and Loss Summary
      */
     private function fasPL() {
-        $this->transactions = array();
+        $this->ars = array();
         // Set Invoice Number
         $invPrefix = $this->entityManager
                 ->getRepository('MorusFasBundle:AcceticConfig')
@@ -213,8 +213,8 @@ class ExportFlow extends FormFlow {
             $ar->setInvnumber($prefix . $invoicenumber);
             $num = $num + 1;
             
-            $ar->setTransdate(date("d-m-Y H:s:i"));
-            $ar->setDuedate(date('d-m-Y H:s:i', strtotime("+10 days")));
+            $ar->setTransdate(new \DateTime("now"));
+//            $ar->setDuedate(date('Y-m-d H:s:i', strtotime("+10 days")));
         }
         
         foreach( $stmts as $stmt) {

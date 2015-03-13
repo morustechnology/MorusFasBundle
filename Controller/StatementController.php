@@ -488,7 +488,7 @@ class StatementController extends Controller
                     
                     foreach($flow->ars as $ar){
                         $export->addAr($ar);
-                        $ar->setExport($export);
+//                        $ar->setExport($export);
                     }
                     
                     $em->persist($export);

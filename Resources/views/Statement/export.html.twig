@@ -470,8 +470,8 @@
                     {% for ar in flow.ars %}
                         <h2>{{ ar.unit.name }}</h2>
                         {{ 'invoice.invnumber'|trans }} {{ ar.invnumber }} 
-                        {{ 'invoice.transdate'|trans }} {{ ar.transdate }}
-                        {{ 'invoice.duedate'|trans }} {{ ar.duedate }} <br/>
+                        {{ 'invoice.transdate'|trans }} {{ ar.transdate|date('d/m/Y') }} <br/>
+                        {# {{ 'invoice.duedate'|trans }} {{ ar.duedate|date('d/m/Y') }} #}
                         {% for vehicle in ar.unit.vehicles %}
                             <h4>{{ 'invoice.licence_number'|trans }}: {{ vehicle.registrationNumber }}</h4>
                             <table>
