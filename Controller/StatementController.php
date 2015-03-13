@@ -495,7 +495,7 @@ class StatementController extends Controller
                     $em->flush();
                     $flow->reset(); // remove step data from the session
 
-                    return $this->redirect($this->generateUrl('morus_fas_homepage')); // redirect when done
+                    return $this->redirect($this->generateUrl('morus_accetic_ar')); // redirect when done
                 }
             }
 
