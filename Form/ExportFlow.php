@@ -18,6 +18,7 @@ class ExportFlow extends FormFlow {
     
     public $step;
     public $transactions = array(); // Transaction for summary step
+    public $ars = array(); // Ar for summary step
     
     public $stmtList = array(); // Statements to be exported
     public $stmtRowCnt = 0;     // Total records to be exported
@@ -194,21 +195,26 @@ class ExportFlow extends FormFlow {
         // 1. Create Transaction and AR then add to this export
         foreach( $units as $unit) {
             // One transaction + ar per custome
-            $transaction = new \Morus\FasBundle\Entity\Transaction();
-            $this->transactions[] = $transaction;
             $ar = new \Morus\FasBundle\Entity\Ar();
+            $transaction = new \Morus\FasBundle\Entity\Transaction();
+            $this->ars[] = $ar;
             
-            // Set relationship
+            
+            // Set ar and transaction relationship
             $ar->setTransaction($transaction);
             $transaction->setAr($ar);
-            $transaction->setUnit($unit);
-            $unit->addTransaction($transaction);
-
+            
+            // Set ar and unit relationship
+            $ar->setUnit($unit);
+            $unit->addAr($ar);
+            
+            // ar detail
             $invoicenumber = str_pad($num, 6, '0', STR_PAD_LEFT);
             $ar->setInvnumber($prefix . $invoicenumber);
             $num = $num + 1;
             
-//            $export->addTransaction($transaction);
+            $ar->setTransdate(date("d-m-Y H:s:i"));
+            $ar->setDuedate(date('d-m-Y H:s:i', strtotime("+10 days")));
         }
         
         foreach( $stmts as $stmt) {
@@ -270,6 +276,7 @@ class ExportFlow extends FormFlow {
                 foreach( $ignoreKeywords as $keywords) {
                     if (strpos($site, $keywords) !== false) {
                         $invoice->setSelldiscount(0);
+                        $invoice->setcustomerdiscount(false);
                         $ignore = true;
                         break;
                     }
@@ -285,14 +292,12 @@ class ExportFlow extends FormFlow {
 
                 $sunit = $query->getQuery()->getSingleResult();
                 
-                foreach ($this->transactions as $t) {
-                    if ($t->getUnit() == $sunit) {
-                        $t->addInvoice($invoice);
-//                        $invoice->setTransaction($t);
+                foreach ($this->ars as $ar) {
+                    if ($ar->getUnit() == $sunit) {
+                        $ar->getTransaction()->addInvoice($invoice);
+                        $invoice->setTransaction($ar->getTransaction());
                     }
                 }
-                
-
                 
                 // 2. Search Units with the same vehicle number / also check for discount
                 if (!$ignore) {
@@ -349,9 +354,12 @@ class ExportFlow extends FormFlow {
                     
                     $discount = $unitParts[0]->getDiscount();
                     $invoice->setSelldiscount($discount);
+                    $invoice->setcustomerdiscount(true);
                 } else {
                     $discount = $p->getDefaultDiscount();
                     $invoice->setSelldiscount($discount);
+                    $invoice->setcustomerdiscount(false);
+                    
                 }
             }
         }

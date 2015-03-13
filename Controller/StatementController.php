@@ -486,9 +486,11 @@ class StatementController extends Controller
                     // flow finished
                     $em = $this->getDoctrine()->getManager();
                     
-                    foreach($flow->transactions as $transaction){
-                        $export->addTransaction($transaction);
+                    foreach($flow->ars as $ar){
+                        $export->addAr($ar);
+                        $ar->setExport($export);
                     }
+                    
                     $em->persist($export);
                     $em->flush();
                     $flow->reset(); // remove step data from the session

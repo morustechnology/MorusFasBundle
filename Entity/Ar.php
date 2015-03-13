@@ -14,5 +14,32 @@ use Morus\AcceticBundle\Entity\Ar as BaseAr;
  */
 class Ar extends BaseAr
 {
+    /**
+     * @ORM\ManyToOne(targetEntity="Export", inversedBy="ars", cascade={"persist"})
+     * @ORM\JoinColumn(name="export_id", referencedColumnName="id")
+     **/
+    protected $export;
     
+    /**
+     * Set export
+     *
+     * @param \Morus\FasBundle\Entity\Export $export
+     * @return Ar
+     */
+    public function setExport(\Morus\FasBundle\Entity\Export $export = null)
+    {
+        $this->export = $export;
+
+        return $this;
+    }
+
+    /**
+     * Get export
+     *
+     * @return \Morus\FasBundle\Entity\Export 
+     */
+    public function getExport()
+    {
+        return $this->export;
+    }
 }

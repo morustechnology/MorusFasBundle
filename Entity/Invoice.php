@@ -85,6 +85,21 @@ class Invoice extends BaseInvoice
     protected $selldiscount;
     
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="customer_discount", type="boolean")
+     */
+    protected $customerdiscount;
+    
+    /**
+     * constructor
+     */
+    public function __construct() {
+        parent::__construct();
+        $this->customerdiscount = false;
+    }
+    
+    /**
      * Set cardNumber
      *
      * @param string $cardNumber
@@ -312,5 +327,28 @@ class Invoice extends BaseInvoice
     public function getSelldiscount()
     {
         return $this->selldiscount;
+    }
+    
+    /**
+     * Set customerdiscount
+     *
+     * @param boolean $customerdiscount
+     * @return Statement
+     */
+    public function setCustomerdiscount($customerdiscount)
+    {
+        $this->customerdiscount = $customerdiscount;
+
+        return $this;
+    }
+
+    /**
+     * Get customerdiscount
+     *
+     * @return boolean 
+     */
+    public function getCustomerdiscount()
+    {
+        return $this->customerdiscount;
     }
 }

@@ -70,9 +70,9 @@ class Export
     protected $statements;
 
     /**
-     * @ORM\OneToMany(targetEntity="Transaction", mappedBy="export", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Ar", mappedBy="export", cascade={"persist"})
      **/
-    protected $transactions;
+    protected $ars;
     
     /**
      * Constructor
@@ -267,37 +267,38 @@ class Export
     }
     
     /**
-     * Add transactions
+     * Add ar
      *
-     * @param \Morus\FasBundle\Entity\Transaction $transaction
+     * @param \Morus\FasBundle\Entity\Ar $ar
      * @return Export
      */
-    public function addTransaction(\Morus\FasBundle\Entity\Transaction $transaction)
+    public function addAr(\Morus\FasBundle\Entity\Ar $ar)
     {
-        $this->transactions[] = $transaction;
+        $this->ars[] = $ar;
 
         return $this;
     }
 
     /**
-     * Remove transaction
+     * Remove ar
      *
-     * @param \Morus\FasBundle\Entity\Transaction $transaction
+     * @param \Morus\FasBundle\Entity\Ar $ar
      */
-    public function removeTransaction(\Morus\FasBundle\Entity\Transaction $transaction)
+    public function removeAr(\Morus\FasBundle\Entity\Ar $ar)
     {
-        $this->transactions->removeElement($transaction);
+        $this->ars->removeElement($ar);
     }
 
     /**
-     * Get statements
+     * Get ars
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getTransactions()
+    public function getArs()
     {
-        return $this->transactions;
+        return $this->ars;
     }
+    
     /**
      * @ORM\PrePersist
      */

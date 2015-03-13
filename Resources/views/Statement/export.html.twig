@@ -17,6 +17,11 @@
 {% set cust_dlg = 'fas_cust_dlg' %}
 {% set cust_vec_list_div = 'fas_vec_list_div' %}
 
+{# Step 4 #}
+{% set fas_sam_tab = 'fas_sam_tab' %}
+{% set tab_pl = 'fas_tab_pl' %}
+{% set tab_exp_dtl = 'fas_tab_dtl_sam' %}
+
 {% block stylesheets %}
     {% stylesheets '@CraueFormFlowBundle/Resources/assets/css/buttons.css' %}
         <link type="text/css" rel="stylesheet" href="{{ asset_url }}" />
@@ -304,7 +309,10 @@
             
             
         }
-        
+    {% elseif flow.getCurrentStepNumber() == 4 %}
+        jQuery(document).ready(function() {
+            $( "#{{ fas_sam_tab }}" ).tabs();
+        });
     {% endif %}
     
     </script>
@@ -391,128 +399,137 @@
                 {# layout see /Statement/customer.dialog.html.twig #}
             </div>
         {% elseif flow.getCurrentStepNumber() == 4 %}  {# Summary Step #}
-            <h1>P & L</h1>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>{{ 'pl.customer'|trans }}</th>
-                        <th>{{ 'pl.licence_number'|trans }}</th>
-                        <th></th>
-                        <th>{{ 'pl.nett'|trans }}</th>
-                        <th>{{ 'pl.receivable'|trans }}</th>
-                        <th>{{ 'pl.pl'|trans }}</th>
-                        <th>{{ 'pl.percentage'|trans }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% set unitname = null %}
-                    {% for transaction in flow.transactions %}
-                            <tr>
-                                <td>{{ transaction.unit.name }}</td>
-                            
-                        {% for vehicle in transaction.unit.vehicles %}
-                            {% if unitname != transaction.unit.name %}
-                                {% set unitname = transaction.unit.name %}
-                                <td>{{ vehicle.registrationNumber }}</td>
-                            {% else %}
-                                <tr>
-                                    <td></td>
-                                    <td>{{ vehicle.registrationNumber }}</td>
-                            {% endif %}
-                            
-                            {% set net = 0 %}
-                            {% set rec = 0 %}
-                            {% set cnt = 0 %}
-                            {% set dis = 0 %}
-                            {% for invoice in transaction.invoices %}
-                                {% if invoice.licence == vehicle.registrationNumber %}
-                                    {% set cnt = cnt + 1 %}
-                                    {% set dis = dis + invoice.selldiscount %}
-                                    {% set net = net + ( invoice.qty * invoice.unitprice )%}
-                                    {% set rec = rec + ( invoice.qty * (invoice.unitprice +  invoice.unitdiscount - invoice.selldiscount)) %}
-                                {% endif %}
-                            {% endfor %}
-                            <td>
-                                {% set discount = dis / cnt %}
-                                {{ discount }}
-                            </td>
-                            <td>{{ net|number_format(2, '.', ',') }}</td>
-                            <td>{{ rec|number_format(2, '.', ',') }}</td>
-                            <td>{% set pl = rec - net %}
-                                {{ pl|number_format(2, '.', ',') }}
-                            </td>
-                            <td>
-                                {% set per = (pl / net) * 100 %}
-                                {{ per|number_format(2, '.', ',') }}%
-                            </td>
-                            </tr>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <hr/>
-            
-            <h1>Export Summary</h1>
-            
-            {% for transaction in flow.transactions %}
-                <h3>{{ transaction.unit.name }}</h3>
-                {% for vehicle in transaction.unit.vehicles %}
-                    <h4>{{ 'invoice.licence_number'|trans }}: {{ vehicle.registrationNumber }}</h4>
+            <div id="{{ fas_sam_tab }}">
+                <ul>
+                  <li><a href="#{{ tab_pl }}">{{ 'export_step.profit_and_loss'|trans }}</a></li>
+                  <li><a href="#{{ tab_exp_dtl }}">{{ 'export_step.export_detail'|trans }}</a></li>
+                </ul>
+                <div id="{{ tab_pl }}"> {# Profit and Lost tab#}
                     <table>
                         <thead>
                             <tr>
-                                <th>{{ 'invoice.date'|trans }}</th>
-                                <th>{{ 'invoice.time'|trans }}</th>
-                                <th>{{ 'invoice.site'|trans }}</th>
-                                <th>{{ 'invoice.receipt_number'|trans }}</th>
-                                <th>{{ 'invoice.product'|trans }}</th>
-                                <th>{{ 'invoice.qty'|trans }}</th>
-                                <th>{{ 'invoice.sell_price'|trans }}</th>
-                                <th>{{ 'invoice.sell_discount'|trans }}</th>
-                                <th>{{ 'invoice.net_price'|trans }}</th>
-                                <th>{{ 'invoice.total'|trans }}</th>
+                                <th>{{ 'pl.customer'|trans }}</th>
+                                <th>{{ 'pl.licence_number'|trans }}</th>
+                                <th></th>
+                                <th>{{ 'pl.nett'|trans }}</th>
+                                <th>{{ 'pl.receivable'|trans }}</th>
+                                <th>{{ 'pl.pl'|trans }}</th>
+                                <th>{{ 'pl.percentage'|trans }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for invoice in transaction.invoices %}
-                                {% if invoice.licence == vehicle.registrationNumber %}
+                            {% set unitname = null %}
+                            {% for ar in flow.ars %}
                                     <tr>
-                                        <td>{{ invoice.transDate|date('d/m/Y') }}</td>
-                                        <td>{{ invoice.transTime|date('H:i:s') }}</td>
-                                        <td>{{ invoice.site }}</td>
-                                        <td>{{ invoice.ReceiptNumber }}</td>
-                                        <td>{{ invoice.description }}</td>
-                                        <td>
-                                            {% set qty = invoice.qty|number_format(2, '.', ',') %}
-                                            {{ qty }}</td>
-                                        <td>
-                                            {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
-                                            {{ sellprice }}
-                                        </td>
-                                        <td>
-                                            {% set selldiscount = invoice.selldiscount|number_format(2, '.', ',') %}
-                                            {{ selldiscount }}
-                                        </td>
-                                        <td>
-                                            {% set netprice = sellprice - selldiscount %}
-                                            {{ netprice|number_format(2, '.', ',') }}
-                                        </td>
-                                        <td>
-                                            {% set total = qty *  netprice %}
-                                            {{ total|number_format(2, '.', ',') }}
-                                        </td>
+                                        <td>{{ ar.unit.name }}</td>
+
+                                {% for vehicle in ar.unit.vehicles %}
+                                    {% if unitname != ar.unit.name %}
+                                        {% set unitname = ar.unit.name %}
+                                        <td>{{ vehicle.registrationNumber }}</td>
+                                    {% else %}
+                                        <tr>
+                                            <td></td>
+                                            <td>{{ vehicle.registrationNumber }}</td>
+                                    {% endif %}
+
+                                    {% set net = 0 %}
+                                    {% set rec = 0 %}
+                                    {% set cnt = 0 %}
+                                    {% set dis = 0 %}
+                                    {% for invoice in ar.transaction.invoices %}
+                                        {% if invoice.licence == vehicle.registrationNumber %}
+                                            {% set cnt = cnt + 1 %}
+                                            {% set dis = dis + invoice.selldiscount %}
+                                            {% set net = net + ( invoice.qty * invoice.unitprice )%}
+                                            {% set rec = rec + ( invoice.qty * (invoice.unitprice +  invoice.unitdiscount - invoice.selldiscount)) %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <td>
+                                        {% set discount = dis / cnt %}
+                                        {{ discount }}
+                                    </td>
+                                    <td>{{ net|number_format(2, '.', ',') }}</td>
+                                    <td>{{ rec|number_format(2, '.', ',') }}</td>
+                                    <td>{% set pl = rec - net %}
+                                        {{ pl|number_format(2, '.', ',') }}
+                                    </td>
+                                    <td>
+                                        {% set per = (pl / net) * 100 %}
+                                        {{ per|number_format(2, '.', ',') }}%
+                                    </td>
                                     </tr>
-                                {% endif %}
+                                {% endfor %}
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                {% endfor %}
-                <br/>
-                <hr/>
-            {% endfor %}
-            
+                </div>
+                
+                <div id="{{ tab_exp_dtl }}"> {# export detail tab#}
+                    {% for ar in flow.ars %}
+                        <h2>{{ ar.unit.name }}</h2>
+                        {{ 'invoice.invnumber'|trans }} {{ ar.invnumber }} 
+                        {{ 'invoice.transdate'|trans }} {{ ar.transdate }}
+                        {{ 'invoice.duedate'|trans }} {{ ar.duedate }} <br/>
+                        {% for vehicle in ar.unit.vehicles %}
+                            <h4>{{ 'invoice.licence_number'|trans }}: {{ vehicle.registrationNumber }}</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'invoice.date'|trans }}</th>
+                                        <th>{{ 'invoice.time'|trans }}</th>
+                                        <th>{{ 'invoice.site'|trans }}</th>
+                                        <th>{{ 'invoice.receipt_number'|trans }}</th>
+                                        <th>{{ 'invoice.product'|trans }}</th>
+                                        <th>{{ 'invoice.qty'|trans }}</th>
+                                        <th>{{ 'invoice.sell_price'|trans }}</th>
+                                        <th>{{ 'invoice.sell_discount'|trans }}</th>
+                                        <th>{{ 'invoice.net_price'|trans }}</th>
+                                        <th>{{ 'invoice.total'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for invoice in ar.transaction.invoices %}
+                                        {% if invoice.licence == vehicle.registrationNumber %}
+                                            <tr>
+                                                <td>{{ invoice.transDate|date('d/m/Y') }}</td>
+                                                <td>{{ invoice.transTime|date('H:i:s') }}</td>
+                                                <td>{{ invoice.site }}</td>
+                                                <td>{{ invoice.ReceiptNumber }}</td>
+                                                <td>{{ invoice.description }}</td>
+                                                <td>
+                                                    {% set qty = invoice.qty|number_format(2, '.', ',') %}
+                                                    {{ qty }}</td>
+                                                <td>
+                                                    {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
+                                                    {{ sellprice }}
+                                                </td>
+                                                <td>
+                                                    {% set selldiscount = invoice.selldiscount|number_format(2, '.', ',') %}
+                                                    {{ selldiscount }}
+                                                </td>
+                                                <td>
+                                                    {% set netprice = sellprice - selldiscount %}
+                                                    {{ netprice|number_format(2, '.', ',') }}
+                                                </td>
+                                                <td>
+                                                    {% set total = qty *  netprice %}
+                                                    {{ total|number_format(2, '.', ',') }}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <br/>
+                        {% endfor %}
+                        <br/><br/><br/>
+                        <hr/>
+                        <br/>
+                    {% endfor %}
+                </div>
+            </div>
         {% endif %}
 
         {{ form_rest(export_form) }}

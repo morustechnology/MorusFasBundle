@@ -98,6 +98,8 @@ export_step:
     select_all: Select All
     licence_list: 'Licence Number(s)'
     add_to: add to
+    profit_and_loss: 'Profit & loss'
+    export_detail: Export Detail
     
 pl:
     customer: Customer
@@ -119,6 +121,9 @@ invoice:
     sell_discount: Discount
     net_price: Net Px
     total: 'Total HK$'
+    invnumber: Invoice Number
+    transdate: Date
+    duedate: Due Date
     
 contact:
     vehicle_list: Vehicle List
