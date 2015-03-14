@@ -16,8 +16,7 @@ class ExportFlow extends FormFlow {
     
     protected $revalidatePreviousSteps = false;
     
-    public $step;
-    public $transactions = array(); // Transaction for summary step
+    public $nextInvoiceNumber;
     public $ars = array(); // Ar for summary step
     
     public $stmtList = array(); // Statements to be exported
@@ -156,26 +155,10 @@ class ExportFlow extends FormFlow {
      */
     private function fasPL() {
         $this->ars = array();
-        // Set Invoice Number
-        $invPrefix = $this->entityManager
-                ->getRepository('MorusFasBundle:AcceticConfig')
-                ->findOneByControlCode('INV_PREFIX');
-        $invNextNumber = $this->entityManager
-                ->getRepository('MorusFasBundle:AcceticConfig')
-                ->findOneByControlCode('INV_NEXT_NUM');
         
-        if ($invPrefix && $invNextNumber) {
-            $nextNumStr = $invNextNumber->getValue();
-            $num = intval($nextNumStr);
-            $numLen = strlen($nextNumStr);
-            $prefix = $invPrefix->getValue();
-        } else {
-            $num = 1;
-            $numLen = 6;
-            $prefix = $invPrefix->getValue();
-        }
-        
-        
+        $aem = $this->container->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+        $this->nextInvoiceNumber = $aem->nextInvNum();
+                
         // Get All unit who has vehicle appear in statements
         $uqb = $this->entityManager
                 ->getRepository('MorusFasBundle:Unit')
@@ -209,9 +192,8 @@ class ExportFlow extends FormFlow {
             $unit->addAr($ar);
             
             // ar detail
-            $invoicenumber = str_pad($num, 6, '0', STR_PAD_LEFT);
-            $ar->setInvnumber($prefix . $invoicenumber);
-            $num = $num + 1;
+            $ar->setInvnumber($this->nextInvoiceNumber);
+            $this->nextInvoiceNumber = $aem->incInvNum($nextInvoiceNumber);
             
             $ar->setTransdate(new \DateTime("now"));
 //            $ar->setDuedate(date('Y-m-d H:s:i', strtotime("+10 days")));

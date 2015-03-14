@@ -485,16 +485,38 @@ class StatementController extends Controller
                 } else {
                     // flow finished
                     $em = $this->getDoctrine()->getManager();
+                    $em->getConnection()->beginTransaction();
+                    try {
+                        
+                        
                     
-                    foreach($flow->ars as $ar){
-                        $export->addAr($ar);
-//                        $ar->setExport($export);
+                        // Generate and save next invoice number
+                        $config = $aem->getAcceticConfigRepository()->findOneByControlCode('INV_NEXT_NUM');
+
+                        if($config) {
+                            
+                            $suff = $aem->getInvSuff($flow->nextInvoiceNumber);
+                            $config->setValue($suff);
+                            $em->persist($config);
+                        }
+                
+                        // Add generated ar to export
+                        foreach($flow->ars as $ar){
+                            $export->addAr($ar);
+                        }
+                        
+                        $em->persist($export);
+                        $em->flush();
+                        $flow->reset(); // remove step data from the session
+                        
+                        // Try and commit the transaction
+                        $em->getConnection()->commit();
+                    } catch (Exception $ex) {
+                        // Rollback the failed transaction attempt
+                        $em->getConnection()->rollback();
+                        throw $ex;
                     }
                     
-                    $em->persist($export);
-                    $em->flush();
-                    $flow->reset(); // remove step data from the session
-
                     return $this->redirect($this->generateUrl('morus_accetic_ar')); // redirect when done
                 }
             }
