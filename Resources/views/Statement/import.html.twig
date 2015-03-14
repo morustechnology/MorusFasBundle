@@ -58,291 +58,361 @@
 {% endblock %}
 
 {% block body -%}
-    <div>
-        {% include 'CraueFormFlowBundle:FormFlow:stepList.html.twig' %}
+    <div class="fas-step-control">
+        {% include 'MorusFasBundle:Statement:FormFlow/stepList.html.twig' %}
     </div>
-    {{ form_start(form) }}
-        {{ form_errors(form) }}        
-        {% if flow.getCurrentStepNumber() == 1 %}
-            {{ 'statement.separate_date_time_column'|trans }} {{ form_widget(form.splitDateTime) }}
-            <div id="datetime_div">
-            {{ 'statement.date_time_format'|trans }} {{ form_widget(form.datetimeFormat) }} <br/>
-            {{ 'statement.date_time_help'|trans }}
-            </div>
-            <div id="date_time_div">
-            {{ 'statement.date_format'|trans }} {{ form_widget(form.dateFormat) }}
-            {{ 'statement.time_format'|trans }} {{ form_widget(form.timeFormat) }} <br/>
-            {{ 'statement.date_time_help'|trans }}
-            </div>
-            
-            
-            <br/>
-            {{ 'statement.supplier'|trans }} {{ form_widget(form.unit) }} {{ form_errors(form.unit) }}<br/>
-            {{ 'statement.remark'|trans }} {{ form_widget(form.name) }} {{ form_errors(form.name) }}<br/>
-            {{ 'statement.file'|trans }} {{ form_widget(form.file) }} {{ form_errors(form.file) }}<br/>
-        {% elseif flow.getCurrentStepNumber() == 2 %}
-            <div>
-                <h1>{{ 'statement.pairing_header'|trans }}</h1>
-                <br />
-                {{ 'statement.headers.card_number'|trans }} {{ form_widget(form.cardNumberHeader) }} {{ form_errors(form.cardNumberHeader) }}<br/>
-                {{ 'statement.headers.licence_number'|trans }} {{ form_widget(form.licenceNumberHeader) }} {{ form_errors(form.licenceNumberHeader) }}<br/>
-                {{ 'statement.headers.site'|trans }} {{ form_widget(form.siteHeader) }} {{ form_errors(form.siteHeader) }}<br/>
-                {{ 'statement.headers.receipt_number'|trans }} {{ form_widget(form.receiptNumberHeader) }} {{ form_errors(form.receiptNumberHeader) }}<br/>
-                {% if (flow.isSplitDateTime == true ) %}
-                    {{ 'statement.headers.transaction_date'|trans }} {{ form_widget(form.transactionDateHeader) }} {{ form_errors(form.transactionDateHeader) }}<br/>
-                    {{ 'statement.headers.transaction_time'|trans }} {{ form_widget(form.transactionTimeHeader) }} {{ form_errors(form.transactionTimeHeader) }}<br/>
-                {% else %}
-                    {{ 'statement.headers.transaction_datetime'|trans }} {{ form_widget(form.transactionDatetimeHeader) }} {{ form_errors(form.transactionDatetimeHeader) }}<br/>
-                {% endif %}
-                {{ 'statement.headers.product_name'|trans }} {{ form_widget(form.productNameHeader) }} {{ form_errors(form.productNameHeader) }}<br/>
-                {{ 'statement.headers.unit_discount'|trans }} {{ form_widget(form.unitDiscountHeader) }} {{ form_errors(form.unitDiscountHeader) }}<br/>
-                {{ 'statement.headers.volume'|trans }} {{ form_widget(form.volumeHeader) }} {{ form_errors(form.volumeHeader) }}<br/>
-                {{ 'statement.headers.unit_price'|trans }} {{ form_widget(form.unitPriceHeader) }} {{ form_errors(form.unitPriceHeader) }}<br/>
-                {{ 'statement.headers.net_amount'|trans }} {{ form_widget(form.netAmountHeader) }} {{ form_errors(form.netAmountHeader) }}<br/>
-            </div>
-            
-        {% elseif flow.getCurrentStepNumber() == 3 %}
-            {# Display Error #}
-            {% if not flow.hasError %} 
-                {% image '@MorusFasBundle/Resources/public/images/ok_icon.png' %}
-                    <img src="{{ asset_url }}" alt="ok" style="width: 200px"/>
-                {% endimage %}
-                <br/>
-                {{ 'statement.msg.statement_valid'|trans }}<br/>
-            {% else %} {#  Display Error #}
-                {{ 'statement.msg.statement_error'|trans }}<br/>
-                {% image '@MorusFasBundle/Resources/public/images/magnifying_24x24.png' %}
-                    <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> {{ 'statement.msg.invalid_format'|trans }}
-                {% endimage %}
-                <br/>
-                {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                    <img src="{{ asset_url }}" alt="format error" style="width: 16px"/> {{ 'statement.msg.missing_data'|trans }}
-                {% endimage %}
-                <table>
-                    <thead>
+    
+    <div id="container-box" class="">
+        <div class="section-form inset fas-step-form">
+            {{ form_start(form) }}
+                {{ form_errors(form) }}        
+                
+                {% if flow.getCurrentStepNumber() == 1 %}
+                    <h4 class="first">{{ 'statement.date_time'|trans }}</h4>
+                    <fieldset>
+                        {{ 'statement.separate_date_time_column'|trans }} {{ form_widget(form.splitDateTime) }}
+                        <div id="datetime_div">
+                        {{ 'statement.date_time_format'|trans }} {{ form_widget(form.datetimeFormat) }} <br/>
+                        <span class="notes">{{ 'statement.date_time_help'|trans }}</span>
+                        </div>
+                        <div id="date_time_div">
+                        {{ 'statement.date_format'|trans }} {{ form_widget(form.dateFormat) }}
+                        {{ 'statement.time_format'|trans }} {{ form_widget(form.timeFormat) }} <br/>
+                        {{ 'statement.date_time_help'|trans }}
+                        </div>
+                    </fieldset>
+
+
+                    <h4 class="fas-step-subtitle">{{ 'statement.supplier'|trans }}</h4>
+                    <fieldset>{{ form_widget(form.unit) }} {{ form_errors(form.unit) }}</fieldset>
+
+                    <h4 class="fas-step-subtitle">{{ 'statement.remark'|trans }}</h4>
+                    <fieldset>{{ form_widget(form.name) }} {{ form_errors(form.name) }}</fieldset>
+
+                    <h4 class="fas-step-subtitle">{{ 'statement.file'|trans }}</h4>
+                    <p>{{ 'statement.file_note'|trans }}:{{ form_widget(form.file) }} {{ form_errors(form.file) }}<br/>
+                    <span class="notes">{{ 'statement.file_note_format'|trans }}</span></p>
+
+                {% elseif flow.getCurrentStepNumber() == 2 %}
+                    
+                    <h4 class="first">{{ 'statement.pairing_header'|trans }}</h4>
+                    <table>
                         <tr>
-                            <th>Row</th>
-                            <th>{{ 'statement.headers.card_number'|trans }}</th>
-                            <th>{{ 'statement.headers.licence_number'|trans }}</th>
-                            <th>{{ 'statement.headers.site'|trans }}</th>
-                            <th>{{ 'statement.headers.receipt_number'|trans }}</th>
-                            {% if flow.isSplitDateTime %}
-                                <th>{{ 'statement.headers.transaction_date'|trans }}</th>
-                                <th>{{ 'statement.headers.transaction_time'|trans }}</th>
-                            {% else %}
-                                <th>{{ 'statement.headers.transaction_datetime'|trans }}</th>
-                            {% endif %}
-                            <th>{{ 'statement.headers.product_name'|trans }}</th>
-                            <th>{{ 'statement.headers.unit_discount'|trans }}</th>
-                            <th>{{ 'statement.headers.volume'|trans }}</th>
-                            <th>{{ 'statement.headers.unit_price'|trans }}</th>
-                            <th>{{ 'statement.headers.net_amount'|trans }}</th>
+                            <td style="width:80px;">{{ 'statement.headers.card_number'|trans }}</td>
+                            <td>{{ form_widget(form.cardNumberHeader) }} {{ form_errors(form.cardNumberHeader) }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for errorLog in flow.errorLogs %}
                         <tr>
-                            <td>{{ errorLog.row }}</td>
-                            <td>
-                                {% if errorLog.nullCardNumber %}
-                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                    {% endimage %}
-                                {% else %}
-                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                    {% endimage %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if errorLog.nullLicenceNumber %}
-                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                    {% endimage %}
-                                {% else %}
-                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                    {% endimage %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if errorLog.nullSite %}
-                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                    {% endimage %}
-                                {% else %}
-                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                    {% endimage %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if errorLog.nullReceiptNumber %}
-                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                    {% endimage %}
-                                {% else %}
-                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                    {% endimage %}
-                                {% endif %}
-                            </td>
-                            {% if flow.isSplitDateTime %}
-                                <td>
-                                    {% if errorLog.nullTransactionDate %}
-                                        {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                        {% endimage %}
-                                    {% else %}
-                                        {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                        {% endimage %}
-                                    {% endif %}
-                                    
-                                    {% if errorLog.invalidTransactionDate %}
-                                        {% image '@MorusFasBundle/Resources/public/images/magnifying_24x24.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                        {% endimage %}
-                                    {% else %}
-                                        {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                        {% endimage %}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if errorLog.nullTransactionTime %}
-                                        {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                        {% endimage %}
-                                    {% else %}
-                                        {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                        {% endimage %}
-                                    {% endif %}
-                                    
-                                    {% if errorLog.invalidTransactionTime %}
-                                        {% image '@MorusFasBundle/Resources/public/images/magnifying_24x24.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                        {% endimage %}
-                                    {% else %}
-                                        {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                        {% endimage %}
-                                    {% endif %}
-                                </td>
-                            {% else %}
-                                <td>
-                                    {% if errorLog.nullTransactionDateTime %}
-                                        {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                        {% endimage %}
-                                    {% else %}
-                                        {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                        {% endimage %}
-                                    {% endif %}
-                                    
-                                    {% if errorLog.invalidTransactionDateTime %}
-                                        {% image '@MorusFasBundle/Resources/public/images/magnifying_24x24.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                        {% endimage %}
-                                    {% else %}
-                                        {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                            <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                        {% endimage %}
-                                    {% endif %}
-                                </td>
-                            {% endif %}
-                            <td>
-                                {% if errorLog.nullProductName %}
-                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                    {% endimage %}
-                                {% else %}
-                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                    {% endimage %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if errorLog.nullUnitDiscount %}
-                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                    {% endimage %}
-                                {% else %}
-                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                    {% endimage %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if errorLog.nullVolume %}
-                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                    {% endimage %}
-                                {% else %}
-                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                    {% endimage %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if errorLog.nullUnitPrice %}
-                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                    {% endimage %}
-                                {% else %}
-                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                    {% endimage %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if errorLog.nullNetAmount %}
-                                    {% image '@MorusFasBundle/Resources/public/images/caution_26x26.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/>
-                                    {% endimage %}
-                                {% else %}
-                                    {% image '@MorusFasBundle/Resources/public/images/valid_icon_32x32.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 16px"/> 
-                                    {% endimage %}
-                                {% endif %}
-                            </td>
+                            <td>{{ 'statement.headers.licence_number'|trans }}</td>
+                            <td>{{ form_widget(form.licenceNumberHeader) }} {{ form_errors(form.licenceNumberHeader) }}</td>
                         </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
+                        <tr>
+                            <td>{{ 'statement.headers.site'|trans }}</td>
+                            <td>{{ form_widget(form.siteHeader) }} {{ form_errors(form.siteHeader) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'statement.headers.receipt_number'|trans }}</td>
+                            <td>{{ form_widget(form.receiptNumberHeader) }} {{ form_errors(form.receiptNumberHeader) }}</td>
+                        </tr>
+                        {% if (flow.isSplitDateTime == true ) %}
+                        <tr>
+                            <td>{{ 'statement.headers.transaction_date'|trans }}</td>
+                            <td>{{ form_widget(form.transactionDateHeader) }} {{ form_errors(form.transactionDateHeader) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'statement.headers.transaction_time'|trans }}</td>
+                            <td>{{ form_widget(form.transactionTimeHeader) }} {{ form_errors(form.transactionTimeHeader) }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td>{{ 'statement.headers.transaction_datetime'|trans }}</td>
+                            <td>{{ form_widget(form.transactionDatetimeHeader) }} {{ form_errors(form.transactionDatetimeHeader) }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td>{{ 'statement.headers.product_name'|trans }}</td>
+                            <td>{{ form_widget(form.productNameHeader) }} {{ form_errors(form.productNameHeader) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'statement.headers.unit_discount'|trans }}</td>
+                            <td>{{ form_widget(form.unitDiscountHeader) }} {{ form_errors(form.unitDiscountHeader) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'statement.headers.volume'|trans }}</td>
+                            <td>{{ form_widget(form.volumeHeader) }} {{ form_errors(form.volumeHeader) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'statement.headers.unit_price'|trans }}</td>
+                            <td>{{ form_widget(form.unitPriceHeader) }} {{ form_errors(form.unitPriceHeader) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'statement.headers.net_amount'|trans }}</td>
+                            <td>{{ form_widget(form.netAmountHeader) }} {{ form_errors(form.netAmountHeader) }}</td>
+                        </tr>
+                    </table>
+                    
 
-            {{ 'statement.msg.total_row_processed'|trans({ '%row' : flow.totalProcessedCount }) }}
-            
-        {% endif %}
+                {% elseif flow.getCurrentStepNumber() == 3 %}
+                    {# Display Error #}
+                    <div class="fas-steplist-result">
+                    {% if not flow.hasError %} 
+                        <br/>
+                        <h3 style="margin-top: 50px;">{{ 'statement.msg.statement_valid'|trans }}</h3>
+                        <h5>{{ 'statement.msg.total_row_processed'|trans({ '%row' : flow.totalProcessedCount }) }}</h5>
+                        {% image '@MorusFasBundle/Resources/public/images/ok_icon.png' %}
+                            <br><img src="{{ asset_url }}" alt="ok" style="width: 100px"/>
+                        {% endimage %}
+                    {% else %} {#  Display Error #}
+                        <br/>
+                        <h3 style="border-bottom:1px solid #fff;padding-bottom: 15px;">{{ 'statement.msg.statement_error'|trans }}</h3>
+                        <h5>{{ 'statement.msg.total_row_processed'|trans({ '%row' : flow.totalProcessedCount }) }}</h5>
+                        <table>
+                            <tr>
+                                <td>
+                                    {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 35px;"/>
+                                    {% endimage %}
+                                </td>
+                                <td style="text-align: left;padding-right: 20px;"><span style=" font-size: 18px; color: red; line-height: 38px;">{{ 'statement.msg.invalid_format'|trans }}</span></td>
+                                <td>
+                                    {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                        <img src="{{ asset_url }}" alt="format error" style="width: 35px;"/>
+                                    {% endimage %}
+                                </td>
+                                <td style="text-align: left;"><span style=" font-size: 18px; color: red; line-height: 38px;">{{ 'statement.msg.missing_data'|trans }}</span></td>
+                            </tr>
+                        </table>
+                        
+                        <br/>
+                        
+                        
+                        <table class="fas-error-table">
+                            <thead>
+                                <tr>
+                                    <th>Row</th>
+                                    <th>{{ 'statement.headers.card_number'|trans }}</th>
+                                    <th>{{ 'statement.headers.licence_number'|trans }}</th>
+                                    <th>{{ 'statement.headers.site'|trans }}</th>
+                                    <th>{{ 'statement.headers.receipt_number'|trans }}</th>
+                                    {% if flow.isSplitDateTime %}
+                                        <th>{{ 'statement.headers.transaction_date'|trans }}</th>
+                                        <th>{{ 'statement.headers.transaction_time'|trans }}</th>
+                                    {% else %}
+                                        <th>{{ 'statement.headers.transaction_datetime'|trans }}</th>
+                                    {% endif %}
+                                    <th>{{ 'statement.headers.product_name'|trans }}</th>
+                                    <th>{{ 'statement.headers.unit_discount'|trans }}</th>
+                                    <th>{{ 'statement.headers.volume'|trans }}</th>
+                                    <th>{{ 'statement.headers.unit_price'|trans }}</th>
+                                    <th>{{ 'statement.headers.net_amount'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for errorLog in flow.errorLogs %}
+                                <tr>
+                                    <td>{{ errorLog.row }}</td>
+                                    <td>
+                                        {% if errorLog.nullCardNumber %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                            {% endimage %}
+                                        {% else %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                            {% endimage %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if errorLog.nullLicenceNumber %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                            {% endimage %}
+                                        {% else %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                            {% endimage %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if errorLog.nullSite %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                            {% endimage %}
+                                        {% else %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                            {% endimage %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if errorLog.nullReceiptNumber %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                            {% endimage %}
+                                        {% else %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                            {% endimage %}
+                                        {% endif %}
+                                    </td>
+                                    {% if flow.isSplitDateTime %}
+                                        <td>
+                                            {% if errorLog.nullTransactionDate %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                                {% endimage %}
+                                            {% else %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                                {% endimage %}
+                                            {% endif %}
 
-        {{ form_rest(form) }}
+                                            {% if errorLog.invalidTransactionDate %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                                {% endimage %}
+                                            {% else %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                                {% endimage %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if errorLog.nullTransactionTime %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                                {% endimage %}
+                                            {% else %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                                {% endimage %}
+                                            {% endif %}
 
-        {% set renderBackButton = flow.getFirstStepNumber() < flow.getLastStepNumber() and flow.getCurrentStepNumber() in (flow.getFirstStepNumber() + 1) .. flow.getLastStepNumber() %}
-        <div class="craue_formflow_buttons craue_formflow_button_count_{% if renderBackButton %}3{% else %}2{% endif %}">
-                {%- set isLastStep = flow.getCurrentStepNumber() == flow.getLastStepNumber() -%}
-                {%- set craue_formflow_button_class_last = craue_formflow_button_class_last | default('craue_formflow_button_last') -%}
-                {%- set craue_formflow_button_class_last = isLastStep
-                                ? craue_formflow_button_class_finish | default(craue_formflow_button_class_last)
-                                : craue_formflow_button_class_next | default(craue_formflow_button_class_last)
-                        -%}
-                {% if not flow.hasError %}
-                <button type="submit" class="{{ craue_formflow_button_class_last }}">
-                        {{- (isLastStep ? 'button.finish' : 'button.next') | trans({}, 'CraueFormFlowBundle') -}}
-                </button>
+                                            {% if errorLog.invalidTransactionTime %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                                {% endimage %}
+                                            {% else %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                                {% endimage %}
+                                            {% endif %}
+                                        </td>
+                                    {% else %}
+                                        <td>
+                                            {% if errorLog.nullTransactionDateTime %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                                {% endimage %}
+                                            {% else %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                                {% endimage %}
+                                            {% endif %}
+
+                                            {% if errorLog.invalidTransactionDateTime %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                                {% endimage %}
+                                            {% else %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                                {% endimage %}
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                    <td>
+                                        {% if errorLog.nullProductName %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                            {% endimage %}
+                                        {% else %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                            {% endimage %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if errorLog.nullUnitDiscount %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                            {% endimage %}
+                                        {% else %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                            {% endimage %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if errorLog.nullVolume %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                            {% endimage %}
+                                        {% else %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                            {% endimage %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if errorLog.nullUnitPrice %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                            {% endimage %}
+                                        {% else %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                            {% endimage %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if errorLog.nullNetAmount %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                            {% endimage %}
+                                        {% else %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                                                <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
+                                            {% endimage %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+
+                    
+                    </div>
+
                 {% endif %}
 
-                {% if renderBackButton %}
-                        <button type="submit" class="{{ craue_formflow_button_class_back | default('') }}" name="{{ flow.getFormTransitionKey() }}" value="back" formnovalidate="formnovalidate">
-                                {{- 'button.back' | trans({}, 'CraueFormFlowBundle') -}}
+                {{ form_rest(form) }}
+
+                {% set renderBackButton = flow.getFirstStepNumber() < flow.getLastStepNumber() and flow.getCurrentStepNumber() in (flow.getFirstStepNumber() + 1) .. flow.getLastStepNumber() %}
+                <div class="fas-steplist-control craue_formflow_buttons craue_formflow_button_count_{% if renderBackButton %}3{% else %}2{% endif %}">
+                        {%- set isLastStep = flow.getCurrentStepNumber() == flow.getLastStepNumber() -%}
+                        {%- set craue_formflow_button_class_last = craue_formflow_button_class_last | default('craue_formflow_button_last') -%}
+                        {%- set craue_formflow_button_class_last = isLastStep
+                                        ? craue_formflow_button_class_finish | default(craue_formflow_button_class_last)
+                                        : craue_formflow_button_class_next | default(craue_formflow_button_class_last)
+                                -%}
+                        {% if not flow.hasError %}
+                        <button type="submit" class="{{ craue_formflow_button_class_last }} green-btn">
+                                {{- (isLastStep ? 'button.finish' : 'button.next') | trans({}, 'CraueFormFlowBundle') -}}
                         </button>
-                {% endif %}
+                        {% endif %}
 
-                <button type="submit" class="{{ craue_formflow_button_class_reset | default('craue_formflow_button_first') }}" name="{{ flow.getFormTransitionKey() }}" value="reset" formnovalidate="formnovalidate">
-                        {{- 'button.reset' | trans({}, 'CraueFormFlowBundle') -}}
-                </button>
+                        {% if renderBackButton %}
+                                <button type="submit" class="{{ craue_formflow_button_class_back | default('') }} grey-btn" name="{{ flow.getFormTransitionKey() }}" value="back" formnovalidate="formnovalidate">
+                                        {{- 'button.back' | trans({}, 'CraueFormFlowBundle') -}}
+                                </button>
+                        {% endif %}
+
+                        <button type="submit" class="{{ craue_formflow_button_class_reset | default('craue_formflow_button_first') }} grey-btn" name="{{ flow.getFormTransitionKey() }}" value="reset" formnovalidate="formnovalidate">
+                                {{- 'button.reset' | trans({}, 'CraueFormFlowBundle') -}}
+                        </button>
+                </div>
+            {{ form_end(form) }}
         </div>
-    {{ form_end(form) }}
+    </div>
 {% endblock %}

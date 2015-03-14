@@ -18,6 +18,7 @@ menu:
 statement:
     upload_new_statement: 上载新月结单
     separate_date_time_column: 日期/时间分行
+    date_time: 日期及时间
     date_time_format: 日期时间格式
     date_format: 日期格式
     time_format: 时间格式
@@ -42,8 +43,11 @@ statement:
     existing_customer: 现有客户
     choose_customer: '[ 选择客戶 ]'
     customer_info: 客户资料
+    file_note: 选择要上载的文件
+    file_note_format: 你上载的文件必须是CSV(逗号分隔值)文件，档案名称结尾必需是.csv或.xls。
+    
     msg:
-        statement_error: 月结单含有错误，请修复错误并继续下一步。
+        statement_error: 月结单含有错误，请修改错误并继续下一步。
         statement_valid: 所有月结单内容正确，请点击"完成"继续。
         missing_data: 没有资料数据
         invalid_format: 格式错误

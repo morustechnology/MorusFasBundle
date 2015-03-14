@@ -1,0 +1,103 @@
+.fas-step-form button{
+    margin: 0 0 0 10px;
+}
+.fas-step-control{
+    box-shadow: 0 1px 3px rgba(221, 221, 221, 0.5);
+    clear: both;
+    float: left;
+    margin-bottom: 20px;
+    margin-left: 1px;
+    border-radius: 3px;
+    padding: 1px;
+    height: 70px;
+    width: 940px;
+    background: #eff1f3; /* Old browsers */
+    background: -moz-linear-gradient(top,  #eff1f3 0%, #c4c5c6 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eff1f3), color-stop(100%,#c4c5c6)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #eff1f3 0%,#c4c5c6 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #eff1f3 0%,#c4c5c6 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #eff1f3 0%,#c4c5c6 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #eff1f3 0%,#c4c5c6 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eff1f3', endColorstr='#c4c5c6',GradientType=0 ); /* IE6-9 */
+}
+.fas-steplist{
+    float: left;
+    margin: 0;
+    box-sizing: border-box;
+    border-radius: 3px;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top,  #ffffff 0%, #f5f7f8 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f5f7f8)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #ffffff 0%,#f5f7f8 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #ffffff 0%,#f5f7f8 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f5f7f8 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #ffffff 0%,#f5f7f8 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f7f8',GradientType=0 ); /* IE6-9 */
+    height: 70px;
+    width: 100%;
+    
+}
+.fas-steplist li.craue_formflow_current_step, .fas-steplist li.craue_formflow_current_step a{
+    /*background: #048fc2;
+    color: #fff;*/
+}
+.fas-steplist li.craue_formflow_done_step, .fas-steplist li.craue_formflow_done_step a{
+    background: #2aa82a;
+    color: #fff;
+}
+.fas-steplist li a{
+    color: #888;
+}
+.fas-steplist li{
+    float: left;
+    color: #888;
+    font-size: 24px;
+    list-style-position: inside;
+    padding-top: 20px;
+    text-align: center;
+    border-right: 1px solid #d9dadb;
+    height: 50px;
+    width: 312px;
+}
+
+#fas_import_step1_file{
+    border: none;
+}
+#container-box{
+    float: left;
+}
+.fas-steplist-result{
+    text-align: center;
+}
+.fas-error-table{
+    width: 100%;
+}
+.fas-steplist-control{
+    margin: 20px 0;
+}
+
+/*Statement (Table)*/
+.fas-records-list{
+    border: 1px solid #ccc;
+    float: left;
+    width: 450px;
+}
+.fas-records-list tr th{
+    background: #f2f6ff;
+    border-bottom: 1px solid #b7c0c7;
+    white-space: nowrap;
+    font-weight: normal;
+    color: #048fc2;
+    text-align: left;
+}
+.fas-records-list tr td{
+    border-bottom: 1px solid #ddd;
+}
+.fas-records-list tr th, .fas-records-list tr td{
+    height: 30px;
+    padding: 0 10px;
+    vertical-align: middle;
+}
+.fas-records-list tr:hover{
+    background: #e8f1ff;
+}

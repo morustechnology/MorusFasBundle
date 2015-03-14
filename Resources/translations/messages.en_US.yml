@@ -18,6 +18,7 @@ menu:
 statement:
     upload_new_statement: Upload New Statement
     separate_date_time_column: Separate Date Time Column
+    date_time: Date＆Time
     date_time_format: DateTime Format
     date_format: Date Format
     time_format: Time Format
@@ -42,6 +43,8 @@ statement:
     existing_customer: Existing Customer
     choose_customer: '[ Choose Customer ]'
     customer_info: Customer Info
+    file_note: Select the file to import
+    file_note_format: The file you import must be a CSV (Comma Separated Values) file. The name of your file should end with either .csv or .xls. 
     
     msg:
         statement_error: Statement contain error, please fix the error to proceed next step.

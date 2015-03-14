@@ -37,23 +37,33 @@
         <ul class="page-control">
             <li>
                 <a id="{{ stmt_ul_lk_id }}" class="loading-btn" href="{{ path('morus_fas_statement_import') }}">
+                    {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+                    <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:0 -50px;" ></em>
+                    {% endimage %}
                     {{ 'btn.upload_new_statement'|trans }}
                 </a>
             </li>
             <li>
                 <a id="{{ stmt_exp_lk_id }}" class="loading-btn" href="#">
+                    {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+                    <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-120px -50px;" ></em>
+                    {% endimage %}
                     {{ 'btn.export_invoice'|trans }}
                 </a>
             </li>
             <li>
                 <a id="{{ stmt_del_lk_id }}" class="loading-btn" href="#">
+                    {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+                    <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-220px -50px;" ></em>
+                    {% endimage %}
                     {{ 'btn.delete_statement'|trans }}
                 </a>
             </li>
         </ul>
         {{ form_widget(form.export_invoice) }}
         {{ form_widget(form.delete_invoice) }}
-        <table class="records_list">
+        
+        <table class="fas-records-list">
             <thead>
                 <tr>
                     <th></th>
@@ -71,6 +81,7 @@
             <tr>
         {% endfor %}
         </table>
+        
         {{ form_rest(form) }}
     {{ form_end(form) }}
 {% endblock %}
