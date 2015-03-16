@@ -30,12 +30,14 @@ class UnitType extends AbstractType
                 'type' => 'accetic_contact'
             ))
             ->add('unitParts', 'collection', array(
+                'label' => false,
                 'type' => 'fas_unit_parts',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
             ))
             ->add('vehicles', 'collection', array(
+                'label' => false,
                 'type' => 'fas_vehicle',
                 'allow_add' => true,
                 'allow_delete' => true,

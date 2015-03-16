@@ -136,6 +136,7 @@ contact:
     product: 貨品
     registration_number: 車牌
     discount: 折扣
+    copy_postal: 複製郵寄地址
 
 ar:
     amount: 總額

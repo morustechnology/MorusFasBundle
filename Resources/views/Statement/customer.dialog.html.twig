@@ -17,6 +17,18 @@
     var $addUnitPartsLink = $('<a href="#" class="add_link">{{ 'btn.add_new_product_discount'|trans }}</a>');
     var $newUnitPartsLinkLi = $('<li></li>').append($addUnitPartsLink);
     
+    jQuery(document).ready(function() {
+       $('#copy_postal').on('click', function(event){
+           event.preventDefault();
+           $('#fas_unit_locations_1_attention').val($('#fas_unit_locations_0_attention').val());
+           $('#fas_unit_locations_1_address').val($('#fas_unit_locations_0_address').val());
+           $('#fas_unit_locations_1_city').val($('#fas_unit_locations_0_city').val());
+           $('#fas_unit_locations_1_state').val($('#fas_unit_locations_0_state').val());
+           $('#fas_unit_locations_1_zipCode').val($('#fas_unit_locations_0_zipCode').val());
+           $('#fas_unit_locations_1_country').val($('#fas_unit_locations_0_country').val());
+           
+       }); 
+    });
     // Add Parts Discount Functions
     jQuery(document).ready(function() {
         

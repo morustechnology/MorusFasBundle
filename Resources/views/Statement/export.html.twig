@@ -72,7 +72,7 @@
                                 refreshProductList();
                                 $prodDlg.dialog( "close" );
                             } else {
-                                alert({{ 'error.save_prod'|trans }}));
+                                alert("{{ 'error.save_prod'|trans }}");
                             }
 
                         });
@@ -95,7 +95,9 @@
                 $prodForm.find('#{{ prod_dlg_idx_id }}').val(index);
                 $prodForm.find('#{{ parts_form.itemcode.vars.id }}').val(itemcode);
                 $prodForm.find('#{{ parts_form.itemname.vars.id }}').val(itemname);
-                $prodForm.find('#{{ parts_form.defaultDiscount.vars.id }}').val('');
+                $prodForm.find('#{{ parts_form.defaultDiscount.vars.id }}').val('0.0');
+                $prodForm.find('#{{ parts_form.othername.vars.id }}').val('');
+                $prodForm.find('#{{ parts_form.useOthername.vars.id }}').attr("checked", false);
                 
                 $prodDlg.data('btn_id', this.id)
                         .dialog( "open" );
@@ -169,8 +171,6 @@
             refreshCustomerVehicleList();
             refreshComboBox();
             
-            
-            
             // Update customer dialog box
             $custDlg.dialog({ 
                 autoOpen: false, height: 600, width: 900, modal: true,
@@ -194,7 +194,7 @@
                                 refreshComboBox();
                                 $custDlg.dialog( "close" );
                             } else {
-                                alert({{ 'error.update_customer'|trans }});
+                                alert("{{ 'error.update_customer'|trans }}");
                             }
                         });
                     },

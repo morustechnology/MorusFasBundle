@@ -54,7 +54,7 @@
                 {% if form.locationClassControlCode.vars.value == 'POSTAL'%}
                     {{ 'contact.postal_address'|trans }}
                 {% elseif form.locationClassControlCode.vars.value == 'PHYSICAL' %}
-                    {{ 'contact.physical_address'|trans }}
+                    {{ 'contact.physical_address'|trans }} <a id="copy_postal" href="#" >({{ 'contact.copy_postal'|trans }})</a>
                 {% else %}
                     {{ 'contact.address'|trans }}
                 {% endif %}

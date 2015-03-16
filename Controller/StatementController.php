@@ -81,8 +81,15 @@ class StatementController extends Controller
             $parts = new Parts();
             $parts->setItemcode($data['itemcode']);
             $parts->setItemname($data['itemname']);
+            
             $parts->setOthername($data['othername']);
-            $parts->setUseOthername($data['useOthername']);
+            
+            if (array_key_exists('useOthername',$data)) {
+                $parts->setUseOthername($data['useOthername']);
+            } else {
+                $parts->setUseOthername(false);
+            }
+            
             $parts->setUnit('L');
             $parts->setDefaultDiscount($data['defaultDiscount']);
             
