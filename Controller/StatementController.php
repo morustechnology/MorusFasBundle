@@ -526,7 +526,7 @@ class StatementController extends Controller
                         throw $ex;
                     }
                     
-                    return $this->redirect($this->generateUrl('morus_accetic_ar')); // redirect when done
+                    return $this->redirect($this->generateUrl('morus_fas_ar')); // redirect when done
                 }
             }
 

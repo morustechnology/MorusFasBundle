@@ -69,6 +69,7 @@
                                         "<img src='{{ asset_url }}' alt='OK' style='width: 16px'/>"
                                     {% endimage %}
                                 );
+                                
                                 refreshProductList();
                                 $prodDlg.dialog( "close" );
                             } else {
@@ -440,32 +441,32 @@
                                     {% set cnt = 0 %}
                                     
                                     {% for invoice in ar.transaction.invoices %}
-                                        {% set total = 0 %}
-                                        {% set sellprice = 0 %}
+                                        
                                         {% if invoice.licence == vehicle.registrationNumber %}
                                             {% set cnt = cnt + 1 %}
-                                            {% set unitprice = invoice.unitprice|number_format(2, '.', ',') %}
-                                            {% set unitdiscount = invoice.unitdiscount|number_format(2, '.', ',') %}
-                                            {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
-                                            {% set selldiscount = invoice.selldiscount|number_format(2, '.', ',') %}
+                                            {% set unitprice = invoice.unitprice|round(2) %}
+                                            {% set unitdiscount = invoice.unitdiscount|round(2) %}
+                                            {% set sellprice = invoice.sellprice|round(2) %}
+                                            {% set selldiscount = invoice.selldiscount|round(2) %}
+                                            {% set px = sellprice - selldiscount %}
+                                            {% set qty = invoice.qty %}
                                             
                                             
-                                            
-                                            {% set net = net + ( invoice.qty * invoice.unitprice )%}
-                                            {% set rec = rec + ( invoice.qty * ( invoice.sellprice - invoice.selldiscount)) %}
-                                            {% set nettotal = nettotal + net %}
-                                            {% set rectotal = rectotal + rec %}
+                                            {% set net = net|round(2) + ( qty * unitprice ) %}
+                                            {% set rec = rec|round(2) + ( qty * px ) %}
+                                            {% set nettotal = nettotal|round(2) + net %}
+                                            {% set rectotal = rectotal|round(2) + rec %}
                                         {% endif %}
                                     {% endfor %}
-                                    <td>{{ net|number_format(2, '.', ',') }}</td>
-                                    <td>{{ rec|number_format(2, '.', ',') }}</td>
+                                    <td>{{ net|round(2) }}</td>
+                                    <td>{{ rec|round(2) }}</td>
                                     <td>{% set pl = rec - net %}
                                         {% set pltotal = pltotal + pl %}
-                                        {{ pl|number_format(2, '.', ',') }}
+                                        {{ pl|round(2) }}
                                     </td>
                                     <td>
                                         {% set per = (pl / net) * 100 %}
-                                        {{ per|number_format(2, '.', ',') }}%
+                                        {{ per|round(2) }}%
                                     </td>
                                     </tr>
                                 {% endfor %}
