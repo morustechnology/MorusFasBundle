@@ -159,6 +159,12 @@ class ExportFlow extends FormFlow {
         $aem = $this->container->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
         $this->nextInvoiceNumber = $aem->nextInvNum();
                 
+        // Init invoice date and default due date
+        $dueinterval = $aem->getConfigRepository()->findOneByControlCode('INV_DUE_INTERVAL');
+        $invdate = new \DateTime('now');
+        $duedate = new DateTime('now');
+        $duedate->add(new DateInterval('P'.$dueinterval.'D'));
+        
         // Get All unit who has vehicle appear in statements
         $uqb = $this->entityManager
                 ->getRepository('MorusFasBundle:Unit')
@@ -194,9 +200,8 @@ class ExportFlow extends FormFlow {
             // ar detail
             $ar->setInvnumber($this->nextInvoiceNumber);
             $this->nextInvoiceNumber = $aem->incInvNum($this->nextInvoiceNumber, 1);
-            
-            $ar->setTransdate(new \DateTime("now"));
-//            $ar->setDuedate(date('Y-m-d H:s:i', strtotime("+10 days")));
+            $ar->setTransdate($invdate);
+            $ar->setDuedate($duedate);
         }
         
         foreach( $stmts as $stmt) {

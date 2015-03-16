@@ -44,7 +44,7 @@ statement:
     choose_customer: '[ 選擇客戶 ]'
     customer_info: 客戶資料
     file_note: 選擇要上载的文件
-    file_note_format: 你上载的文件必須是CSV(逗號分隔值)文件，檔案名稱結尾必需是.csv或.xls。
+    file_note_format: 上载的文件必須是CSV(逗號分隔值)文件，檔案名稱結尾必需是.csv或.xls。
     
     msg:
         statement_error: 月結單含有錯誤，請修改錯誤並繼續下一步。

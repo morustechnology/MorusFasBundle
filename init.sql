@@ -1,6 +1,7 @@
 # Accetic Bundle SQL
 INSERT INTO `accetic_config`(`control_code`, `value`, `name`, `sort_order`, `active`, `create_date`) VALUES ('INV_PREFIX', 'INV-', 'Invoice Prefix', 0, 1, now());
 INSERT INTO `accetic_config`(`control_code`, `value`, `name`, `sort_order`, `active`, `create_date`) VALUES ('INV_NEXT_NUM', '00001', 'Invoice Next Number', 0, 1, now());
+INSERT INTO `accetic_config`(`control_code`, `value`, `name`, `sort_order`, `active`, `create_date`) VALUES ('INV_DUE_INTERVAL', '7', 'Default invoice due date interval.', 0, 1, now());
 
 INSERT INTO `accetic_location_class`(`control_code`, `class`,`sort_order`, `active`, `create_date`) VALUES ('POSTAL', 'Postal Address', 0, 1, now());
 INSERT INTO `accetic_location_class`(`control_code`, `class`,`sort_order`, `active`, `create_date`) VALUES ('PHYSICAL', 'Physical Address', 1, 1, now());
