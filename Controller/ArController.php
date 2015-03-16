@@ -13,19 +13,39 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ArController extends Controller
 {
-    public function printAction()
+    public function printAction($id)
     {
-        $html = $this->renderView('MorusFasBundle:ar:print.html.twig');
-        $pdfGenerator = $this->get('spraed.pdf.generator');
-        $pdfGenerator->generatePDF($html, 'UTF-8');
+        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+
+        // Get ar with invoices lines
+        $qb = $aem->getArRepository()
+                ->createQueryBuilder('ar');
         
-        return new Response($pdfGenerator->generatePDF($html),
-                    200,
-                    array(
-                        'Content-Type' => 'application/pdf',
-                        'Content-Disposition' => 'attachment; filename="out.pdf"'
-                    )
-        );
+        $query = $qb
+                ->select('ar')
+                ->join('ar.transaction', 't')
+                ->leftJoin('t.invoices', 'v')
+                ->where($qb->expr()->eq('ar.id', $id));
+        
+        $ar = $query->getQuery()->getSingleResult();
+
+        if ($ar) {
+            $html = $this->renderView('MorusFasBundle:ar:print.html.twig', array(
+                'ar' => $ar,
+            ));
+            $pdfGenerator = $this->get('spraed.pdf.generator');
+            $pdfGenerator->generatePDF($html, 'UTF-8');
+
+            return new Response($pdfGenerator->generatePDF($html),
+                        200,
+                        array(
+                            'Content-Type' => 'application/pdf',
+                            'Content-Disposition' => 'attachment; filename="out.pdf"'
+                        )
+            );
+        }
+        
+        
     }
     
     public function ajaxProdDescAction(Request $request)

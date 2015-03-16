@@ -78,11 +78,13 @@
                     if (response.success) {
                         $('#' + descInputId).val(response.description);
                     } else {
-                        alert({{ 'error.get_prod_desc'|trans}});
+                        alert("{{ 'error.get_prod_desc'|trans}}");
                     }
                 });
             });
         });
+        
+        
         
         function getProdDesc(id, callback) {
             // Get all form values
@@ -217,7 +219,18 @@
         <div class="section-form inset form">
             {{ form_start(form) }}
             {{ form_errors(form) }}
-            
+            <ul class="page-control">
+                <li>
+                    <a id="fas_inv_print"  class="loading-btn" href="{{ path('morus_fas_ar_print', {'id': ar.id}) }}">
+                        {{ 'btn.print'|trans }}
+                    </a>
+                </li>
+                <li>
+                    <a id="fas_inv_send_email" class="loading-btn" href="#">
+                        {{ 'btn.send_email'|trans }}
+                    </a>
+                </li>
+            </ul>
             <fieldset>
                 <div class="field inline">
                     <label>{{ 'ar.to'|trans }}</label>{{ form_widget(form.unit) }} {{ form_errors(form.unit) }}
