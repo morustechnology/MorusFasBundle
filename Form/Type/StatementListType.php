@@ -16,6 +16,7 @@ class StatementListType extends AbstractType
     {
         $builder
             ->add('id', 'entity', array(
+                'label' => false,
                 'class' => 'MorusFasBundle:Statement',
                 'property' => 'name',
                 'expanded' => true,

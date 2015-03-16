@@ -246,7 +246,8 @@ class StatementController extends Controller
                         }
                     }
                     if (!$found) {
-                        $addList[] = $av['registrationNumber'];
+                        $vCode = strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $av['registrationNumber'])));
+                        $addList[] = $vCode;
                         $newVehicle = new \Morus\FasBundle\Entity\Vehicle();
                         $newVehicle->setRegistrationNumber($av['registrationNumber']);
                         $unit->addVehicle($newVehicle);

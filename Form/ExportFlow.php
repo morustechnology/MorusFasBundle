@@ -160,10 +160,10 @@ class ExportFlow extends FormFlow {
         $this->nextInvoiceNumber = $aem->nextInvNum();
                 
         // Init invoice date and default due date
-        $dueinterval = $aem->getConfigRepository()->findOneByControlCode('INV_DUE_INTERVAL');
+        $dueinterval = $aem->getAcceticConfigRepository()->findOneByControlCode('INV_DUE_INTERVAL')->getValue();
         $invdate = new \DateTime('now');
-        $duedate = new DateTime('now');
-        $duedate->add(new DateInterval('P'.$dueinterval.'D'));
+        $duedate = new \DateTime('now');
+        $duedate->add(new \DateInterval('P'.$dueinterval.'D'));
         
         // Get All unit who has vehicle appear in statements
         $uqb = $this->entityManager
@@ -229,13 +229,14 @@ class ExportFlow extends FormFlow {
                 $invoice->setSite($row[$stmt->getSiteHeader()]);
                 $invoice->setReceiptNumber($row[$stmt->getReceiptNumberHeader()]);
                 $invoice->setQty($row[$stmt->getVolumeHeader()]);
-                $invoice->setUnitprice($row[$stmt->getUnitPriceHeader()]);
-                $invoice->setUnitDiscount($row[$stmt->getUnitDiscountHeader()]);
+                
                 $invoice->setNetamount($row[$stmt->getNetAmountHeader()]);
                 $invoice->setLicence($row[$stmt->getLicenceNumberHeader()]);
                 $unitPrice = $row[$stmt->getUnitPriceHeader()];
-                $unitDiscount = $row[$stmt->getUnitDiscountHeader()];
+                $unitDiscount = abs($row[$stmt->getUnitDiscountHeader()]);
                 $sellPx = $unitPrice + $unitDiscount; // Calculate sell price
+                $invoice->setUnitprice($unitPrice);
+                $invoice->setUnitDiscount($unitDiscount);
                 $invoice->setSellprice($sellPx);  
                 
                 

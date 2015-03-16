@@ -410,7 +410,6 @@
                             <tr>
                                 <th>{{ 'pl.customer'|trans }}</th>
                                 <th>{{ 'pl.licence_number'|trans }}</th>
-                                <th></th>
                                 <th>{{ 'pl.nett'|trans }}</th>
                                 <th>{{ 'pl.receivable'|trans }}</th>
                                 <th>{{ 'pl.pl'|trans }}</th>
@@ -418,10 +417,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% set nettotal = 0 %}
+                            {% set rectotal = 0 %}
+                            {% set pltotal = 0 %}
                             {% set unitname = null %}
                             {% for ar in flow.ars %}
-                                    <tr>
-                                        <td>{{ ar.unit.name }}</td>
+                            <tr>
+                                <td>{{ ar.unit.name }}</td>
 
                                 {% for vehicle in ar.unit.vehicles %}
                                     {% if unitname != ar.unit.name %}
@@ -436,22 +438,29 @@
                                     {% set net = 0 %}
                                     {% set rec = 0 %}
                                     {% set cnt = 0 %}
-                                    {% set dis = 0 %}
+                                    
                                     {% for invoice in ar.transaction.invoices %}
+                                        {% set total = 0 %}
+                                        {% set sellprice = 0 %}
                                         {% if invoice.licence == vehicle.registrationNumber %}
                                             {% set cnt = cnt + 1 %}
-                                            {% set dis = dis + invoice.selldiscount %}
+                                            {% set unitprice = invoice.unitprice|number_format(2, '.', ',') %}
+                                            {% set unitdiscount = invoice.unitdiscount|number_format(2, '.', ',') %}
+                                            {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
+                                            {% set selldiscount = invoice.selldiscount|number_format(2, '.', ',') %}
+                                            
+                                            
+                                            
                                             {% set net = net + ( invoice.qty * invoice.unitprice )%}
-                                            {% set rec = rec + ( invoice.qty * (invoice.unitprice +  invoice.unitdiscount - invoice.selldiscount)) %}
+                                            {% set rec = rec + ( invoice.qty * ( invoice.sellprice - invoice.selldiscount)) %}
+                                            {% set nettotal = nettotal + net %}
+                                            {% set rectotal = rectotal + rec %}
                                         {% endif %}
                                     {% endfor %}
-                                    <td>
-                                        {% set discount = dis / cnt %}
-                                        {{ discount }}
-                                    </td>
                                     <td>{{ net|number_format(2, '.', ',') }}</td>
                                     <td>{{ rec|number_format(2, '.', ',') }}</td>
                                     <td>{% set pl = rec - net %}
+                                        {% set pltotal = pltotal + pl %}
                                         {{ pl|number_format(2, '.', ',') }}
                                     </td>
                                     <td>
@@ -461,8 +470,22 @@
                                     </tr>
                                 {% endfor %}
                             </tr>
+                            <tr id="space"><td colspan="6" style="height: 10px"></tr> {# Space between every #}
                             {% endfor %}
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <td></td>
+                            <td>Total:</td>
+                            <td>{{ nettotal|number_format(2, '.', ',') }}</td>
+                            <td>{{ rectotal|number_format(2, '.', ',') }}</td>
+                            <td>{{ pltotal|number_format(2, '.', ',') }}</td>
+                            <td>
+                                {% set totalper = ( pltotal / nettotal) * 100 %}
+                                    {{ totalper|number_format(2, '.', ',') }}%
+                            </td>
+                        </tr>
+                      </tfoot>
                     </table>
                 </div>
                 
@@ -483,9 +506,10 @@
                                         <th>{{ 'invoice.receipt_number'|trans }}</th>
                                         <th>{{ 'invoice.product'|trans }}</th>
                                         <th>{{ 'invoice.qty'|trans }}</th>
-                                        <th>{{ 'invoice.sell_price'|trans }}</th>
-                                        <th>{{ 'invoice.sell_discount'|trans }}</th>
-                                        <th>{{ 'invoice.net_price'|trans }}</th>
+                                        <th>{{ 'invoice.sellprice'|trans }}</th>
+                                        <th>{{ 'invoice.selldiscount'|trans }}</th>
+                                        <th></th>
+                                        <th>{{ 'invoice.netprice'|trans }}</th>
                                         <th>{{ 'invoice.total'|trans }}</th>
                                     </tr>
                                 </thead>
@@ -508,6 +532,17 @@
                                                 <td>
                                                     {% set selldiscount = invoice.selldiscount|number_format(2, '.', ',') %}
                                                     {{ selldiscount }}
+                                                </td>
+                                                <td>
+                                                    {% if invoice.customerdiscount %} 
+                                                        {% image '@MorusFasBundle/Resources/public/images/unitparts_128x128.png' %}
+                                                            <img src="{{ asset_url }}" alt="OK" style="width: 15px"/>
+                                                        {% endimage %}
+                                                    {% else %} 
+                                                        {% image '@MorusFasBundle/Resources/public/images/product_128x128.png' %}
+                                                            <img src="{{ asset_url }}" alt="OK" style="width: 15px"/>
+                                                        {% endimage %}
+                                                    {% endif %}
                                                 </td>
                                                 <td>
                                                     {% set netprice = sellprice - selldiscount %}
