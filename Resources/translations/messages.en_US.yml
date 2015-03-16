@@ -113,6 +113,8 @@ pl:
     percentage: '%'
 
 invoice:
+    registration_number: Registration Number
+    product_code: Product Code
     date: Date
     time: Time
     site: Site
@@ -120,9 +122,9 @@ invoice:
     receipt_number: Receipt Number
     product: Product
     qty: 'Qty(L)'
-    sell_price: Px
-    sell_discount: Discount
-    net_price: Net Px
+    sellprice: Px
+    selldiscount: Discount
+    netprice: Net Px
     total: 'Total HK$'
     invnumber: Invoice Number
     transdate: Date
@@ -137,6 +139,9 @@ contact:
     discount: Discount
     
 error:
+    get_prod_desc: Error getting product detail from database, please try again.
+    save_prod: Error adding product to database, please try again.
+    update_customer: Error updating customer to database, please try again.
     import:
         empty_null_value: Column %column, Row %row Contain empty or null value
         invalid_datetime_value: Column %column, Row %row contain invalid datetime value

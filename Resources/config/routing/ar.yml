@@ -1,0 +1,25 @@
+morus_fas_ar:
+    path:     /
+    defaults: { _controller: "MorusFasBundle:Ar:index" }
+
+morus_fas_ar_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "MorusFasBundle:Ar:edit" }
+
+morus_fas_ar_update:
+    path:     /{id}/update
+    defaults: { _controller: "MorusFasBundle:Ar:update" }
+    requirements: { _method: post|put }
+
+morus_fas_ar_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "MorusFasBundle:Ar:delete" }
+    requirements: { _method: post|delete }
+    
+morus_fas_ar_ajax_product_description:
+    path: /ajaxProdDesc
+    defaults: { _controller: "MorusFasBundle:Ar:ajaxProdDesc" }
+    
+morus_fas_ar_print:
+    path: /print
+    defaults: { _controller: "MorusFasBundle:Ar:print" }

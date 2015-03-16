@@ -193,7 +193,7 @@ class ExportFlow extends FormFlow {
             
             // ar detail
             $ar->setInvnumber($this->nextInvoiceNumber);
-            $this->nextInvoiceNumber = $aem->incInvNum($nextInvoiceNumber);
+            $this->nextInvoiceNumber = $aem->incInvNum($this->nextInvoiceNumber, 1);
             
             $ar->setTransdate(new \DateTime("now"));
 //            $ar->setDuedate(date('Y-m-d H:s:i', strtotime("+10 days")));

@@ -1,0 +1,36 @@
+{% extends '::base.html.twig' %}
+
+{% block body_title -%}
+    {{ 'ar.invoices'|trans }}
+{% endblock %}
+
+{% block body -%}
+    <div class="fullwidth-space"></div>
+    
+    <table class="records_list ar">
+        <thead>
+            <tr>
+                <th>{{ ('ar.number' |trans)}}</th>
+                <th>{{ ('ar.reference' |trans)}}</th>
+                <th>{{ ('ar.to' |trans)}}</th>
+                <th>{{ ('ar.date' |trans)}}</th>
+                <th>{{ ('ar.due_date' |trans)}}</th>
+                <th>{{ ('ar.amount' |trans)}}</th>
+                <th>{{ ('ar.sent' |trans)}}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ar in ars %}
+            <tr>
+                <td><a href="{{ path('morus_fas_ar_edit', { 'id': ar.id }) }}">{{ ar.invnumber }}</a></td>
+                <td>{{ ar.reference }}</td>
+                <td>{{ ar.to }}</td>
+                <td>{% if ar.transdate %}{{ ar.transdate|date('d/m/Y') }}{% endif %}</td>
+                <td>{% if ar.duedate %}{{ ar.duedate|date('d/m/Y') }}{% endif %}</td>
+                <td>${{ ar.amount|number_format(2, '.', ',') }}</td>
+                <td>{% if ar.emailed %}OK{% else %}No{% endif %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}

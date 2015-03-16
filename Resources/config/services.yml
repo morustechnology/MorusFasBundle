@@ -41,7 +41,28 @@ services:
     morus_fas.form.type.vehicle:
         class: Morus\FasBundle\Form\Type\VehicleType
         tags:
-            - { name: form.type, alias: fas_vehicle } 
+            - { name: form.type, alias: fas_vehicle }
+            
+    morus_fas.form.type.transaction:
+        class: Morus\FasBundle\Form\Type\TransactionType
+        tags:
+            - { name: form.type, alias: fas_transaction }
+            
+    morus_fas.form.type.ar:
+        class: Morus\FasBundle\Form\Type\ArType
+        tags:
+            - { name: form.type, alias: fas_ar }
+    
+    morus_fas.form.type.invoice:
+        class: Morus\FasBundle\Form\Type\InvoiceType
+        tags:
+            - { name: form.type, alias: fas_invoice }
+       
+    morus_fas.form.type.invoices:
+        class: Morus\FasBundle\Form\Type\InvoicesType
+        tags:
+            - { name: form.type, alias: fas_invoices }        
+    
     # Utility Classes
     morus_fas.classes.importlog:
         class: Morus\FasBundle\Classes\ImportLog

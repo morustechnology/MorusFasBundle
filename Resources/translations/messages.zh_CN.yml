@@ -112,6 +112,8 @@ pl:
     percentage: '%'
     
 invoice:
+    registration_number: 车牌号码
+    product_code: 货品编号
     date: 日期
     time: 时间
     site: 油站名称
@@ -119,9 +121,9 @@ invoice:
     receipt_number: 收据号码
     product: 货品
     qty: '数量(L)'
-    sell_price: 每公升油价
-    sell_discount: 折扣
-    net_price: 每公升净价
+    sellprice: 每公升油价
+    selldiscount: 折扣
+    netprice: 每公升净价
     total: '总额 HK$'
     invnumber: 发票编号
     transdate: 日期
@@ -134,8 +136,14 @@ contact:
     product: 货品
     registration_number: 车牌
     discount: 折扣
+
+ar:
+    amount: 总额
     
 error:
+    get_prod_desc: '从数据库中查询产品资料错误，请稍后重试。'
+    save_prod: '新增产品数据库错误，请重试。'
+    update_customer: '更新客户资料失败，请稍后重试。'
     import:
         empty_null_value: 列%column, 第%row行含有空白或无效值字串
         invalid_datetime_value: 列%column, 第%row行含有无效日期时间格式 (dd/MM/yyyy hh:mm:ss)

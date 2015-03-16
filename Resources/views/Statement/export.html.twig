@@ -72,7 +72,7 @@
                                 refreshProductList();
                                 $prodDlg.dialog( "close" );
                             } else {
-                                alert('Error adding product to database, please try again.');
+                                alert({{ 'error.save_prod'|trans }}));
                             }
 
                         });
@@ -194,7 +194,7 @@
                                 refreshComboBox();
                                 $custDlg.dialog( "close" );
                             } else {
-                                alert('Error');
+                                alert({{ 'error.update_customer'|trans }});
                             }
                         });
                     },
@@ -496,7 +496,7 @@
                                                 <td>{{ invoice.transDate|date('d/m/Y') }}</td>
                                                 <td>{{ invoice.transTime|date('H:i:s') }}</td>
                                                 <td>{{ invoice.site }}</td>
-                                                <td>{{ invoice.ReceiptNumber }}</td>
+                                                <td>{{ invoice.receiptNumber }}</td>
                                                 <td>{{ invoice.description }}</td>
                                                 <td>
                                                     {% set qty = invoice.qty|number_format(2, '.', ',') %}

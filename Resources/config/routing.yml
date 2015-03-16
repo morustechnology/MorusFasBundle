@@ -5,3 +5,7 @@ morus_fas_homepage:
 morus_fas_statement:
     resource: "@MorusFasBundle/Resources/config/routing/statement.yml"
     prefix:   /Fas/Statement
+    
+morus_fas_accountsReceivable:
+    resource: "@MorusFasBundle/Resources/config/routing/ar.yml"
+    prefix:   /Fas/AccountsReceivable

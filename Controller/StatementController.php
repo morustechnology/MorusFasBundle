@@ -488,8 +488,8 @@ class StatementController extends Controller
                     $em->getConnection()->beginTransaction();
                     try {
                         
+                        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
                         
-                    
                         // Generate and save next invoice number
                         $config = $aem->getAcceticConfigRepository()->findOneByControlCode('INV_NEXT_NUM');
 
@@ -501,6 +501,7 @@ class StatementController extends Controller
                         }
                 
                         // Add generated ar to export
+                        
                         foreach($flow->ars as $ar){
                             $export->addAr($ar);
                         }

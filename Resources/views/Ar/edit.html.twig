@@ -1,0 +1,289 @@
+{% extends '::base.html.twig' %}
+
+{% form_theme form 'MorusFasBundle:Ar:layout.html.twig' %}
+
+{% set inv_save_lk_id = 'acc_inv_save_lk' %}
+{% set inv_add_lk_id = 'acc_inv_add_lk' %}
+{% set inv_tbl_id = 'acc_inv_tbl' %}
+{% set inv_tr_id = 'acc_inv_tr' %}
+{% set inv_obj_pfx = 'fas_ar_transaction_invoices_' %}
+
+{% block stylesheets %}
+    {% stylesheets '@MorusFasBundle/Resources/public/css/jquery-ui.min.css' filter='cssrewrite' %}
+        <link type="text/css" rel="stylesheet" media="screen" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts 
+        '@MorusFasBundle/Resources/public/js/jquery-1.9.1.min.js' 
+        '@MorusFasBundle/Resources/public/js/jquery-ui.min.js' 
+        '@MorusFasBundle/Resources/public/js/jquery.inputmask.js'
+        '@MorusFasBundle/Resources/public/js/jquery.inputmask.numeric.extensions.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
+    <script type='text/javascript'> 
+        
+        
+        var $invTbl;
+
+        // setup an "add a invoice" link
+        var $addInvLnk = $('<a id="{{ inv_add_lk_id }}" href="#" class="add_invoice_link loading-btn">{% image '@MorusFasBundle/Resources/public/images/icons-pack.png' %}<em class="icons add icon" style="background:url({{ asset_url }}) no-repeat; background-position: -120px -50px;""></em>{% endimage %}{{ 'btn.add_new_line'|trans }}</a>');
+        var $newLnk = $('<div class="table-control"></div>').append($addInvLnk);
+        
+        jQuery(document).ready(function() {
+            // Get the table row that holds the collection of invoices
+            $invTbl = $('#{{ inv_tbl_id }} tbody');
+            
+            // Add delete row link button to each row
+            $invTbl.find('tr').each(function () {
+                var index = this.id.replace('{{ inv_obj_pfx }}', '');
+                addRowAction($(this), index);
+            });
+            
+            // add the "add a invoice" anchor and li to the invoices ul
+            $('#{{ inv_tbl_id }}').append($newLnk);
+            
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $invTbl.data('index', $invTbl.find(':input').length);
+            
+            //  Handle Add New Line Action
+            $addInvLnk.on('click', function(e) {
+                e.preventDefault();
+                
+                // add a new invoice form (see next code block)
+                addInv($invTbl);
+            });
+            
+            // Replace Delete Form Submit button
+            $('#{{ inv_save_lk_id }}').on('click', function(event){
+                event.preventDefault();
+                $('#{{ form.vars.attr.id }}').find(':submit').click(); 
+            });
+            
+            calculateTotal();
+            
+        });
+        
+        jQuery(document).ready(function() {
+            $('select[id$=_parts]').change(function() {
+                var id = $(this).attr('id');
+                var parts_id = $(this).val();
+                var descInputId = id.replace('_parts', '_description');
+                // Throw the id value to server
+                getProdDesc( parts_id, function( response ) {
+                    if (response.success) {
+                        $('#' + descInputId).val(response.description);
+                    } else {
+                        alert({{ 'error.get_prod_desc'|trans}});
+                    }
+                });
+            });
+        });
+        
+        function getProdDesc(id, callback) {
+            // Get all form values
+            var values = {};
+            values['id'] = id;
+            
+            // Throw the form values to the server
+            $.ajax({
+                type        : "GET",
+                url         : "{{ path('morus_fas_ar_ajax_product_description') }}",
+                data        : values,
+                success     : function(response) {
+                    callback( jQuery.parseJSON(response) );
+                }
+            });
+        }
+        
+        function addInv($invTbl) {
+            // Get the data-prototype
+            var prototype = $invTbl.data('prototype');
+
+            // get the new index
+            var index = $invTbl.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newInvStr = prototype.replace(/__name__/g, index);
+
+            // Convert form to Jquery Object
+            $newInv = $($.parseHTML(newInvStr));
+
+            // increase the index with one for the next item
+            $invTbl.data('index', index + 1);
+            
+            addRowAction($newInv, index);
+            
+            // Display the new row in the table, after the last row
+            $('#{{ inv_tbl_id }} > tbody:last').append($newInv);
+        }
+        
+        // locate object and add calculate amount action
+        function addRowAction($tr, index) {
+            
+            //Add Delete Row Link
+            var $rmLnk = $('<a href="#">X</a>');
+            $tr.find('td:last').append($rmLnk);
+
+            $rmLnk.on('click', function(e) {
+                e.preventDefault();
+                
+                // remove entire row for the invoice form
+                $tr.remove();
+            });
+            
+            
+            //Sell price control
+            //----------------------
+            $sellprice = $tr.find('input[id$=_sellprice]');
+            // Add input mask
+            $sellprice.inputmask("decimal", { 
+                radixPoint: ".", 
+                groupSeparator: ",",
+                groupSize: 3,
+                digits: 2,
+                autoGroup: true,
+                placeholder: "0.00"
+            });
+            // Add action handler
+            $sellprice.on('change', function(e) {
+                calculateTotal();
+            });
+            
+            //Qty control
+            //----------------------
+            $qty = $tr.find('input[id$=_qty]');
+            
+            // Add action handler
+            $qty.on('change', function(e) {
+                calculateTotal();
+            });
+            
+            //Discount Control
+            //----------------------
+            $discount = $tr.find('input[id$=_discount]')
+            // Add input mask
+            $discount.inputmask("decimal", { 
+                radixPoint: ".", 
+                groupSeparator: ",",
+                groupSize: 3,
+                digits: 2,
+                autoGroup: true,
+                placeholder: "0.00"
+            });
+            // Add action handler
+            $discount.on('change', function(e) {
+                calculateTotal();
+            });
+        }
+        
+        // Update total amount
+        function calculateTotal() {
+            var total = 0;
+            var subtotal = 0;
+            // Add delete row link button to each row
+            $invTbl.find('tr').each(function () {
+                var index = this.id.replace('{{ inv_obj_pfx }}', '');
+                var qty = $('#fas_ar_transaction_invoices_' + index + '_qty').val();
+                var sellprice = $('#fas_ar_transaction_invoices_' + index + '_sellprice').val();
+                var selldiscount = $('#fas_ar_transaction_invoices_' + index + '_selldiscount').val();
+                var netprice = (sellprice - selldiscount).toFixed(2);
+                var netamount = (qty * netprice).toFixed(2);
+                total += parseFloat(netamount);
+                subtotal += parseFloat(netamount);
+                $('#fas_ar_transaction_invoices_' + index + '_netprice').text(netprice);
+                $('#fas_ar_transaction_invoices_' + index + '_netamount').text(netamount);
+            });
+            
+            $('#fas_ar_transaction_invoices_subtotal').text(subtotal);
+            $('#fas_ar_transaction_invoices_total').text(total);
+            
+        }
+        
+    </script>
+{% endblock javascripts %}
+        
+{% block body_title -%}
+    {{ 'ar.new_invoice'|trans }}
+{% endblock %}
+
+{% block body -%}
+    <div id="container-box">
+        <div class="section-form inset form">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+            
+            <fieldset>
+                <div class="field inline">
+                    <label>{{ 'ar.to'|trans }}</label>{{ form_widget(form.unit) }} {{ form_errors(form.unit) }}
+                </div>
+                <div class="field inline">
+                    <label>{{ 'ar.invnumber'|trans }}</label>{{ form_widget(form.invnumber) }} {{ form_errors(form.invnumber) }}
+                </div>
+                <div class="field inline">
+                    <label>{{ 'ar.transdate'|trans }}</label>{{ form_widget(form.transdate) }} {{ form_errors(form.transdate) }}
+                </div>
+                <div class="field inline">
+                    <label>{{ 'ar.duedate'|trans }}</label>{{ form_widget(form.duedate) }} {{ form_errors(form.duedate) }}
+                </div>
+                <div class="field inline long">
+                    <label>{{ 'ar.reference'|trans }}</label>{{ form_widget(form.reference) }} {{ form_errors(form.reference) }}
+                </div>
+            </fieldset>
+            
+            <table id="{{ inv_tbl_id }}" class="ar">
+                <thead>
+                    <th class="short left" >{{ 'invoice.registration_number'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.date'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.time'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.site'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.receipt_number'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.product_code'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.product'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.qty'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.sellprice'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.selldiscount'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.netprice'|trans }}</th>
+                    <th class="short left" >{{ 'invoice.total'|trans }}</th>
+                    <th></th>
+                </thead>
+                <tbody data-prototype="{{ form_widget(form.transaction.invoices.vars.prototype)|e }}">
+                    {% for invoice in form.transaction.invoices %}
+                    {{ form_widget(invoice) }}
+                    {% endfor %}
+                </tbody>
+            </table>
+                 
+                
+            <div class="table-calcaulation">
+                <div class="subtotal">
+                    <div class="col-1-2">{{ 'ar.subtotal'|trans }}</div>
+                    <div class="col-1-2 last"><label id='fas_ar_transaction_invoices_subtotal'></label></div>
+                </div>
+                <div class="total">
+                    <div class="col-1-2">{{ 'ar.total'|trans }}</div>
+                    <div class="col-1-2 last"><label id='fas_ar_transaction_invoices_total'></label></div>
+                </div>
+            </div>
+            
+            {{ form_widget(form.submit) }}
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+            
+            <div style="clear:both;"></div>
+                
+            <ul class="record_actions page-control right">
+                <li><a class="grey-btn" href="{{ path('morus_fas_ar') }}">{{ 'btn.cancel'|trans }}</a></li>
+                <li><a class="green-btn" id="{{ inv_save_lk_id }}" href="#">{{ 'btn.save'|trans }}</a></li>
+            </ul>
+                    
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+{% endblock %}
+
