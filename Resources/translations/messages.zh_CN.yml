@@ -84,6 +84,8 @@ btn:
 
 export_step:
     station_discount_ignore_keywords: 不包括折扣油站关键词
+    station_discount_ignore: 沒有折扣的油站
+    station_keywords: 油站关键词
     export_invoice: 汇出发票
     register_selected_vehicle_to: 登记车牌至
     registered_vehicle_list: 已登记车牌清单
@@ -104,6 +106,13 @@ export_step:
     export_detail: 汇出内容
     invoice_date_from: 日期由
     invoice_date_to: 至
+    invoice_datetime: 发票日期及时间
+    total_products_discovered: 总共发现产品数量
+    total_vehicles_discovered: 总共发现车牌数量
+    total_records_discovered: 总共发现行数
+    
+    msg:
+        total_records_processed: 总共分析了%records行
 
 
 pl:

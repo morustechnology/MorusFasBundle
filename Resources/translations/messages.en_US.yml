@@ -85,6 +85,8 @@ btn:
 
 export_step:
     station_discount_ignore_keywords: Station Discount Ignore Keywords
+    station_discount_ignore: Station Without Discount
+    station_keywords: Station Keywords
     export_invoice: Export Invoice
     register_selected_vehicle_to: Register vehicle to
     registered_vehicle_list: Registered Vehicle List
@@ -105,6 +107,13 @@ export_step:
     export_detail: Export Detail
     invoice_date_from: Date from
     invoice_date_to: to
+    invoice_datetime: Invoice Date & Time
+    total_products_discovered: Total Proudcts Discovered
+    total_vehicles_discovered: Total Vehicles Discovered
+    total_records_discovered: Total Records Discovered
+    
+    msg:
+        total_records_processed: Total of %records Row Processed
     
 pl:
     customer: Customer

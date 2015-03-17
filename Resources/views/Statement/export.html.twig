@@ -58,7 +58,7 @@
             
             // Init New Product Dialog Box
             $prodDlg.dialog({
-                autoOpen: false, height: 200, width: 500, modal: true,
+                autoOpen: false, height: 220, width: 500, modal: true,
                 buttons: {
                     "{{ 'btn.save'|trans }}": function() {
                         var btn_id = $prodDlg.data('btn_id');
@@ -325,255 +325,320 @@
 
 {% block body -%}
     
-    <div>
-        {% include 'CraueFormFlowBundle:FormFlow:stepList.html.twig' %}
+    <div class="fas-step-control four-steps">
+        {% include 'MorusFasBundle:Statement:FormFlow/stepList.html.twig' %}
     </div>
-    {{ form_start(export_form) }}
-        {{ form_errors(export_form) }}        
-        
-        {% if flow.getCurrentStepNumber() == 1 %} {# Analysis Statement #}
-            {{ 'export_step.invoice_date_from'|trans }} {{ form_widget(export_form.startdate) }}
-            {{ 'export_step.invoice_date_to'|trans }} {{ form_widget(export_form.enddate) }}<br/>
-            {{ 'export_step.station_discount_ignore_keywords'|trans }} {{ form_widget(export_form.ignoreKeywords) }}<br/>
+    
+    <div id="container-box" class="">
+        <div class="section-form inset fas-step-form">
+            {{ form_start(export_form) }}
             
-            Total Product Discovered: {{ flow.stmtProd|length }}<br/>
-            
-            Total Vehicle Discovered: {{ flow.stmtVec|length }}<br/>
-            
-            Total record procssed: {{ flow.stmtRowCnt }} row.<br/>
-            
-            click next to continue.
-            
-            
-            
-        {% elseif flow.getCurrentStepNumber() == 2 %}  {# Query Product #}
-            {# Listing Existing Unit with Vehicle Number #}
-            <div id="{{ prod_list_div_id }}" style="float: left">
-                {# Please see /Statement/export.product.list.html.twig #}
-            </div> 
+                {# FormFlow Buttons #}
+                {% set renderBackButton = flow.getFirstStepNumber() < flow.getLastStepNumber() and flow.getCurrentStepNumber() in (flow.getFirstStepNumber() + 1) .. flow.getLastStepNumber() %}
+                <div class="fas-steplist-control-top craue_formflow_buttons craue_formflow_button_count_{% if renderBackButton %}3{% else %}2{% endif %}">
 
-            {# Listing New Product #}
-            <div id="{{ prod_new_div }}"  style="float: right">
-                <h3>{{ 'export_step.new_product'|trans }}</h3>
-                <table id="{{ prod_new_tbl_id }}">
-                    {% for itemcode, itemname in flow.newProdList %}
-                        <tr id="{{ loop.index }}">
-                            <td>
-                                {% image '@MorusFasBundle/Resources/public/images/new_icon.png' %}
-                                    <img src="{{ asset_url }}" alt="OK" style="width: 25px"/>
-                                {% endimage %}
-                            </td>
-                            <td>{{ itemname }}</td>
-                            <td>
-                                <button id="{{ prod_dlg_btn_id|replace({'%itemcode%' : itemcode, '%index%' : loop.index}) }}" name="{{ itemname }}"  />+</button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        {% elseif flow.getCurrentStepNumber() == 3 %}  {# Query Licence #}
-            {# Listing Existing Unit with Vehicle Number #}
-            <div id="{{ cust_vec_list_div }}" style="float: left">
-                {# layout see /Statement/export.customer.vehicle.list.html.twig #}
-            </div> 
-            
-            {# Display New Vehicle Number #}
-            <div style="float: right">
-                {{ 'export_step.register_selected_vehicle_to'|trans }}
-                <select id="{{ cust_combo }}" ></select>
-                <button id="{{ vec_btn }}" >{{ 'btn.go'|trans }}</button>
-                <br/>
-                <input id="{{ vec_select_all }}" type="checkbox"/>{{ 'export_step.select_all'|trans }}
-                <table>
-                    {% for row in flow.newVecList|batch(5) %}
-                        <tr>
-                            {% for veccode, vecname in row %}
-                            <td>
-                                <input id="{{ veccode }}" name="licence_number_input" type="checkbox" value="{{ vecname }}" />{{ vecname }}
-                            </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>
-            <div>
-            
-            {# Update Customer Popup div #}
-            <div id="{{ cust_dlg }}" title="{{ 'contact.update_customer'|trans }}" >
-                {# layout see /Statement/customer.dialog.html.twig #}
-            </div>
-        {% elseif flow.getCurrentStepNumber() == 4 %}  {# Summary Step #}
-            <div id="{{ fas_sam_tab }}">
-                <ul>
-                  <li><a href="#{{ tab_pl }}">{{ 'export_step.profit_and_loss'|trans }}</a></li>
-                  <li><a href="#{{ tab_exp_dtl }}">{{ 'export_step.export_detail'|trans }}</a></li>
-                </ul>
-                <div id="{{ tab_pl }}"> {# Profit and Lost tab#}
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>{{ 'pl.customer'|trans }}</th>
-                                <th>{{ 'pl.licence_number'|trans }}</th>
-                                <th>{{ 'pl.nett'|trans }}</th>
-                                <th>{{ 'pl.receivable'|trans }}</th>
-                                <th>{{ 'pl.pl'|trans }}</th>
-                                <th>{{ 'pl.percentage'|trans }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% set nettotal = 0 %}
-                            {% set rectotal = 0 %}
-                            {% set pltotal = 0 %}
-                            {% set unitname = null %}
-                            {% for ar in flow.ars %}
-                            <tr>
-                                <td>{{ ar.unit.name }}</td>
+                        {%- set isLastStep = flow.getCurrentStepNumber() == flow.getLastStepNumber() -%}
+                        {%- set craue_formflow_button_class_last = craue_formflow_button_class_last | default('craue_formflow_button_last') -%}
+                        {%- set craue_formflow_button_class_last = isLastStep
+                                        ? craue_formflow_button_class_finish | default(craue_formflow_button_class_last)
+                                        : craue_formflow_button_class_next | default(craue_formflow_button_class_last)
+                                -%}
+                        <button type="submit" class="{{ craue_formflow_button_class_last }} green-btn">
+                                {{- (isLastStep ? 'button.finish' : 'button.next') | trans({}, 'CraueFormFlowBundle') -}}
+                        </button>
 
-                                {% for vehicle in ar.unit.vehicles %}
-                                    {% if unitname != ar.unit.name %}
-                                        {% set unitname = ar.unit.name %}
-                                        <td>{{ vehicle.registrationNumber }}</td>
-                                    {% else %}
-                                        <tr>
-                                            <td></td>
-                                            <td>{{ vehicle.registrationNumber }}</td>
-                                    {% endif %}
+                        {% if renderBackButton %}
+                                <button type="submit" class="{{ craue_formflow_button_class_back | default('') }} grey-btn" name="{{ flow.getFormTransitionKey() }}" value="back" formnovalidate="formnovalidate">
+                                        {{- 'button.back' | trans({}, 'CraueFormFlowBundle') -}}
+                                </button>
+                        {% endif %}
 
-                                    {% set net = 0 %}
-                                    {% set rec = 0 %}
-                                    {% set cnt = 0 %}
-                                    
-                                    {% for invoice in ar.transaction.invoices %}
-                                        
-                                        {% if invoice.licence == vehicle.registrationNumber %}
-                                            {% set cnt = cnt + 1 %}
-                                            {% set unitprice = invoice.unitprice|round(2) %}
-                                            {% set unitdiscount = invoice.unitdiscount|round(2) %}
-                                            {% set sellprice = invoice.sellprice|round(2) %}
-                                            {% set selldiscount = invoice.selldiscount|round(2) %}
-                                            {% set px = sellprice - selldiscount %}
-                                            {% set qty = invoice.qty %}
-                                            
-                                            
-                                            {% set net = net|round(2) + ( qty * unitprice ) %}
-                                            {% set rec = rec|round(2) + ( qty * px ) %}
-                                            {% set nettotal = nettotal|round(2) + net %}
-                                            {% set rectotal = rectotal|round(2) + rec %}
-                                        {% endif %}
-                                    {% endfor %}
-                                    <td>{{ net|round(2) }}</td>
-                                    <td>{{ rec|round(2) }}</td>
-                                    <td>{% set pl = rec - net %}
-                                        {% set pltotal = pltotal + pl %}
-                                        {{ pl|round(2) }}
-                                    </td>
-                                    <td>
-                                        {% set per = (pl / net) * 100 %}
-                                        {{ per|round(2) }}%
-                                    </td>
-                                    </tr>
-                                {% endfor %}
-                            </tr>
-                            <tr id="space"><td colspan="6" style="height: 10px"></tr> {# Space between every #}
-                            {% endfor %}
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td></td>
-                            <td>Total:</td>
-                            <td>{{ nettotal|number_format(2, '.', ',') }}</td>
-                            <td>{{ rectotal|number_format(2, '.', ',') }}</td>
-                            <td>{{ pltotal|number_format(2, '.', ',') }}</td>
-                            <td>
-                                {% set totalper = ( pltotal / nettotal) * 100 %}
-                                    {{ totalper|number_format(2, '.', ',') }}%
-                            </td>
-                        </tr>
-                      </tfoot>
-                    </table>
+                        <button type="submit" class="{{ craue_formflow_button_class_reset | default('craue_formflow_button_first') }} grey-btn" name="{{ flow.getFormTransitionKey() }}" value="reset" formnovalidate="formnovalidate">
+                                {{- 'button.reset' | trans({}, 'CraueFormFlowBundle') -}}
+                        </button>
                 </div>
-                
-                <div id="{{ tab_exp_dtl }}"> {# export detail tab#}
-                    {% for ar in flow.ars %}
-                        <h2>{{ ar.unit.name }}</h2>
-                        {{ 'invoice.invnumber'|trans }} {{ ar.invnumber }} 
-                        {{ 'invoice.transdate'|trans }} {{ ar.transdate|date('d/m/Y') }} <br/>
-                        {# {{ 'invoice.duedate'|trans }} {{ ar.duedate|date('d/m/Y') }} #}
-                        {% for vehicle in ar.unit.vehicles %}
-                            <h4>{{ 'invoice.licence_number'|trans }}: {{ vehicle.registrationNumber }}</h4>
+            
+                {{ form_errors(export_form) }}        
+
+                {% if flow.getCurrentStepNumber() == 1 %} {# Analysis Statement #}
+                    <h4 class="first">{{ 'export_step.invoice_datetime'|trans }}</h4>
+                    <fieldset>
+                        {{ 'export_step.invoice_date_from'|trans }} {{ form_widget(export_form.startdate) }}
+                        {{ 'export_step.invoice_date_to'|trans }} {{ form_widget(export_form.enddate) }}
+                    </fieldset>
+                    
+                    <h4 class="fas-step-subtitle">{{ 'export_step.station_discount_ignore'|trans }}</h4>
+                    <fieldset>{{ 'export_step.station_keywords'|trans }}{{ form_widget(export_form.ignoreKeywords) }}</fieldset>
+                    
+                    
+                    <h4 class="fas-step-subtitle">{{ 'export_step.analysis_summary'|trans }}</h4>
+                    <p>
+                        {{ 'export_step.total_products_discovered'|trans }}: {{ flow.stmtProd|length }}<br/>
+                        {{ 'export_step.total_vehicles_discovered'|trans }}: {{ flow.stmtVec|length }}<br/>
+                        {{ 'export_step.total_records_discovered'|trans }}: {{ flow.stmtRowCnt|length }}<br/>
+                        {{ 'export_step.msg.total_records_processed'|trans({ '%records' : flow.stmtRowCnt }) }}
+                    </p>
+
+
+
+                {% elseif flow.getCurrentStepNumber() == 2 %}  {# Query Product #}
+                    {# Listing Existing Unit with Vehicle Number #}
+                    <div id="{{ prod_list_div_id }}" class="col-1-2">
+                        {# Please see /Statement/export.product.list.html.twig #}
+                    </div> 
+
+                    {# Listing New Product #}
+                    <div id="{{ prod_new_div }}"  class="col-1-2 last">
+                        <h4 class="first">{{ 'export_step.new_product'|trans }}</h4>
+                        <table id="{{ prod_new_tbl_id }}">
+                            {% for itemcode, itemname in flow.newProdList %}
+                                <tr id="{{ loop.index }}">
+                                    <td>
+                                        {% image '@MorusFasBundle/Resources/public/images/icon-new.png' %}
+                                            <img src="{{ asset_url }}" alt="OK" style="width: 35px"/>
+                                        {% endimage %}
+                                    </td>
+                                    <td>{{ itemname }}</td>
+                                    <td>
+                                        <button id="{{ prod_dlg_btn_id|replace({'%itemcode%' : itemcode, '%index%' : loop.index}) }}" name="{{ itemname }}"  />+</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    
+                    <div style="clear:both;"></div>    
+                        
+                        
+                {% elseif flow.getCurrentStepNumber() == 3 %}  {# Query Licence #}
+                    {# Listing Existing Unit with Vehicle Number #}
+                    <div id="{{ cust_vec_list_div }}" style="float: left">
+                        {# layout see /Statement/export.customer.vehicle.list.html.twig #}
+                    </div> 
+
+                    {# Display New Vehicle Number #}
+                    <div style="float: right">
+                        {{ 'export_step.register_selected_vehicle_to'|trans }}
+                        <select id="{{ cust_combo }}" ></select>
+                        <button id="{{ vec_btn }}" >{{ 'btn.go'|trans }}</button>
+                        <br/>
+                        <input id="{{ vec_select_all }}" type="checkbox"/>{{ 'export_step.select_all'|trans }}
+                        <table>
+                            {% for row in flow.newVecList|batch(5) %}
+                                <tr>
+                                    {% for veccode, vecname in row %}
+                                    <td>
+                                        <input id="{{ veccode }}" name="licence_number_input" type="checkbox" value="{{ vecname }}" />{{ vecname }}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    <div>
+
+                    {# Update Customer Popup div #}
+                    <div id="{{ cust_dlg }}" title="{{ 'contact.update_customer'|trans }}" >
+                        {# layout see /Statement/customer.dialog.html.twig #}
+                    </div>
+                {% elseif flow.getCurrentStepNumber() == 4 %}  {# Summary Step #}
+                    <div id="{{ fas_sam_tab }}">
+                        <ul>
+                          <li><a href="#{{ tab_pl }}">{{ 'export_step.profit_and_loss'|trans }}</a></li>
+                          <li><a href="#{{ tab_exp_dtl }}">{{ 'export_step.export_detail'|trans }}</a></li>
+                        </ul>
+                        <div id="{{ tab_pl }}"> {# Profit and Lost tab#}
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>{{ 'invoice.date'|trans }}</th>
-                                        <th>{{ 'invoice.time'|trans }}</th>
-                                        <th>{{ 'invoice.site'|trans }}</th>
-                                        <th>{{ 'invoice.receipt_number'|trans }}</th>
-                                        <th>{{ 'invoice.product'|trans }}</th>
-                                        <th>{{ 'invoice.qty'|trans }}</th>
-                                        <th>{{ 'invoice.sellprice'|trans }}</th>
-                                        <th>{{ 'invoice.selldiscount'|trans }}</th>
-                                        <th></th>
-                                        <th>{{ 'invoice.netprice'|trans }}</th>
-                                        <th>{{ 'invoice.total'|trans }}</th>
+                                        <th>{{ 'pl.customer'|trans }}</th>
+                                        <th>{{ 'pl.licence_number'|trans }}</th>
+                                        <th>{{ 'pl.nett'|trans }}</th>
+                                        <th>{{ 'pl.receivable'|trans }}</th>
+                                        <th>{{ 'pl.pl'|trans }}</th>
+                                        <th>{{ 'pl.percentage'|trans }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for invoice in ar.transaction.invoices %}
-                                        {% if invoice.licence == vehicle.registrationNumber %}
-                                            <tr>
-                                                <td>{{ invoice.transDate|date('d/m/Y') }}</td>
-                                                <td>{{ invoice.transTime|date('H:i:s') }}</td>
-                                                <td>{{ invoice.site }}</td>
-                                                <td>{{ invoice.receiptNumber }}</td>
-                                                <td>{{ invoice.description }}</td>
-                                                <td>
-                                                    {% set qty = invoice.qty|number_format(2, '.', ',') %}
-                                                    {{ qty }}</td>
-                                                <td>
-                                                    {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
-                                                    {{ sellprice }}
-                                                </td>
-                                                <td>
-                                                    {% set selldiscount = invoice.selldiscount|number_format(2, '.', ',') %}
-                                                    {{ selldiscount }}
-                                                </td>
-                                                <td>
-                                                    {% if invoice.customerdiscount %} 
-                                                        {% image '@MorusFasBundle/Resources/public/images/unitparts_128x128.png' %}
-                                                            <img src="{{ asset_url }}" alt="OK" style="width: 15px"/>
-                                                        {% endimage %}
-                                                    {% else %} 
-                                                        {% image '@MorusFasBundle/Resources/public/images/product_128x128.png' %}
-                                                            <img src="{{ asset_url }}" alt="OK" style="width: 15px"/>
-                                                        {% endimage %}
-                                                    {% endif %}
-                                                </td>
-                                                <td>
-                                                    {% set netprice = sellprice - selldiscount %}
-                                                    {{ netprice|number_format(2, '.', ',') }}
-                                                </td>
-                                                <td>
-                                                    {% set total = qty *  netprice %}
-                                                    {{ total|number_format(2, '.', ',') }}
-                                                </td>
+                                    {% set nettotal = 0 %}
+                                    {% set rectotal = 0 %}
+                                    {% set pltotal = 0 %}
+                                    {% set unitname = null %}
+                                    {% for ar in flow.ars %}
+                                    <tr>
+                                        <td>{{ ar.unit.name }}</td>
+
+                                        {% for vehicle in ar.unit.vehicles %}
+                                            {% if unitname != ar.unit.name %}
+                                                {% set unitname = ar.unit.name %}
+                                                <td>{{ vehicle.registrationNumber }}</td>
+                                            {% else %}
+                                                <tr>
+                                                    <td></td>
+                                                    <td>{{ vehicle.registrationNumber }}</td>
+                                            {% endif %}
+
+                                            {% set net = 0 %}
+                                            {% set rec = 0 %}
+                                            {% set cnt = 0 %}
+
+                                            {% for invoice in ar.transaction.invoices %}
+
+                                                {% if invoice.licence == vehicle.registrationNumber %}
+                                                    {% set cnt = cnt + 1 %}
+                                                    {% set unitprice = invoice.unitprice|round(2) %}
+                                                    {% set unitdiscount = invoice.unitdiscount|round(2) %}
+                                                    {% set sellprice = invoice.sellprice|round(2) %}
+                                                    {% set selldiscount = invoice.selldiscount|round(2) %}
+                                                    {% set px = sellprice - selldiscount %}
+                                                    {% set qty = invoice.qty %}
+
+
+                                                    {% set net = net|round(2) + ( qty * unitprice ) %}
+                                                    {% set rec = rec|round(2) + ( qty * px ) %}
+                                                    {% set nettotal = nettotal|round(2) + net %}
+                                                    {% set rectotal = rectotal|round(2) + rec %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            <td>{{ net|round(2) }}</td>
+                                            <td>{{ rec|round(2) }}</td>
+                                            <td>{% set pl = rec - net %}
+                                                {% set pltotal = pltotal + pl %}
+                                                {{ pl|round(2) }}
+                                            </td>
+                                            <td>
+                                                {% set per = (pl / net) * 100 %}
+                                                {{ per|round(2) }}%
+                                            </td>
                                             </tr>
-                                        {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                    <tr id="space"><td colspan="6" style="height: 10px"></tr> {# Space between every #}
                                     {% endfor %}
                                 </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td>Total:</td>
+                                    <td>{{ nettotal|number_format(2, '.', ',') }}</td>
+                                    <td>{{ rectotal|number_format(2, '.', ',') }}</td>
+                                    <td>{{ pltotal|number_format(2, '.', ',') }}</td>
+                                    <td>
+                                        {% set totalper = ( pltotal / nettotal) * 100 %}
+                                            {{ totalper|number_format(2, '.', ',') }}%
+                                    </td>
+                                </tr>
+                              </tfoot>
                             </table>
-                            <br/>
-                        {% endfor %}
-                        <br/><br/><br/>
-                        <hr/>
-                        <br/>
-                    {% endfor %}
+                        </div>
+
+                        <div id="{{ tab_exp_dtl }}"> {# export detail tab#}
+                            {% for ar in flow.ars %}
+                                <h2>{{ ar.unit.name }}</h2>
+                                {{ 'invoice.invnumber'|trans }} {{ ar.invnumber }} 
+                                {{ 'invoice.transdate'|trans }} {{ ar.transdate|date('d/m/Y') }} <br/>
+                                {# {{ 'invoice.duedate'|trans }} {{ ar.duedate|date('d/m/Y') }} #}
+                                {% for vehicle in ar.unit.vehicles %}
+                                    <h4>{{ 'invoice.licence_number'|trans }}: {{ vehicle.registrationNumber }}</h4>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>{{ 'invoice.date'|trans }}</th>
+                                                <th>{{ 'invoice.time'|trans }}</th>
+                                                <th>{{ 'invoice.site'|trans }}</th>
+                                                <th>{{ 'invoice.receipt_number'|trans }}</th>
+                                                <th>{{ 'invoice.product'|trans }}</th>
+                                                <th>{{ 'invoice.qty'|trans }}</th>
+                                                <th>{{ 'invoice.sellprice'|trans }}</th>
+                                                <th>{{ 'invoice.selldiscount'|trans }}</th>
+                                                <th></th>
+                                                <th>{{ 'invoice.netprice'|trans }}</th>
+                                                <th>{{ 'invoice.total'|trans }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for invoice in ar.transaction.invoices %}
+                                                {% if invoice.licence == vehicle.registrationNumber %}
+                                                    <tr>
+                                                        <td>{{ invoice.transDate|date('d/m/Y') }}</td>
+                                                        <td>{{ invoice.transTime|date('H:i:s') }}</td>
+                                                        <td>{{ invoice.site }}</td>
+                                                        <td>{{ invoice.receiptNumber }}</td>
+                                                        <td>{{ invoice.description }}</td>
+                                                        <td>
+                                                            {% set qty = invoice.qty|number_format(2, '.', ',') %}
+                                                            {{ qty }}</td>
+                                                        <td>
+                                                            {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
+                                                            {{ sellprice }}
+                                                        </td>
+                                                        <td>
+                                                            {% set selldiscount = invoice.selldiscount|number_format(2, '.', ',') %}
+                                                            {{ selldiscount }}
+                                                        </td>
+                                                        <td>
+                                                            {% if invoice.customerdiscount %} 
+                                                                {% image '@MorusFasBundle/Resources/public/images/unitparts_128x128.png' %}
+                                                                    <img src="{{ asset_url }}" alt="OK" style="width: 15px"/>
+                                                                {% endimage %}
+                                                            {% else %} 
+                                                                {% image '@MorusFasBundle/Resources/public/images/product_128x128.png' %}
+                                                                    <img src="{{ asset_url }}" alt="OK" style="width: 15px"/>
+                                                                {% endimage %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% set netprice = sellprice - selldiscount %}
+                                                            {{ netprice|number_format(2, '.', ',') }}
+                                                        </td>
+                                                        <td>
+                                                            {% set total = qty *  netprice %}
+                                                            {{ total|number_format(2, '.', ',') }}
+                                                        </td>
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <br/>
+                                {% endfor %}
+                                <br/><br/><br/>
+                                <hr/>
+                                <br/>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {{ form_rest(export_form) }}
+                
+                {# FormFlow Buttons #}
+                {% set renderBackButton = flow.getFirstStepNumber() < flow.getLastStepNumber() and flow.getCurrentStepNumber() in (flow.getFirstStepNumber() + 1) .. flow.getLastStepNumber() %}
+                <div class="fas-steplist-control-bottom craue_formflow_buttons craue_formflow_button_count_{% if renderBackButton %}3{% else %}2{% endif %}">
+
+                        {%- set isLastStep = flow.getCurrentStepNumber() == flow.getLastStepNumber() -%}
+                        {%- set craue_formflow_button_class_last = craue_formflow_button_class_last | default('craue_formflow_button_last') -%}
+                        {%- set craue_formflow_button_class_last = isLastStep
+                                        ? craue_formflow_button_class_finish | default(craue_formflow_button_class_last)
+                                        : craue_formflow_button_class_next | default(craue_formflow_button_class_last)
+                                -%}
+                        <button type="submit" class="{{ craue_formflow_button_class_last }} green-btn">
+                                {{- (isLastStep ? 'button.finish' : 'button.next') | trans({}, 'CraueFormFlowBundle') -}}
+                        </button>
+
+                        {% if renderBackButton %}
+                                <button type="submit" class="{{ craue_formflow_button_class_back | default('') }} grey-btn" name="{{ flow.getFormTransitionKey() }}" value="back" formnovalidate="formnovalidate">
+                                        {{- 'button.back' | trans({}, 'CraueFormFlowBundle') -}}
+                                </button>
+                        {% endif %}
+
+                        <button type="submit" class="{{ craue_formflow_button_class_reset | default('craue_formflow_button_first') }} grey-btn" name="{{ flow.getFormTransitionKey() }}" value="reset" formnovalidate="formnovalidate">
+                                {{- 'button.reset' | trans({}, 'CraueFormFlowBundle') -}}
+                        </button>
                 </div>
-            </div>
-        {% endif %}
-
-        {{ form_rest(export_form) }}
-
-        {% include 'CraueFormFlowBundle:FormFlow:buttons.html.twig' %}
-    {{ form_end(export_form) }} 
+                        
+            {{ form_end(export_form) }} 
+        </div>
+    </div>
     
     {#  New Product Popup #}
     <div id="{{ prod_dlg_div_id }}" title="{{ 'inventory.new_inventory_item'|trans }}" style="display:none">  

@@ -1,5 +1,5 @@
-<h2>{{ 'export_step.database_product'|trans }}</h2>
-<table>
+<h4 class="first">{{ 'export_step.database_product'|trans }}</h4>
+<table class="fas-records-list">
     <thead>
         <tr>
             <th>{{ 'inventory.itemcode'|trans }}</th>
@@ -15,10 +15,10 @@
             <td>{{ p.itemcode }}</td>
             <td>{{ p.itemname }}</td>
             <td>{{ p.othername }}</td>
-            <td>
+            <td style="text-align: center">
                 {% if (p.useOthername) %}
-                    {% image '@MorusFasBundle/Resources/public/images/ok_icon.png' %}
-                       <img src="{{ asset_url }}" alt="OK" style="width: 15px"/>
+                    {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
+                       <img src="{{ asset_url }}" alt="OK" style="width: 30px"/>
                    {% endimage %}
                {% endif %}
             </td>

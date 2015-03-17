@@ -84,6 +84,8 @@ btn:
 
 export_step:
     station_discount_ignore_keywords: 不包含折扣油站關鍵詞
+    station_discount_ignore: 沒有折扣的油站
+    station_keywords: 油站關鍵詞
     export_invoice: 滙出發票
     register_selected_vehicle_to: 登記車牌至 
     registered_vehicle_list: 已登記車牌清單
@@ -104,6 +106,13 @@ export_step:
     export_detail: 匯出內容
     invoice_date_from: 日期由
     invoice_date_to: 至
+    invoice_datetime: 發票日期及時間
+    total_products_discovered: 總共發現產品數量
+    total_vehicles_discovered: 總共發現車牌數量
+    total_records_discovered: 總共發現行数
+    
+    msg:
+        total_records_processed: 總共分析了%records行
 
 pl:
     customer: 客戶

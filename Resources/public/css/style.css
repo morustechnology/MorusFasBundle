@@ -51,7 +51,7 @@
 .fas-steplist li{
     float: left;
     color: #888;
-    font-size: 24px;
+    font-size: 21px;
     list-style-position: inside;
     padding-top: 20px;
     text-align: center;
@@ -76,8 +76,17 @@
 .fas-error-table{
     width: 100%;
 }
-.fas-steplist-control{
-    margin: 20px 0;
+.fas-steplist-control-top{
+    margin: 10px 0 20px 0;
+    background: #f2f6ff;
+    border: 1px solid #fff;
+    padding: 10px;
+}
+.fas-steplist-control-bottom{
+    margin: 35px 0 10px 0;
+    background: #f2f6ff;
+    border: 1px solid #fff;
+    padding: 10px;
 }
 
 /*Statement (Table)*/

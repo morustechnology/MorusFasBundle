@@ -389,7 +389,7 @@
                 {{ form_rest(form) }}
 
                 {% set renderBackButton = flow.getFirstStepNumber() < flow.getLastStepNumber() and flow.getCurrentStepNumber() in (flow.getFirstStepNumber() + 1) .. flow.getLastStepNumber() %}
-                <div class="fas-steplist-control craue_formflow_buttons craue_formflow_button_count_{% if renderBackButton %}3{% else %}2{% endif %}">
+                <div class="fas-steplist-control-bottom craue_formflow_buttons craue_formflow_button_count_{% if renderBackButton %}3{% else %}2{% endif %}">
                         {%- set isLastStep = flow.getCurrentStepNumber() == flow.getLastStepNumber() -%}
                         {%- set craue_formflow_button_class_last = craue_formflow_button_class_last | default('craue_formflow_button_last') -%}
                         {%- set craue_formflow_button_class_last = isLastStep
