@@ -30,6 +30,20 @@ class Export
     protected $ignoreKeywords;
     
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="start_date", type="datetime", nullable=true)
+     */
+    protected $startdate;
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="end_date", type="datetime", nullable=true)
+     */
+    protected $enddate;
+    
+    /**
      * @var integer
      *
      * @ORM\Column(name="sort_order", type="integer", nullable=true)
@@ -83,6 +97,11 @@ class Export
         $this->ignoreKeywords = 'AIRPORT';
         $this->createDate = new \DateTime("now");
         $this->active = true;
+        
+        $start = new \DateTime("first day of last month");
+        $end = new \DateTime("last day of last month");
+        $this->startdate = $start;
+        $this->enddate = $end;
     }
 
     /**
@@ -116,6 +135,52 @@ class Export
     public function getIgnoreKeywords()
     {
         return $this->ignoreKeywords;
+    }
+    
+    /**
+     * Set startdate
+     *
+     * @param \DateTime $startdate
+     * @return Ar
+     */
+    public function setStartdate($startdate)
+    {
+        $this->startdate = $startdate;
+
+        return $this;
+    }
+
+    /**
+     * Get startdate
+     *
+     * @return \DateTime 
+     */
+    public function getStartdate()
+    {
+        return $this->startdate;
+    }
+    
+    /**
+     * Set enddate
+     *
+     * @param \DateTime $enddate
+     * @return Ar
+     */
+    public function setEnddate($enddate)
+    {
+        $this->enddate = $enddate;
+
+        return $this;
+    }
+
+    /**
+     * Get enddate
+     *
+     * @return \DateTime 
+     */
+    public function getEnddate()
+    {
+        return $this->enddate;
     }
     
     /**

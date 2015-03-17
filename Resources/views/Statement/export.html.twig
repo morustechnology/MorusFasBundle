@@ -332,6 +332,8 @@
         {{ form_errors(export_form) }}        
         
         {% if flow.getCurrentStepNumber() == 1 %} {# Analysis Statement #}
+            {{ 'export_step.invoice_date_from'|trans }} {{ form_widget(export_form.startdate) }}
+            {{ 'export_step.invoice_date_to'|trans }} {{ form_widget(export_form.enddate) }}<br/>
             {{ 'export_step.station_discount_ignore_keywords'|trans }} {{ form_widget(export_form.ignoreKeywords) }}<br/>
             
             Total Product Discovered: {{ flow.stmtProd|length }}<br/>

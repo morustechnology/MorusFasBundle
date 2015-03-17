@@ -202,6 +202,8 @@ class ExportFlow extends FormFlow {
             $this->nextInvoiceNumber = $aem->incInvNum($this->nextInvoiceNumber, 1);
             $ar->setTransdate($invdate);
             $ar->setDuedate($duedate);
+            $ar->setStartdate($export->getStartdate());
+            $ar->setEnddate($export->getEnddate());
         }
         
         foreach( $stmts as $stmt) {

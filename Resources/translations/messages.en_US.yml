@@ -103,6 +103,8 @@ export_step:
     add_to: add to
     profit_and_loss: 'Profit & loss'
     export_detail: Export Detail
+    invoice_date_from: Date from
+    invoice_date_to: to
     
 pl:
     customer: Customer

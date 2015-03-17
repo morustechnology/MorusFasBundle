@@ -9,9 +9,19 @@ class ExportStep1Type extends AbstractType {
     
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-            ->add('ignoreKeywords' , 'text');
+            ->add('ignoreKeywords' , 'text')
+            ->add('startdate', 'date', array(
+                'input'  => 'datetime',
+                'widget' => 'single_text',
+                'required' => false
+            ))
+            ->add('enddate', 'date', array(
+                'input'  => 'datetime',
+                'widget' => 'single_text',
+                'required' => false
+            ));
     }
-
+    
     public function getName() {
         return 'fas_export_step1';
     }
