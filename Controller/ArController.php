@@ -30,19 +30,20 @@ class ArController extends Controller
         $ar = $query->getQuery()->getSingleResult();
 
         if ($ar) {
-            $html = $this->renderView('MorusFasBundle:ar:print.html.twig', array(
-                'ar' => $ar,
-            ));
-            $pdfGenerator = $this->get('spraed.pdf.generator');
-            $pdfGenerator->generatePDF($html, 'UTF-8');
-
-            return new Response($pdfGenerator->generatePDF($html),
-                        200,
-                        array(
-                            'Content-Type' => 'application/pdf',
-                            'Content-Disposition' => 'attachment; filename="out.pdf"'
-                        )
-            );
+//            $html = $this->renderView('MorusFasBundle:ar:print.html.twig', array(
+//                'ar' => $ar,
+//            ));
+//            
+//            $pdfGenerator = $this->get('spraed.pdf.generator');
+//            $pdfGenerator->generatePDF($html, 'UTF-8');
+//
+//            return new Response($pdfGenerator->generatePDF($html),
+//                        200,
+//                        array(
+//                            'Content-Type' => 'application/pdf',
+//                            'Content-Disposition' => 'inline; filename="' . $ar->getInvnumber() . '.pdf"'
+//                        )
+//            );
         }
         
         
