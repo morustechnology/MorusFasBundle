@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fonts>
+    <font name="新細明體">
+        <normal src="%MorusFasBundle:fonts/新細明體/新細明體.ttf%" />
+    </font>
+    <font name="綜藝體繁">
+        <normal src="%MorusFasBundle:fonts/綜藝體繁/綜藝體繁.ttf%" />
+    </font>
+    <font name="courier">
+        <normal src="courier" />
+        <bold src="courier-bold" />
+        <italic src="courier-oblique" />
+        <bold-italic src="courier-bold-italic" />
+    </font>
+
+    <font name="times-roman">
+        <normal src="times-roman" />
+        <bold src="times-bold" />
+        <italic src="times-italic" />
+        <bold-italic src="times-bold-italic" />
+    </font>
+    
+    <font name="helvetica">
+        <normal src="helvetica" />
+        <bold src="helvetica-bold" />
+        <italic src="helvetica-oblique" />
+        <bold-italic src="helvetica-bold-oblique" />
+    </font>
+
+    <font name="zapf-dingbats">
+        <normal src="zapfDingbats" />
+    </font>
+
+    <font name="symbol">
+        <normal src="symbol" />
+    </font>
+</fonts>

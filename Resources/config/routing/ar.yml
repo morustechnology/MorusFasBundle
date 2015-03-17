@@ -27,3 +27,9 @@ morus_fas_ar_print:
 morus_fas_ar_invoice:
     pattern: /{id}/invoice
     defaults: { _controller: "MorusFasBundle:Ar:invoice" }
+    
+morus_fas_ar_print_invoice:
+    pattern: /printinvoice
+    defaults: { _controller: "MorusFasBundle:Ar:printInvoice", _format: pdf }
+    requirements:
+      _format: pdf

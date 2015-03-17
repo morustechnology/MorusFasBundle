@@ -16,32 +16,15 @@ use PHPPdf\Core\FacadeBuilder;
  */
 class ArController extends Controller
 {
-    public function printInvoiceAction($id) {
-        $loader = new LoaderImpl();
-        $fontfile = '<fonts>   
-            <font name="DejaVuSans">
-                <normal src="%resources%/fonts/DejaVuSans/normal.ttf" /><!-- "%resources%" will be replaced by path to PHPPdf/Resources directory -->
-                <bold src="%resources%/fonts/DejaVuSans/bold.ttf" />
-                <italic src="%resources%/fonts/DejaVuSans/oblique.ttf" />
-                <bold-italic src="%resources%/fonts/DejaVuSans/bold+oblique.ttf" />
-            </font>
-        </fonts>';
-                
-        $loader->setFontFile($fontfile);
-        $builder = FacadeBuilder::create($loader);
-        $facade = $builder->build();
+    /**
+     * @Pdf()
+     */
+    public function printInvoiceAction() {
+        $format = $this->get('request')->get('_format');
         
-        $doc = utf8_encode ('<?xml version="1.0" encoding="UTF-8"?><pdf><dynamic-page>晴朗汽車有限公司</dynamic-page></pdf>');
-        
-        $content = $facade->render($doc);
-        
-        return new Response($content,
-            200,
-            array(
-                'Content-Type'          => 'application/pdf',
-                'Content-Disposition'   => 'inline; filename="invoice.pdf"'
-            )
-        ); 
+        return $this->render(sprintf('MorusFasBundle:Ar:invoice.%s.twig', $format), array(
+            'name' => 'Michael',
+        ));
     }
     
     public function invoiceAction($id) {
