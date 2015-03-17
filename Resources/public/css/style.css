@@ -57,9 +57,13 @@
     text-align: center;
     border-right: 1px solid #d9dadb;
     height: 50px;
+}
+.three-steps .fas-steplist li{
     width: 312px;
 }
-
+.four-steps .fas-steplist li{
+    width: 234px;
+}
 #fas_import_step1_file{
     border: none;
 }
@@ -100,4 +104,51 @@
 }
 .fas-records-list tr:hover{
     background: #e8f1ff;
+}
+
+/*Contact Popup (Div Box)*/
+#container-box.popup{
+    width: 870px;
+}
+.popup .section-form{
+    width: 850px;
+}
+.popup .col-1-3 fieldset label, .popup #numbers label{
+    width: 60px;
+}
+.popup .section-form h4{
+    padding-top: 10px;
+}
+.popup .section-form h4.first{
+    padding-top: 0;
+}
+.popup .col-1-3{
+    width: 255px;
+    padding-right: 25px;
+}
+.popup fieldset{
+    border: none;
+    padding: 0;
+}
+.popup .col-1-3 fieldset textarea{
+    height: 55px;
+}
+#container-box.popup .field{
+    padding-bottom: 0;
+}
+
+.fas-vehicle-list li{
+    list-style: none;
+}
+.fas-vehicle-list input{
+    background: transparent;
+    border: 0;
+}
+.fas-vehicle-added-list{
+    border-bottom: 1px solid #fff;
+    padding-bottom: 20px;
+    width: 90%;
+}
+.fas-vehicle-added-list li{
+    list-style: none;
 }
