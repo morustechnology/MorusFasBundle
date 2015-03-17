@@ -1,6 +1,6 @@
 <h4 class="first">{{ 'export_step.registered_vehicle_list'|trans }}</h4>
 {% for unit in units %}
-<h4>{{ unit.name }}</h4>
+<h4 class="first">{{ unit.name }}</h4>
 <ul class="fas-vehicle-added-list">
 {% for row in unit.vehicles|batch(4) %}
     <li>

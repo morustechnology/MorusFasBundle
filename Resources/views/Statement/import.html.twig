@@ -168,13 +168,13 @@
                         <table>
                             <tr>
                                 <td>
-                                    {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
-                                        <img src="{{ asset_url }}" alt="no data found" style="width: 35px;"/>
+                                    {% image '@MorusFasBundle/Resources/public/images/icon-alert.png' %}
+                                        <img src="{{ asset_url }}" alt="no data found" style="width: 30px;"/>
                                     {% endimage %}
                                 </td>
-                                <td style="text-align: left;padding-right: 20px;"><span style=" font-size: 18px; color: red; line-height: 38px;">{{ 'statement.msg.invalid_format'|trans }}</span></td>
+                                <td style="text-align: left;padding-right: 20px;"><span style=" font-size: 18px; color: orange; line-height: 38px;">{{ 'statement.msg.invalid_format'|trans }}</span></td>
                                 <td>
-                                    {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                    {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                         <img src="{{ asset_url }}" alt="format error" style="width: 35px;"/>
                                     {% endimage %}
                                 </td>
@@ -212,7 +212,7 @@
                                     <td>{{ errorLog.row }}</td>
                                     <td>
                                         {% if errorLog.nullCardNumber %}
-                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                 <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/> 
                                             {% endimage %}
                                         {% else %}
@@ -223,7 +223,7 @@
                                     </td>
                                     <td>
                                         {% if errorLog.nullLicenceNumber %}
-                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                 <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                             {% endimage %}
                                         {% else %}
@@ -234,7 +234,7 @@
                                     </td>
                                     <td>
                                         {% if errorLog.nullSite %}
-                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                 <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                             {% endimage %}
                                         {% else %}
@@ -245,7 +245,7 @@
                                     </td>
                                     <td>
                                         {% if errorLog.nullReceiptNumber %}
-                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                 <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                             {% endimage %}
                                         {% else %}
@@ -257,7 +257,7 @@
                                     {% if flow.isSplitDateTime %}
                                         <td>
                                             {% if errorLog.nullTransactionDate %}
-                                                {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                     <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                                 {% endimage %}
                                             {% else %}
@@ -267,8 +267,8 @@
                                             {% endif %}
 
                                             {% if errorLog.invalidTransactionDate %}
-                                                {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
-                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-alert.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 22px"/>
                                                 {% endimage %}
                                             {% else %}
                                                 {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
@@ -278,7 +278,7 @@
                                         </td>
                                         <td>
                                             {% if errorLog.nullTransactionTime %}
-                                                {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                     <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                                 {% endimage %}
                                             {% else %}
@@ -288,8 +288,8 @@
                                             {% endif %}
 
                                             {% if errorLog.invalidTransactionTime %}
-                                                {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
-                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-alert.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 22px"/>
                                                 {% endimage %}
                                             {% else %}
                                                 {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
@@ -300,7 +300,7 @@
                                     {% else %}
                                         <td>
                                             {% if errorLog.nullTransactionDateTime %}
-                                                {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                     <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                                 {% endimage %}
                                             {% else %}
@@ -310,8 +310,8 @@
                                             {% endif %}
 
                                             {% if errorLog.invalidTransactionDateTime %}
-                                                {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
-                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
+                                                {% image '@MorusFasBundle/Resources/public/images/icon-alert.png' %}
+                                                    <img src="{{ asset_url }}" alt="no data found" style="width: 22px"/>
                                                 {% endimage %}
                                             {% else %}
                                                 {% image '@MorusFasBundle/Resources/public/images/icon-tick.png' %}
@@ -322,7 +322,7 @@
                                     {% endif %}
                                     <td>
                                         {% if errorLog.nullProductName %}
-                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                 <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                             {% endimage %}
                                         {% else %}
@@ -333,7 +333,7 @@
                                     </td>
                                     <td>
                                         {% if errorLog.nullUnitDiscount %}
-                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                 <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                             {% endimage %}
                                         {% else %}
@@ -344,7 +344,7 @@
                                     </td>
                                     <td>
                                         {% if errorLog.nullVolume %}
-                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                 <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                             {% endimage %}
                                         {% else %}
@@ -355,7 +355,7 @@
                                     </td>
                                     <td>
                                         {% if errorLog.nullUnitPrice %}
-                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                 <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                             {% endimage %}
                                         {% else %}
@@ -366,7 +366,7 @@
                                     </td>
                                     <td>
                                         {% if errorLog.nullNetAmount %}
-                                            {% image '@MorusFasBundle/Resources/public/images/icon-warning.png' %}
+                                            {% image '@MorusFasBundle/Resources/public/images/icon-error.png' %}
                                                 <img src="{{ asset_url }}" alt="no data found" style="width: 25px"/>
                                             {% endimage %}
                                         {% else %}

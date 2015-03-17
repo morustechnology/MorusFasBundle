@@ -380,7 +380,6 @@
                     </p>
 
 
-
                 {% elseif flow.getCurrentStepNumber() == 2 %}  {# Query Product #}
                     {# Listing Existing Unit with Vehicle Number #}
                     <div id="{{ prod_list_div_id }}" class="col-1-2">
@@ -407,17 +406,18 @@
                         </table>
                     </div>
                     
-                    <div style="clear:both;"></div>    
+                    <div style="clear:both;"></div>
                         
                         
                 {% elseif flow.getCurrentStepNumber() == 3 %}  {# Query Licence #}
                     {# Listing Existing Unit with Vehicle Number #}
-                    <div id="{{ cust_vec_list_div }}" style="float: left">
+                    <div id="{{ cust_vec_list_div }}" class="col-1-2">
                         {# layout see /Statement/export.customer.vehicle.list.html.twig #}
                     </div> 
 
                     {# Display New Vehicle Number #}
-                    <div style="float: right">
+                    <div class="col-1-2 last">
+                        <h4 class="first">{{ 'export_step.new_vehicle'|trans }}</h4>
                         {{ 'export_step.register_selected_vehicle_to'|trans }}
                         <select id="{{ cust_combo }}" ></select>
                         <button id="{{ vec_btn }}" >{{ 'btn.go'|trans }}</button>
@@ -434,12 +434,16 @@
                                 </tr>
                             {% endfor %}
                         </table>
-                    <div>
+                    </div>
+                        
+                    <div style="clear:both;"></div>
 
                     {# Update Customer Popup div #}
                     <div id="{{ cust_dlg }}" title="{{ 'contact.update_customer'|trans }}" >
                         {# layout see /Statement/customer.dialog.html.twig #}
                     </div>
+                    
+                    
                 {% elseif flow.getCurrentStepNumber() == 4 %}  {# Summary Step #}
                     <div id="{{ fas_sam_tab }}">
                         <ul>
@@ -645,15 +649,20 @@
         {{ form_start(parts_form) }}
             {{ form_errors(parts_form) }}
             <input type="hidden" id="{{ prod_dlg_idx_id  }}" value="" />
-            {{ 'inventory.itemcode'|trans }} {{ form_widget(parts_form.itemcode) }}{{ form_errors(parts_form.itemcode) }}
-            {{ 'inventory.itemname'|trans }} {{ form_widget(parts_form.itemname) }} {{ form_errors(parts_form.itemname) }}
-            <hr/>
-            {{ 'inventory.othername'|trans }} {{ form_widget(parts_form.othername) }}
             
-            {{ 'inventory.use_othername'|trans }} {{ form_widget(parts_form.useOthername) }}
-            <br/>
-            {{ 'inventory.default_discount'|trans }} {{ form_widget(parts_form.defaultDiscount) }}
-            <br/>
+            <table>
+                <tr>
+                    <td style="padding-top: 10px;">{{ 'inventory.itemcode'|trans }} {{ form_widget(parts_form.itemcode) }}{{ form_errors(parts_form.itemcode) }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.itemname'|trans }} {{ form_widget(parts_form.itemname) }} {{ form_errors(parts_form.itemname) }}</td>
+                </tr>
+                <tr>
+                    <td style="padding-top: 10px;">{{ 'inventory.othername'|trans }} {{ form_widget(parts_form.othername) }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.use_othername'|trans }} {{ form_widget(parts_form.useOthername) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-top: 10px;">{{ 'inventory.default_discount'|trans }} {{ form_widget(parts_form.defaultDiscount) }}</td>
+                </tr>
+            </table>
             {{ form_widget( parts_form.submit ) }}
             {{ form_rest(parts_form) }}
         {{ form_end(parts_form) }}

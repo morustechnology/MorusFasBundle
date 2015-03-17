@@ -131,27 +131,34 @@
 .popup .section-form h4.first{
     padding-top: 0;
 }
+.popup .column{
+    margin-bottom: 0;
+}
 .popup .col-1-3{
     width: 255px;
     padding-right: 25px;
 }
 .popup fieldset{
     border: none;
-    padding: 0;
+    padding: 0 0 6px;
 }
 .popup .col-1-3 fieldset textarea{
-    height: 55px;
+    height: 45px;
 }
 #container-box.popup .field{
     padding-bottom: 0;
 }
-
+.fas-vehicle-list  ul{
+    float: left;
+    width: 100%;
+    margin: 0 0 5px 0;
+}
 .fas-vehicle-list li{
     list-style: none;
 }
 .fas-vehicle-list input{
-    background: transparent;
-    border: 0;
+    background: #f2f6ff;
+    border: 1px solid #fff;
 }
 .fas-vehicle-added-list{
     border-bottom: 1px solid #fff;
@@ -160,4 +167,44 @@
 }
 .fas-vehicle-added-list li{
     list-style: none;
+}
+
+.fas-vechicle-list-prototype ul{
+    float: left;
+    margin:  0 0 10px 0;
+}
+.fas-vechicle-list-prototype ul li{
+    float: left;
+    margin-bottom: 5px;
+    padding-right: 25px;
+    width: 255px;
+    list-style: none;
+    font-size: 12px;
+}
+.fas-vechicle-list-prototype ul li label{
+    float: left;
+    text-align: right;
+    width: 60px;
+    padding: 0 5px 0 0;
+
+}
+.delete-link{
+    float: left;
+    border: 1px solid;
+    border-color: #f2f6ff #666 #666 #f2f6ff;
+    padding: 0 15px;
+    color: #f2f6ff;
+    background: #e4e4e4;
+    font-size: 11px;
+    cursor: pointer;
+}
+.delete-link:hover{
+    background: #999;
+    color: #fff;
+}
+.add_vehicle_link{
+    float: right;
+    clear: both;
+    margin-bottom: 10px;
+    color: #fff !important;
 }
