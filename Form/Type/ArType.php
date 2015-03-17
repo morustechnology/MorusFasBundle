@@ -33,6 +33,16 @@ class ArType extends AbstractType
             ->add('reference', 'text', array(
                 'required' => false,
             ))
+            ->add('startdate', 'date', array(
+                'input'  => 'datetime',
+                'widget' => 'single_text',
+                'required' => false
+            ))
+            ->add('enddate', 'date', array(
+                'input'  => 'datetime',
+                'widget' => 'single_text',
+                'required' => false
+            ))
             ->add('transaction', 'fas_transaction', array('label' => false));
     }
     

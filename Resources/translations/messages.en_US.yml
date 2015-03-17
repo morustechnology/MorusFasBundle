@@ -140,6 +140,12 @@ contact:
     registration_number: Registration Number
     discount: Discount
     copy_postal: Copy Postal
+
+ar:
+    amount: Amount
+    invoice_date: Invoice Date
+    invoice_date_from: Date from
+    invoice_date_to: to
     
 error:
     get_prod_desc: Error getting product detail from database, please try again.

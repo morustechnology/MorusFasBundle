@@ -239,7 +239,7 @@
                     <label>{{ 'ar.invnumber'|trans }}</label>{{ form_widget(form.invnumber) }} {{ form_errors(form.invnumber) }}
                 </div>
                 <div class="field inline">
-                    <label>{{ 'ar.transdate'|trans }}</label>{{ form_widget(form.transdate) }} {{ form_errors(form.transdate) }}
+                    <label>{{ 'ar.invoice_date'|trans }}</label>{{ form_widget(form.transdate) }} {{ form_errors(form.transdate) }}
                 </div>
                 <div class="field inline">
                     <label>{{ 'ar.duedate'|trans }}</label>{{ form_widget(form.duedate) }} {{ form_errors(form.duedate) }}
@@ -249,6 +249,7 @@
                 </div>
             </fieldset>
             
+            {{ 'ar.invoice_date_from'|trans }} {{ form_widget(form.startdate) }} {{ 'ar.invoice_date_to'|trans }} {{ form_widget(form.enddate) }}
             <table id="{{ inv_tbl_id }}" class="ar">
                 <thead>
                     <th class="short left" >{{ 'invoice.registration_number'|trans }}</th>

@@ -142,6 +142,9 @@ contact:
 
 ar:
     amount: 總額
+    invoice_date: 發單日期
+    invoice_date_from: 日期由
+    invoice_date_to: 至
     
 error:
     get_prod_desc: '從數據庫中查詢產品資料錯誤，請稍後重試。'
