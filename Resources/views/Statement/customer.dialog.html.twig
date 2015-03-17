@@ -13,9 +13,8 @@
 {% endjavascripts %}
     
 <script type='text/javascript'>
-    jQuery.noConflict();
     var $unitPartsCollectionHolder;
-    var $addUnitPartsLink = $('<a href="#" class="add_link">{{ 'btn.add_new_product_discount'|trans }}</a>');
+    var $addUnitPartsLink = $('<a href="#" class="add_link green-btn">{{ 'btn.add_new_product_discount'|trans }}</a>');
     var $newUnitPartsLinkLi = $('<li></li>').append($addUnitPartsLink);
     
     jQuery(document).ready(function() {
@@ -80,7 +79,7 @@
     }
     
     function addUnitPartsFormDeleteLink($unitPartsFormLi) {
-        var $removeFormA = $('<a href="#">X</a>');
+        var $removeFormA = $('<a href="#" class="delete-link">X</a>');
         $unitPartsFormLi.append($removeFormA);
 
         $removeFormA.on('click', function(e) {
@@ -95,7 +94,7 @@
     
     
     var $vehicleCollectionHolder;
-    var $addVehicleLink = $('<a href="#" class="add_vehicle_link green-btn">{{ 'btn.add_new_vehicle'|trans }}</a>');
+    var $addVehicleLink = $('<a href="#" class="add_link green-btn">{{ 'btn.add_new_vehicle'|trans }}</a>');
     var $newVehicleLinkLi = $('<li></li>').append($addVehicleLink);
     
     // Add Parts Discount Functions
@@ -177,7 +176,6 @@
                 <div id="entity_persons" data-prototype-persons="">
                     {% for person in form.persons %}
                         {% if loop.index == 1 %}
-                            <h4>{{ 'contact.primary_person'|trans }}</h4>
                         {% endif %}
                         <div id="entity_person_contacts" data-prototype-contacts="">
                             <fieldset>
@@ -213,8 +211,7 @@
                 <div class="fas-vechicle-list-prototype">
                     <ul id="{{ vehicle_ul }}" data-prototype="{{ form_widget(form.vehicles.vars.prototype)|e }}">
                         {% for vehicle in form.vehicles %}
-                        <li>
-                            <label>{{ 'contact.registration_number'|trans }}</label>{{ form_widget(vehicle.registrationNumber) }}</li>
+                        <li><label>{{ 'contact.registration_number'|trans }}</label>{{ form_widget(vehicle.registrationNumber) }}</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -222,11 +219,10 @@
                 <div style="clear:both;"></div>    
                 <h4>{{ 'contact.product_discount'|trans }}</h4>
                 
-                <div>
-                    {{ 'contact.product_discount'|trans }} :
+                <div class="fas-discount-list-prototype">
                     <ul id="{{ unit_parts_ul }}" data-prototype="{{ form_widget(form.unitParts.vars.prototype)|e }}">
                         {% for up in form.unitParts %}
-                            <li>{{ 'contact.product'|trans }} {{ form_widget(up.parts) }} {{ 'contact.discount'|trans }} {{ form_widget(up.discount) }}</li>
+                            <li><label>{{ 'contact.product'|trans }}</label>{{ form_widget(up.parts) }} {{ 'contact.discount'|trans }}{{ form_widget(up.discount) }}</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -234,6 +230,9 @@
                 <div>
                     {{ form_widget(form.submit) }}
                 </div>
+                
+                <div style="clear:both;"></div>    
+                
                 {{ form_rest(form) }}
         {{ form_end(form) }}
     </div>

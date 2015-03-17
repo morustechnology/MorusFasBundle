@@ -1,14 +1,18 @@
 <h4 class="first">{{ 'export_step.registered_vehicle_list'|trans }}</h4>
 {% for unit in units %}
-<h4 class="first">{{ unit.name }}</h4>
-<ul class="fas-vehicle-added-list">
+<table class="fas-records-list">
+    <tr>
+    <thead><th>{{ unit.name }}</th></thead>
+    </tr>
 {% for row in unit.vehicles|batch(4) %}
-    <li>
+    <tr>
+        <td>
     {% for vehicle in row %}
         {% if loop.index != 1 %} , {% endif %}
         {{ vehicle.registrationNumber }} 
     {% endfor %}
-    </li>
+        </td>
+    </tr>
 {% endfor %}
-</ul>
+</table>
 {% endfor %}

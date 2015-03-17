@@ -94,6 +94,7 @@
     border: 1px solid #ccc;
     float: left;
     width: 450px;
+    margin-bottom: 10px;
 }
 .fas-records-list tr th{
     background: #f2f6ff;
@@ -189,10 +190,9 @@
 
 }
 .delete-link{
-    float: left;
     border: 1px solid;
     border-color: #f2f6ff #666 #666 #f2f6ff;
-    padding: 0 15px;
+    padding: 3px 7px;
     color: #f2f6ff;
     background: #e4e4e4;
     font-size: 11px;
@@ -202,9 +202,46 @@
     background: #999;
     color: #fff;
 }
-.add_vehicle_link{
+.add_link{
     float: right;
     clear: both;
     margin-bottom: 10px;
     color: #fff !important;
+}
+.fas-discount-list-prototype ul{
+    float: left;
+    margin:  0 0 10px 0;
+}
+.fas-discount-list-prototype ul li{
+    float: left;
+    margin-bottom: 5px;
+    width: 100%;
+    list-style: none;
+    font-size: 12px;
+}
+.fas-discount-list-prototype ul li label{
+    float: left;
+    text-align: right;
+    width: 60px;
+    padding: 0 5px 0 0;
+
+}
+
+/*FAS Tab Table*/
+table.fas-tab{
+    width: 872px;
+    border: 1px solid #ddd;
+}
+table.fas-tab thead th{
+    border-bottom: 1px solid #ddd;
+}
+table.fas-tab tr td{
+    border-style: solid solid none;
+    text-align: right;
+    padding: 1px 8px;
+}
+.fas-tab.ar tfoot td {
+    background: none repeat scroll 0 0 #f2f6ff;
+    font-weight: bold;
+    padding: 5px 8px;
 }
