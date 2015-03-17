@@ -21,5 +21,9 @@ morus_fas_ar_ajax_product_description:
     defaults: { _controller: "MorusFasBundle:Ar:ajaxProdDesc" }
     
 morus_fas_ar_print:
-    path: /{id}/print
+    pattern: /{id}/print
     defaults: { _controller: "MorusFasBundle:Ar:print" }
+    
+morus_fas_ar_invoice:
+    pattern: /{id}/invoice
+    defaults: { _controller: "MorusFasBundle:Ar:invoice" }

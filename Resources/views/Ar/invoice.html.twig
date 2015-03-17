@@ -1,0 +1,61 @@
+
+<p style="font-family: Simsun, Arial Unicode MS">晴朗汽車有限公司</p>
+Sunny Day Motors Ltd<br/>
+P.O. Box No.1563 Yuen Long Post Office<br/>
+sunnydaymotorsltd@yahoo.com.hk<br/>
+電話：90901108<br/>
+<hr/>
+發票編號：{{ ar.invnumber }}
+發單日期：{{ ar.transdate|date('d/m/Y') }}
+
+<h2>{{ ar.unit.name }}</h2>
+{% for vehicle in ar.unit.vehicles %}
+<h4>車牌號碼︰: {{ vehicle.registrationNumber }}</h4>
+柴油及汽油月結單詳細交易報告								
+						每公升油價		
+<table>
+    <thead>
+        <tr>
+            <th>日期</th>
+            <th>時間</th>
+            <th>油站名稱</th>
+            <th>收據號碼</th>
+            <th>貨品</th>
+            <th>數量 (L)</th>
+            <th>每公升油價</th>
+            <th>每公升淨價</th>
+            <th>總額 HK$</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for invoice in ar.transaction.invoices %}
+            {% if invoice.licence == vehicle.registrationNumber %}
+                <tr>
+                    <td>{{ invoice.transDate|date('d/m/Y') }}</td>
+                    <td>{{ invoice.transTime|date('H:i:s') }}</td>
+                    <td>{{ invoice.site }}</td>
+                    <td>{{ invoice.receiptNumber }}</td>
+                    <td>{{ invoice.description }}</td>
+                    <td>
+                        {% set qty = invoice.qty|number_format(2, '.', ',') %}
+                        {{ qty }}
+                    </td>
+                    <td>
+                        {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
+                        {{ sellprice }}
+                    </td>
+                    <td>
+                        {% set netprice = sellprice - invoice.selldiscount %}
+                        {{ netprice|number_format(2, '.', ',') }}
+                    </td>
+                    <td>
+                        {% set total = qty *  netprice %}
+                        {{ total|number_format(2, '.', ',') }}
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+<br/>
+{% endfor %}

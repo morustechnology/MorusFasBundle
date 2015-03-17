@@ -6,6 +6,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Ps\PdfBundle\Annotation\Pdf;
+use PHPPdf\Core\Configuration\LoaderImpl;
+use PHPPdf\Core\FacadeBuilder;
 
 /**
  * Ar controller.
@@ -13,8 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ArController extends Controller
 {
-    public function printAction($id)
-    {
+    public function invoiceAction($id) {
         $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
 
         // Get ar with invoices lines
@@ -28,25 +30,68 @@ class ArController extends Controller
                 ->where($qb->expr()->eq('ar.id', $id));
         
         $ar = $query->getQuery()->getSingleResult();
-
-        if ($ar) {
-//            $html = $this->renderView('MorusFasBundle:ar:print.html.twig', array(
-//                'ar' => $ar,
-//            ));
-//            
-//            $pdfGenerator = $this->get('spraed.pdf.generator');
-//            $pdfGenerator->generatePDF($html, 'UTF-8');
+        
+        return $this->render('MorusFasBundle:Ar:invoice.html.twig', array(
+            'ar' => $ar,
+        ));
+    }
+    
+    public function printAction($id)
+    {
+//        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
 //
-//            return new Response($pdfGenerator->generatePDF($html),
-//                        200,
-//                        array(
-//                            'Content-Type' => 'application/pdf',
-//                            'Content-Disposition' => 'inline; filename="' . $ar->getInvnumber() . '.pdf"'
-//                        )
-//            );
-        }
+//        // Get ar with invoices lines
+//        $qb = $aem->getArRepository()
+//                ->createQueryBuilder('ar');
+//        
+//        $query = $qb
+//                ->select('ar')
+//                ->join('ar.transaction', 't')
+//                ->leftJoin('t.invoices', 'v')
+//                ->where($qb->expr()->eq('ar.id', $id));
+//        
+//        $ar = $query->getQuery()->getSingleResult();
+//        
+//        $html = $this->renderView('MorusFasBundle:Ar:invoice.html.twig', array(
+//            'ar'  => $ar
+//        ));
+//        
+//        
+//        $pdfhtml = $this->get('knp_snappy.pdf')->getOutputFromHtml($html);
         
         
+        
+        // ++++++++++++++++++++++++++++++++++++++++
+        $loader = new LoaderImpl();
+        $fontfile = '<fonts>   
+    <font name="DejaVuSans">
+        <normal src="%resources%/fonts/DejaVuSans/normal.ttf" /><!-- "%resources%" will be replaced by path to PHPPdf/Resources directory -->
+        <bold src="%resources%/fonts/DejaVuSans/bold.ttf" />
+        <italic src="%resources%/fonts/DejaVuSans/oblique.ttf" />
+        <bold-italic src="%resources%/fonts/DejaVuSans/bold+oblique.ttf" />
+    </font>
+</fonts>';
+                
+        $loader->setFontFile($fontfile);
+        $builder = FacadeBuilder::create($loader);
+        $facade = $builder->build();
+        
+        $doc = utf8_encode ('<?xml version="1.0" encoding="UTF-8"?><pdf><dynamic-page>晴朗汽車有限公司</dynamic-page></pdf>');
+        
+        $content = $facade->render($doc);
+        
+        // ++++++++++++++++++++++++++++++++++++++++
+        
+        $pageUrl = $this->generateUrl('morus_fas_ar_invoice', array('id' => $id), true);
+        $pdf = $this->get('knp_snappy.pdf')->getOutput($pageUrl);
+        
+        return new Response($content,
+            200,
+            array(
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => 'inline; filename="invoice.pdf"'
+            )
+        ); 
     }
     
     public function ajaxProdDescAction(Request $request)
