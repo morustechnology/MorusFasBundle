@@ -467,12 +467,14 @@
                                 <tbody>
                                     {% set nettotal = 0 %}
                                     {% set rectotal = 0 %}
-                                    {% set pltotal = 0 %}
                                     {% set unitname = null %}
                                     {% for ar in flow.ars %}
                                     <tr>
                                         <td>{{ ar.unit.name }}</td>
-
+                                        
+                                        {% set recsubtotal = 0 %}
+                                        {% set netsubtotal = 0 %}
+                                        
                                         {% for vehicle in ar.unit.vehicles %}
                                             {% if unitname != ar.unit.name %}
                                                 {% set unitname = ar.unit.name %}
@@ -485,30 +487,19 @@
 
                                             {% set net = 0 %}
                                             {% set rec = 0 %}
-                                            {% set cnt = 0 %}
-
                                             {% for invoice in ar.transaction.invoices %}
-
                                                 {% if invoice.licence == vehicle.registrationNumber %}
-                                                    {% set cnt = cnt + 1 %}
-                                                    {% set unitprice = invoice.unitprice|round(2) %}
-                                                    {% set unitdiscount = invoice.unitdiscount|round(2) %}
-                                                    {% set sellprice = invoice.sellprice|round(2) %}
-                                                    {% set selldiscount = invoice.selldiscount|round(2) %}
-                                                    {% set px = sellprice - selldiscount %}
-                                                    {% set qty = invoice.qty %}
-
-
-                                                    {% set net = net|round(2) + ( qty * unitprice ) %}
-                                                    {% set rec = rec|round(2) + ( qty * px ) %}
-                                                    {% set nettotal = nettotal|round(2) + net %}
-                                                    {% set rectotal = rectotal|round(2) + rec %}
+                                                    {% set net = net|round(2) + invoice.nettcost %}
+                                                    {% set rec = rec|round(2) + invoice.amount %}
                                                 {% endif %}
                                             {% endfor %}
+                                            {% set netsubtotal = netsubtotal|round(2) + net %}
+                                            {% set recsubtotal = recsubtotal|round(2) + rec %}
+                                            {% set nettotal = nettotal|round(2) + netsubtotal %}
+                                            {% set rectotal = rectotal|round(2) + recsubtotal %}
                                             <td>{{ net|round(2) }}</td>
                                             <td>{{ rec|round(2) }}</td>
                                             <td>{% set pl = rec - net %}
-                                                {% set pltotal = pltotal + pl %}
                                                 {{ pl|round(2) }}
                                             </td>
                                             <td>
@@ -518,7 +509,20 @@
                                             </tr>
                                         {% endfor %}
                                     </tr>
-                                    <tr id="space"><td colspan="6" style="height: 5px;background: #f3f3f3;"></tr> {# Space between every #}
+                                    <tr id="space" >
+                                        <td/><td/>
+                                        <td style="background: #f3f3f3;">{{ netsubtotal }}</td>
+                                        <td style="background: #f3f3f3;">{{ recsubtotal }}</td>
+                                        <td style="background: #f3f3f3;">
+                                            {% set plsubtotal = recsubtotal - netsubtotal %}
+                                            {{ plsubtotal }}
+                                        </td>
+                                        <td style="background: #f3f3f3;">
+                                            {% set persubtotal = ( plsubtotal / netsubtotal) * 100 %}
+                                            {{ persubtotal|number_format(2, '.', ',') }}%
+                                        </td>
+                                    </tr> {# Space between every #}
+                                    <tr id="space"><td colspan="6" style="height: 5px; background: #f3f3f3;"/></tr> {# Space between every #}
                                     {% endfor %}
                                 </tbody>
                                 <tfoot>
@@ -527,10 +531,12 @@
                                     <td>Total:</td>
                                     <td>{{ nettotal|number_format(2, '.', ',') }}</td>
                                     <td>{{ rectotal|number_format(2, '.', ',') }}</td>
-                                    <td>{{ pltotal|number_format(2, '.', ',') }}</td>
+                                    <td>{% set pltotal = rectotal - nettotal %}
+                                        {{ pltotal|number_format(2, '.', ',') }}
+                                    </td>
                                     <td>
                                         {% set totalper = ( pltotal / nettotal) * 100 %}
-                                            {{ totalper|number_format(2, '.', ',') }}%
+                                        {{ totalper|number_format(2, '.', ',') }}%
                                     </td>
                                 </tr>
                               </tfoot>
@@ -544,7 +550,8 @@
                                 </div>
                                 <div class="col-1-2 last" style="text-align:right;">
                                     {{ 'invoice.invnumber'|trans }} {{ ar.invnumber }} <br/>
-                                    {{ 'invoice.transdate'|trans }} {{ ar.transdate|date('d/m/Y') }}
+                                    {{ 'invoice.transdate'|trans }} {{ ar.transdate|date('d/m/Y') }} <br/>
+                                    {{ 'invoice.total'|trans }} {{ ar.total|number_format(2, '.', ',') }}
                                 </div>
                                 <div style="clear:both;"></div>
                                 {# {{ 'invoice.duedate'|trans }} {{ ar.duedate|date('d/m/Y') }} #}
@@ -576,15 +583,12 @@
                                                         <td>{{ invoice.receiptNumber }}</td>
                                                         <td>{{ invoice.description }}</td>
                                                         <td>
-                                                            {% set qty = invoice.qty|number_format(2, '.', ',') %}
-                                                            {{ qty }}</td>
+                                                            {{ invoice.qty|number_format(2, '.', ',') }}</td>
                                                         <td>
-                                                            {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
-                                                            {{ sellprice }}
+                                                            {{ invoice.sellprice }}
                                                         </td>
                                                         <td>
-                                                            {% set selldiscount = invoice.selldiscount|number_format(2, '.', ',') %}
-                                                            {{ selldiscount }}
+                                                            {{ invoice.selldiscount }}
                                                         </td>
                                                         <td>
                                                             {% if invoice.customerdiscount %} 
@@ -598,12 +602,10 @@
                                                             {% endif %}
                                                         </td>
                                                         <td>
-                                                            {% set netprice = sellprice - selldiscount %}
-                                                            {{ netprice|number_format(2, '.', ',') }}
+                                                            {{ invoice.netprice|number_format(2, '.', ',') }}
                                                         </td>
                                                         <td>
-                                                            {% set total = qty *  netprice %}
-                                                            {{ total|number_format(2, '.', ',') }}
+                                                            {{ invoice.amount|number_format(2, '.', ',') }}
                                                         </td>
                                                     </tr>
                                                 {% endif %}

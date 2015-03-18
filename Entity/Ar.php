@@ -102,4 +102,16 @@ class Ar extends BaseAr
     {
         return $this->enddate;
     }
+    
+    
+    public function getTotal()
+    {
+        $total = 0;
+        foreach($this->transaction->getInvoices() as $invoice){
+            $amount = round($invoice->getAmount(),2);
+            $total += $amount;
+        }
+        
+        return $total;
+    }
 }

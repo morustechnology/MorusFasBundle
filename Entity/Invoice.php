@@ -351,4 +351,34 @@ class Invoice extends BaseInvoice
     {
         return $this->customerdiscount;
     }
+    
+    public function getNettcost() 
+    {
+        $unitprice = round($this->unitprice,2);
+        $qty = round( $this->qty, 2 );
+        
+        return round( $qty * $unitprice, 2);
+    }
+    
+    /**
+     * 
+     * @return float
+     */
+    public function getNetprice() 
+    {
+        $sellprice = round($this->sellprice,2);
+        $selldiscount = round($this->selldiscount, 2);
+        return round($sellprice - $selldiscount, 2);
+    }
+    
+    /**
+     * 
+     * @return float
+     */
+    public function getAmount()
+    {
+        $qty = round( $this->qty, 2 );
+        $netprice = $this->getNetprice();
+        return round( $qty * $netprice,2 );
+    }
 }
