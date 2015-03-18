@@ -1,3 +1,6 @@
+sunnyday: 晴朗汽車有限公司
+sunnydayeng: Sunny Day Motors Ltd
+
 inventory:
     use_othername: 使用列印名稱
     othername: 列印名稱
@@ -139,6 +142,14 @@ invoice:
     invnumber: 發票編號
     transdate: 日期
     duedate: 到期日
+    amount: 總額
+    invoice_date: 發單日期
+    invoice_date_from: 日期由
+    invoice_date_to: 至
+    tel: 電話
+    bank_transfer_date: 自動轉賬日期
+    customer_number: 客戶編號
+    page_total: 共頁數
 
 contact:
     vehicle_list: 車輛名單
@@ -148,12 +159,6 @@ contact:
     registration_number: 車牌
     discount: 折扣
     copy_postal: 複製郵寄地址
-
-ar:
-    amount: 總額
-    invoice_date: 發單日期
-    invoice_date_from: 日期由
-    invoice_date_to: 至
     
 error:
     get_prod_desc: '從數據庫中查詢產品資料錯誤，請稍後重試。'

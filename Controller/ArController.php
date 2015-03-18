@@ -16,8 +16,116 @@ use PHPPdf\Core\FacadeBuilder;
  */
 class ArController extends Controller
 {
+    function create_zip($files = array(), $destination = '',$overwrite = false) {
+	//if the zip file already exists and overwrite is false, return false
+	if(file_exists($destination) && !$overwrite) { return false; }
+	//vars
+	$valid_files = array();
+	//if files were passed in...
+	if(is_array($files)) {
+		//cycle through each file
+		foreach($files as $file) {
+			//make sure the file exists
+			if(file_exists($file)) {
+				$valid_files[] = $file;
+			}
+		}
+	}
+	//if we have good files...
+	if(count($valid_files)) {
+		//create the archive
+		$zip = new ZipArchive();
+		if($zip->open($destination,$overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
+			return false;
+		}
+		//add the files
+		foreach($valid_files as $file) {
+			$zip->addFile($file,$file);
+		}
+		//debug
+		//echo 'The zip archive contains ',$zip->numFiles,' files with a status of ',$zip->status;
+		
+		//close the zip -- done!
+		$zip->close();
+		
+		//check to make sure the file exists
+		return file_exists($destination);
+	}
+	else
+	{
+		return false;
+	}
+    }
+    
+    public function bulkPrintAction() {
+        $session = $this->get('session');
+        if ($session && $session->get('bulk_print_ids')) {
+            $ids = $session->get('bulk_print_ids');
+            
+            $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+
+            // Get ar with invoices lines
+            $qb = $aem->getArRepository()
+                    ->createQueryBuilder('ar');
+
+            $query = $qb
+                    ->select('ar')
+                    ->join('ar.transaction', 't')
+                    ->leftJoin('t.invoices', 'v')
+                    ->where($qb->expr()->in('ar.id', $ids));
+
+            $ars = $query->getQuery()->getResult();
+            
+            $pdfs = array();
+            
+            foreach($ars as $ar) {
+                // Get postal address
+                $postqb = $aem->getLocationRepository()
+                        ->createQueryBuilder('l');
+
+                $postquery = $postqb
+                        ->join('l.unit', 'u')
+                        ->join('l.locationClass', 'lc', 'WITH', 'lc.controlCode = :controlCode')
+                        ->where('l.unit = :unit')
+                        ->setParameter('controlCode', 'POSTAL')
+                        ->setParameter('unit', $ar->getUnit());
+
+                $postal = $postquery->getQuery()->getSingleResult();
+                
+                $path = $this->container->getParameter('kernel.root_dir') . '/../src/Morus/FasBundle/Resources/views/Ar/invoice.stylesheet.twig';
+
+                $stylesheet = file_get_contents($path);
+
+                $facade = $this->get('ps_pdf.facade');
+                
+                $response = new Response();
+                $this->render('MorusFasBundle:Ar:invoice.pdf.twig', array(
+                    'ar' => $ar,
+                    'postal' => $postal,
+                ), $response);
+
+                $xml = $response->getContent();
+
+                $content = $facade->render($xml, $stylesheet);
+                
+                $pdfs[] = $content;
+                
+                
+            } // end looping ars
+            
+            $this->create_zip($pdfs, __DIR__.'/../../../../web/zip/invoice.zip', true);
+            
+            $zip = file(__DIR__.'/../../../../web/zip/invoice.zip');
+            
+            return new Response($zip, 200, array(
+                'content-type' => 'application/zip', 
+                'Content-Disposition'   => 'attachment; filename="invoices.zip"')
+                );
+        }
+    }
+    
     /**
-     * @Pdf()
+     * @Pdf(stylesheet="MorusFasBundle:Ar:invoice.stylesheet.twig")
      */
     public function printAction($id) {
         $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
@@ -34,11 +142,46 @@ class ArController extends Controller
         
         $ar = $query->getQuery()->getSingleResult();
         
-        $format = $this->get('request')->get('_format');
+        // Get postal address
+        $postqb = $aem->getLocationRepository()
+                ->createQueryBuilder('l');
         
-        return $this->render(sprintf('MorusFasBundle:Ar:invoice.%s.twig', $format), array(
+        $postquery = $postqb
+                ->join('l.unit', 'u')
+                ->join('l.locationClass', 'lc', 'WITH', 'lc.controlCode = :controlCode')
+                ->where('l.unit = :unit')
+                ->setParameter('controlCode', 'POSTAL')
+                ->setParameter('unit', $ar->getUnit());
+                
+        $postal = $postquery->getQuery()->getSingleResult();
+        
+//        $format = $this->get('request')->get('_format');
+        
+//        return $this->render(sprintf('MorusFasBundle:Ar:invoice.%s.twig', $format), array(
+//            'ar' => $ar,
+//            'postal' => $postal,
+//        ));
+        
+        
+        $path = $this->container->getParameter('kernel.root_dir') . '/../src/Morus/FasBundle/Resources/views/Ar/invoice.stylesheet.twig';
+
+        $stylesheet = file_get_contents($path);
+        
+        $facade = $this->get('ps_pdf.facade');
+        $response = new Response();
+        $this->render('MorusFasBundle:Ar:invoice.pdf.twig', array(
             'ar' => $ar,
-        ));
+            'postal' => $postal,
+        ), $response);
+        
+        $xml = $response->getContent();
+        
+        $content = $facade->render($xml, $stylesheet);
+        
+        return new Response($content, 200, array(
+            'content-type' => 'application/pdf', 
+            'Content-Disposition'   => 'attachment; filename="' . $ar->getUnit()->getName() . '.pdf"')
+                );
     }
     
     public function ajaxProdDescAction(Request $request)
@@ -82,7 +225,7 @@ class ArController extends Controller
      * Lists all Transaction entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {        
         $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
 
@@ -101,8 +244,37 @@ class ArController extends Controller
         
         $ars = $query->getQuery()->getResult();
         
+        
+        
+        
+        $form = $this->createForm('fas_ar_list', $ars, array(
+            'attr'   => array('id' => 'fas_inv_list_frm'),
+            'action' => $this->generateUrl('morus_fas_ar'),
+            'method' => 'POST',
+        ));
+
+        $form->add('bulk_print', 'submit', array('label' => 'bulk print', 'attr' => array( 'style' => '' )));
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) {
+            if ($form->get('bulk_print')->isClicked()) {
+                $ids = array();
+                $ars = $form->getData()['id'];
+                foreach ($ars as $ar) {
+                    $ids[] = $ar->getId();
+                }
+                $session = $this->get('session');
+                $session->set('bulk_print_ids', $ids);
+                
+                return $this->redirect($this->generateUrl('morus_fas_bulk_print'));
+            }
+        }
+        
+        
         return $this->render('MorusFasBundle:Ar:index.html.twig', array(
             'ars' => $ars,
+            'form' => $form->createView(),
         ));
     }
     

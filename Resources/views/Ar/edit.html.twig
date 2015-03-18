@@ -202,11 +202,11 @@
             
         }
         
-        jQuery(document).ready(function() { 
+{#jQuery(document).ready(function() { 
             $('#fas_inv_print').on('click', function( event ) {
                 event.preventDefault();
                 window.open("{{ path('morus_fas_ar_print', {'id': ar.id}) }}", "");
-            });
+            });#}
         });
         
     </script>
@@ -223,7 +223,7 @@
             {{ form_errors(form) }}
             <ul class="page-control">
                 <li>
-                    <a id="fas_inv_print"  class="loading-btn" href="#">
+                    <a id="fas_inv_print"  class="loading-btn" href="{{ path('morus_fas_ar_print', {'id': ar.id}) }}">
                         {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
                         <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-172px -16px;background-size:260px;" ></em>
                         {% endimage %}
@@ -248,7 +248,7 @@
                         <label>{{ 'ar.invnumber'|trans }}</label>{{ form_widget(form.invnumber) }} {{ form_errors(form.invnumber) }}
                     </div>
                     <div class="field inline">
-                        <label>{{ 'ar.invoice_date'|trans }}</label>{{ form_widget(form.transdate) }}
+                        <label>{{ 'invoice.invoice_date'|trans }}</label>{{ form_widget(form.transdate) }}
                     </div>
                     <div class="field inline">
                         <label>{{ 'ar.duedate'|trans }}</label>{{ form_widget(form.duedate) }}
@@ -258,7 +258,7 @@
                     </div>
                 </fieldset>
             </div>
-            {{ 'ar.invoice_date_from'|trans }} {{ form_widget(form.startdate) }} {{ 'ar.invoice_date_to'|trans }} {{ form_widget(form.enddate) }}
+            {{ 'invoice.invoice_date_from'|trans }} {{ form_widget(form.startdate) }} {{ 'invoice.invoice_date_to'|trans }} {{ form_widget(form.enddate) }}
             <table id="{{ inv_tbl_id }}" class="ar">
                 <thead>
                     <th class="short left" >{{ 'invoice.registration_number'|trans }}</th>

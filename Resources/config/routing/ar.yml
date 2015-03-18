@@ -22,6 +22,8 @@ morus_fas_ar_ajax_product_description:
     
 morus_fas_ar_print:
     pattern: /{id}/print
-    defaults: { _controller: "MorusFasBundle:Ar:print", _format: pdf }
-    requirements:
-      _format: pdf
+    defaults: { _controller: "MorusFasBundle:Ar:print" }
+
+morus_fas_bulk_print:
+    pattern: /bulkprint
+    defaults: { _controller: "MorusFasBundle:Ar:bulkPrint" }

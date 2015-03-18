@@ -47,6 +47,11 @@ services:
         class: Morus\FasBundle\Form\Type\TransactionType
         tags:
             - { name: form.type, alias: fas_transaction }
+    
+    morus_fas.form.type.ar.list:
+        class: Morus\FasBundle\Form\Type\ArListType
+        tags:
+            - { name: form.type, alias: fas_ar_list }
             
     morus_fas.form.type.ar:
         class: Morus\FasBundle\Form\Type\ArType

@@ -1,3 +1,6 @@
+sunnyday: 晴朗汽車有限公司
+sunnydayeng: Sunny Day Motors Ltd
+
 inventory:
     use_othername: Use Print Name
     othername: Print Name
@@ -140,6 +143,14 @@ invoice:
     invnumber: Invoice Number
     transdate: Date
     duedate: Due Date
+    amount: Amount
+    invoice_date: Invoice Date
+    invoice_date_from: Date from
+    invoice_date_to: to
+    tel: Tel
+    bank_transfer_date: Bank Transfer Date
+    customer_number: Customer Number
+    page_total: Total Page
     
 contact:
     vehicle_list: Vehicle List
@@ -149,12 +160,6 @@ contact:
     registration_number: Registration Number
     discount: Discount
     copy_postal: Copy Postal
-
-ar:
-    amount: Amount
-    invoice_date: Invoice Date
-    invoice_date_from: Date from
-    invoice_date_to: to
     
 error:
     get_prod_desc: Error getting product detail from database, please try again.
