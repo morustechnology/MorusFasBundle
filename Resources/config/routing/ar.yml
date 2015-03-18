@@ -22,14 +22,6 @@ morus_fas_ar_ajax_product_description:
     
 morus_fas_ar_print:
     pattern: /{id}/print
-    defaults: { _controller: "MorusFasBundle:Ar:print" }
-    
-morus_fas_ar_invoice:
-    pattern: /{id}/invoice
-    defaults: { _controller: "MorusFasBundle:Ar:invoice" }
-    
-morus_fas_ar_print_invoice:
-    pattern: /{id}/printinvoice
-    defaults: { _controller: "MorusFasBundle:Ar:printInvoice", _format: pdf }
+    defaults: { _controller: "MorusFasBundle:Ar:print", _format: pdf }
     requirements:
       _format: pdf

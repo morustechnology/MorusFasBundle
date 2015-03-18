@@ -19,7 +19,7 @@ class ArController extends Controller
     /**
      * @Pdf()
      */
-    public function printInvoiceAction($id) {
+    public function printAction($id) {
         $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
 
         // Get ar with invoices lines
@@ -39,41 +39,6 @@ class ArController extends Controller
         return $this->render(sprintf('MorusFasBundle:Ar:invoice.%s.twig', $format), array(
             'ar' => $ar,
         ));
-    }
-    
-    public function invoiceAction($id) {
-        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
-
-        // Get ar with invoices lines
-        $qb = $aem->getArRepository()
-                ->createQueryBuilder('ar');
-        
-        $query = $qb
-                ->select('ar')
-                ->join('ar.transaction', 't')
-                ->leftJoin('t.invoices', 'v')
-                ->where($qb->expr()->eq('ar.id', $id));
-        
-        $ar = $query->getQuery()->getSingleResult();
-        
-        return $this->render('MorusFasBundle:Ar:invoice.html.twig', array(
-            'ar' => $ar,
-        ));
-    }
-    
-    public function printAction($id)
-    {
-        $pageUrl = $this->generateUrl('morus_fas_ar_invoice', array('id' => $id), true);
-        $pdf = $this->get('knp_snappy.pdf')->getOutput($pageUrl);
-        
-        return new Response($pdf,
-            200,
-            array(
-                'Content-Type'          => 'application/pdf',
-                'Content-Disposition'   => 'inline; filename="invoice.pdf"',
-                'header-font-name'      => 'sans-serif'
-            )
-        ); 
     }
     
     public function ajaxProdDescAction(Request $request)
