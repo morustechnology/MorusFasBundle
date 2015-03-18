@@ -30,7 +30,7 @@
         var $invTbl;
 
         // setup an "add a invoice" link
-        var $addInvLnk = $('<a id="{{ inv_add_lk_id }}" href="#" class="add_invoice_link loading-btn">{% image '@MorusFasBundle/Resources/public/images/icons-pack.png' %}<em class="icons add icon" style="background:url({{ asset_url }}) no-repeat; background-position: -120px -50px;""></em>{% endimage %}{{ 'btn.add_new_line'|trans }}</a>');
+        var $addInvLnk = $('<a id="{{ inv_add_lk_id }}" href="#" class="fas-add-invoice-link loading-btn">{% image '@MorusFasBundle/Resources/public/images/icons-pack.png' %}<em class="icons add icon" style="background:url({{ asset_url }}) no-repeat; background-position: -120px -50px;""></em>{% endimage %}{{ 'btn.add_new_line'|trans }}</a>');
         var $newLnk = $('<div class="table-control"></div>').append($addInvLnk);
         
         jQuery(document).ready(function() {
@@ -222,33 +222,40 @@
             <ul class="page-control">
                 <li>
                     <a id="fas_inv_print"  class="loading-btn" href="{{ path('morus_fas_ar_print', {'id': ar.id}) }}">
+                        {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+                        <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-172px -16px;background-size:260px;" ></em>
+                        {% endimage %}
                         {{ 'btn.print'|trans }}
                     </a>
                 </li>
                 <li>
                     <a id="fas_inv_send_email" class="loading-btn" href="#">
+                        {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+                        <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-178px -20px;" ></em>
+                        {% endimage %}
                         {{ 'btn.send_email'|trans }}
                     </a>
                 </li>
             </ul>
-            <fieldset>
-                <div class="field inline">
-                    <label>{{ 'ar.to'|trans }}</label>{{ form_widget(form.unit) }} {{ form_errors(form.unit) }}
-                </div>
-                <div class="field inline">
-                    <label>{{ 'ar.invnumber'|trans }}</label>{{ form_widget(form.invnumber) }} {{ form_errors(form.invnumber) }}
-                </div>
-                <div class="field inline">
-                    <label>{{ 'ar.invoice_date'|trans }}</label>{{ form_widget(form.transdate) }} {{ form_errors(form.transdate) }}
-                </div>
-                <div class="field inline">
-                    <label>{{ 'ar.duedate'|trans }}</label>{{ form_widget(form.duedate) }} {{ form_errors(form.duedate) }}
-                </div>
-                <div class="field inline long">
-                    <label>{{ 'ar.reference'|trans }}</label>{{ form_widget(form.reference) }} {{ form_errors(form.reference) }}
-                </div>
-            </fieldset>
-            
+            <div class="column">
+                <fieldset style="padding:0;">
+                    <div class="field inline">
+                        <label>{{ 'ar.to'|trans }}</label>{{ form_widget(form.unit) }} {{ form_errors(form.unit) }}
+                    </div>
+                    <div class="field inline">
+                        <label>{{ 'ar.invnumber'|trans }}</label>{{ form_widget(form.invnumber) }} {{ form_errors(form.invnumber) }}
+                    </div>
+                    <div class="field inline">
+                        <label>{{ 'ar.invoice_date'|trans }}</label>{{ form_widget(form.transdate) }}
+                    </div>
+                    <div class="field inline">
+                        <label>{{ 'ar.duedate'|trans }}</label>{{ form_widget(form.duedate) }}
+                    </div>
+                    <div class="field inline long">
+                        <label>{{ 'ar.reference'|trans }}</label>{{ form_widget(form.reference) }} {{ form_errors(form.reference) }}
+                    </div>
+                </fieldset>
+            </div>
             {{ 'ar.invoice_date_from'|trans }} {{ form_widget(form.startdate) }} {{ 'ar.invoice_date_to'|trans }} {{ form_widget(form.enddate) }}
             <table id="{{ inv_tbl_id }}" class="ar">
                 <thead>

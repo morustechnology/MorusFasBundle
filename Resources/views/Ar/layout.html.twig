@@ -1,19 +1,19 @@
 {% block fas_invoice_widget %}
     {% spaceless %}
         <tr id="{{ form.vars.id }}" class="test">
-            <td class="left">{{ form_widget(form.licence)}}</td>
-            <td class="left">{{ form_widget(form.transDate)}}</td>
-            <td class="left">{{ form_widget(form.transTime)}}</td>
-            <td class="left">{{ form_widget(form.site)}}</td>
-            <td class="left">{{ form_widget(form.receiptNumber)}}</td>
-            <td class="left non-textable">{{ form_widget(form.parts)}}</td>
-            <td class="left">{{ form_widget(form.description)}}</td>
-            <td class="right">{{ form_widget(form.qty) }}</td>
-            <td class="right">{{ form_widget(form.sellprice)}}</td>
-            <td class="right">{{ form_widget(form.selldiscount)}}</td>
-            <td class="right non-textable"><label id="{{ form.vars.id }}_netprice"></label></td>
-            <td class="right non-textable"><label id="{{ form.vars.id }}_netamount"></label></td>
-            <td class="center non-textable"></td>
+            <td width="100px" class="left">{{ form_widget(form.licence)}}</td>
+            <td width="100px" class="left">{{ form_widget(form.transDate)}}</td>
+            <td width="60px" class="left">{{ form_widget(form.transTime)}}</td>
+            <td width="160px" class="left">{{ form_widget(form.site)}}</td>
+            <td width="60px" class="left">{{ form_widget(form.receiptNumber)}}</td>
+            <td width="160px" class="left non-textable">{{ form_widget(form.parts)}}</td>
+            <td width="100px" class="left">{{ form_widget(form.description)}}</td>
+            <td width="40px" class="right">{{ form_widget(form.qty) }}</td>
+            <td width="40px" class="right">{{ form_widget(form.sellprice)}}</td>
+            <td width="20px" class="right">{{ form_widget(form.selldiscount)}}</td>
+            <td width="40px" class="right non-textable"><label id="{{ form.vars.id }}_netprice"></label></td>
+            <td width="40px" class="right non-textable"><label id="{{ form.vars.id }}_netamount"></label></td>
+            <td width="20px" class="center non-textable"></td>
         </tr>
     {% endspaceless %}
 {% endblock fas_invoice_widget %}

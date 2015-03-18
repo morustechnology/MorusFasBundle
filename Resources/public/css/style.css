@@ -249,6 +249,23 @@ table.fas-tab tr td{
     padding: 5px 8px;
 }
 
+/*Invoice Edit*/
+.fas-add-invoice-link{
+    padding: 3px 5px;
+}
+#acc_inv_tbl{
+    
+}
+#acc_inv_tbl tr th{
+    font-size: 11px;
+    padding: 0 4px;
+}
+#acc_inv_tbl tr td{
+    padding: 0 4px;
+}
+#acc_inv_tbl tr td.right input{
+    text-align: right;
+}
 /*Print Invoice (Table + Div)*/
 .invoice-client-info{
     float: left;
