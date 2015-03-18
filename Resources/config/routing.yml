@@ -9,3 +9,7 @@ morus_fas_statement:
 morus_fas_accountsReceivable:
     resource: "@MorusFasBundle/Resources/config/routing/ar.yml"
     prefix:   /Fas/AccountsReceivable
+    
+morus_fas_contacts:
+    resource: "@MorusFasBundle/Resources/config/routing/contacts.yml"
+    prefix:   /Fas/Contacts

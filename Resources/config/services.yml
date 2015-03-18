@@ -68,6 +68,21 @@ services:
         tags:
             - { name: form.type, alias: fas_invoices }        
     
+    morus_fas.form.type.contact:
+        class: Morus\FasBundle\Form\Type\ContactType
+        tags:
+            - { name: form.type, alias: fas_contact } 
+            
+    morus_fas.form.type.location:
+        class: Morus\FasBundle\Form\Type\LocationType
+        tags:
+            - { name: form.type, alias: fas_location } 
+            
+    morus_fas.form.type.person:
+        class: Morus\FasBundle\Form\Type\PersonType
+        tags:
+            - { name: form.type, alias: fas_person }
+            
     # Utility Classes
     morus_fas.classes.importlog:
         class: Morus\FasBundle\Classes\ImportLog

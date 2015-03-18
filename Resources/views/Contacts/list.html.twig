@@ -1,0 +1,28 @@
+<table id="contact-list" class="contact records_list">
+    <thead>
+        <tr>
+            <th class="left">{{ 'contact.display_name'|trans }}</th>
+            <th class="left">{{ 'contact.primary_person'|trans }}</th> 
+            <th class="left">{{ 'contact.email'|trans }}</th> 
+            <th class="left">{{ 'contact.telephone'|trans }}</th> 
+            <th class="right">{{ 'contact.bills_due'|trans }}</th>
+            <th class="right">{{ 'contact.overdue_bills'|trans }}</th>
+            <th class="right">{{ 'contact.sales_invoices_due'|trans }}</th>
+            <th class="right">{{ 'contact.overdue_sales_invoices'|trans }}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for contact in contacts %}
+        <tr>
+            <td class="left"><a href="{{ path('morus_fas_contacts_show', { 'id': contact.id }) }}">{{ contact.name }}</a></td>
+            <td class="left">{{ contact.firstName }} {{ contact.lastName }}</td>
+            <td class="left">{{ contact.description }}</td>
+            <td class="right"></td>
+            <td class="right"></td>
+            <td class="right"></td>
+            <td class="right"></td>
+            <td class="right"></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

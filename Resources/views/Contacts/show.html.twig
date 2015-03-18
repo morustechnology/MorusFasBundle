@@ -1,0 +1,78 @@
+{% extends '::base.html.twig' %}
+
+{% set ct_del_lk_id = 'acc_ct_del_lk' %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@MorusAcceticBundle/Resources/public/js/jquery-1.9.1.min.js' %}
+        <script type="text/ecmascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
+    <script type='text/javascript'>
+        jQuery(document).ready(function() {
+            // Replace Delete Form Submit button
+            $('#{{ ct_del_lk_id }}').on('click', function(event){
+                event.preventDefault();
+                $('#{{ delete_form.vars.attr.id }}').find(':submit').click(); 
+            });
+        });
+    </script>
+{% endblock javascripts %}
+
+{% block body_title -%}
+    {{ 'contact.contact_person'|trans }}
+{% endblock %}
+
+{% block body -%} 
+    <div id="contact-box">
+        <h2 id="contact-person" class="view">
+            <span>{{ contact.name }}</span>
+            <a class="blue-btn" href="{{ path('morus_fas_contacts_edit', { 'id': contact.id }) }}">{{ 'btn.edit'|trans }}</a>
+        </h2>
+
+        <div id="contact-detail">
+            <div class="field">
+                <label>{{ 'contact.contact_person'|trans }}</label>
+                <span>
+                    {{ contact.firstName }} {{ contact.lastName }}
+                    <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
+                </span>
+            </div>
+            <div class="field">
+                <label>{{ 'contact.telephone'|trans }}</label>
+                <span>{{ phone.description }}</span>
+            </div>
+            <div class="field">
+                <label>{{ 'contact.postal_address'|trans }}</label>
+                <span>{{ postal.address }} {{ postal.city }} {{ postal.state }} {{ postal.zipCode }} {{ postal.country }}</span>
+            </div>
+            <div class="field">
+                <label>{{ 'contact.physical_address'|trans }}</label>
+                <span>{{ physical.address }} {{ physical.city }} {{ physical.state }} {{ physical.zipCode }} {{ physical.country }}</span>
+            </div>
+            
+        </div>
+
+        <h2 id="contact-subdetail"></h2>
+
+    </div>
+    
+    
+
+    <ul class="record_actions page-control">
+        <li>
+            <a class="simple-btn" href="{{ path('morus_fas_contacts') }}">
+                {{ 'btn.back'|trans }}
+            </a>
+        </li>
+        {#<li>
+            <a class="simple-btn" href="{{ path('morus_fas_contacts_edit', { 'id': entity.id }) }}">
+                {{ 'btn.edit'|trans }}
+            </a>
+        </li>#}
+        <li><a class="simple-btn" id="{{ ct_del_lk_id }}" href="#">{{ 'btn.delete'|trans }}</a> </li>
+        <li>{{ form(delete_form) }}</li>
+    </ul>
+{% endblock %}

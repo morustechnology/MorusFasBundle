@@ -1,0 +1,34 @@
+morus_fas_contacts:
+    path:     /
+    defaults: { _controller: "MorusFasBundle:Contacts:index"}
+
+morus_fas_contacts_list:
+    path:     /{ecc}/list
+    defaults: { _controller: "MorusFasBundle:Contacts:listAjax", ecc: "All" }
+
+morus_fas_contacts_show:
+    path:     /{id}/show
+    defaults: { _controller: "MorusFasBundle:Contacts:show" }
+
+morus_fas_contacts_new:
+    path:     /{ecc}/new
+    defaults: { _controller: "MorusFasBundle:Contacts:new", ecc: "All" }
+    
+morus_fas_contacts_create:
+    path:     /{ecc}/create
+    defaults: { _controller: "MorusFasBundle:Contacts:create", ecc: "All" }
+    requirements: { _method: post }
+
+morus_fas_contacts_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "MorusFasBundle:Contacts:edit" }
+
+morus_fas_contacts_update:
+    path:     /{id}/update
+    defaults: { _controller: "MorusFasBundle:Contacts:update" }
+    requirements: { _method: post|put }
+
+morus_fas_contacts_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "MorusFasBundle:Contacts:delete" }
+    requirements: { _method: post|delete }

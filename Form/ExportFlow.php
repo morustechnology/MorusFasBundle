@@ -261,16 +261,7 @@ class ExportFlow extends FormFlow {
                     $invoice->setTransTime($transDatetime->format('H:i:s'));
                 }
                 
-                // Check if gas station is discount exclusive
-                $ignore = false;
-                foreach( $ignoreKeywords as $keywords) {
-                    if (strpos($site, $keywords) !== false) {
-                        $invoice->setSelldiscount(0);
-                        $invoice->setcustomerdiscount(false);
-                        $ignore = true;
-                        break;
-                    }
-                }
+                
                 
                 // search unit with registration number
                 $qb = $this->entityManager
@@ -290,9 +281,8 @@ class ExportFlow extends FormFlow {
                 }
                 
                 // 2. Search Units with the same vehicle number / also check for discount
-                if (!$ignore) {
-                    $this->getUnitPartsDiscount($sunit, $invoice, $productName);
-                }
+                $this->getUnitPartsDiscount($sunit, $invoice, $productName, $ignoreKeywords);
+                
 
             }
         } // End process statement
@@ -305,7 +295,20 @@ class ExportFlow extends FormFlow {
      * 
      * Search for customer product discount, use product default discount if not found
      */
-    private function getUnitPartsDiscount($unit, $invoice, $productName) {
+    private function getUnitPartsDiscount($unit, $invoice, $productName, $ignoreKeywords) {
+        
+        // Check if gas station is discount exclusive
+        $ignore = false;
+        foreach( $ignoreKeywords as $keywords) {
+            if (strpos($site, $keywords) !== false) {
+                $invoice->setSelldiscount(0);
+                $invoice->setcustomerdiscount(false);
+                $ignore = true;
+                break;
+            }
+        }
+                
+                
         // Get Product which appear in statements
         $pqb = $this->entityManager
                 ->getRepository('MorusFasBundle:Parts')
@@ -327,29 +330,31 @@ class ExportFlow extends FormFlow {
                     
                 $invoice->setDescription($partsName);
                 
-                // Get All unit who has vehicle appear in statements
-                $qb = $this->entityManager
-                        ->getRepository('MorusFasBundle:UnitParts')
-                        ->createQueryBuilder('up');
-                $query = $qb
-                        ->join('up.parts', 'p', 'WITH', 'p = :parts')
-                        ->join('up.unit', 'u', 'WITH', 'u = :unit')
-                        ->setParameter('parts', $p)
-                        ->setParameter('unit', $unit);
+                if (!$ignore) {
+                    // Get All unit who has vehicle appear in statements
+                    $qb = $this->entityManager
+                            ->getRepository('MorusFasBundle:UnitParts')
+                            ->createQueryBuilder('up');
+                    $query = $qb
+                            ->join('up.parts', 'p', 'WITH', 'p = :parts')
+                            ->join('up.unit', 'u', 'WITH', 'u = :unit')
+                            ->setParameter('parts', $p)
+                            ->setParameter('unit', $unit);
 
-                $unitParts = $query->getQuery()->getResult();
-                
-                
-                if ($unitParts) {
-                    
-                    $discount = $unitParts[0]->getDiscount();
-                    $invoice->setSelldiscount($discount);
-                    $invoice->setcustomerdiscount(true);
-                } else {
-                    $discount = $p->getDefaultDiscount();
-                    $invoice->setSelldiscount($discount);
-                    $invoice->setcustomerdiscount(false);
-                    
+                    $unitParts = $query->getQuery()->getResult();
+
+
+                    if ($unitParts) {
+
+                        $discount = $unitParts[0]->getDiscount();
+                        $invoice->setSelldiscount($discount);
+                        $invoice->setcustomerdiscount(true);
+                    } else {
+                        $discount = $p->getDefaultDiscount();
+                        $invoice->setSelldiscount($discount);
+                        $invoice->setcustomerdiscount(false);
+
+                    }
                 }
             }
         }

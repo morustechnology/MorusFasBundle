@@ -1,0 +1,84 @@
+{% extends '::base.html.twig' %}
+
+{% set ct_tab_div_id = 'ct-tab-div' %}
+
+{% block stylesheets %}
+    {% stylesheets '@MorusAcceticBundle/Resources/public/css/jquery-ui.min.css' filter='cssrewrite' %}
+        <link type="text/css" rel="stylesheet" media="screen" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts 
+        '@MorusAcceticBundle/Resources/public/js/jquery-1.9.1.min.js'
+        '@MorusAcceticBundle/Resources/public/js/jquery-ui.min.js'
+        '@MorusAcceticBundle/Resources/public/js/jquery.inputmask.js'
+        '@MorusAcceticBundle/Resources/public/js/jquery.inputmask.numeric.extensions.js'
+    %}
+        <script type="text/ecmascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
+    <script type='text/javascript'>
+        jQuery(document).ready(function() {
+            $( "#{{ ct_tab_div_id }}" ).tabs({
+                beforeLoad: function( event, ui ) {
+                    ui.jqXHR.error(function() {
+                        ui.panel.html(
+                            "Couldn't load this tab. We'll try to fix this as soon as possible. " +
+                            "If this wouldn't be a demo." );
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock javascripts %}
+
+{% block body_title -%}
+    {{ 'contact.contacts'|trans }}
+{% endblock %}
+
+{% block body -%}
+    <ul class="page-control">
+        <li>
+            <a class="loading-btn" href="{{ path('morus_fas_contacts_new', {'ecc': 'customer'}) }}">
+                {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+                <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:0 -50px;" ></em>
+                {% endimage %}
+                {{ 'btn.add_contact'|trans }}
+            </a>
+        </li>
+        <li>
+            <a class="loading-btn" href="{{ path('morus_fas_contacts_new', {'ecc': 'supplier'}) }}">
+                {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+                <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:0 -50px;" ></em>
+                {% endimage %}
+                {{ 'btn.add_supplier'|trans }}
+            </a>
+        </li>
+        <li>
+            <a class="loading-btn" href="{{ path('morus_fas_contacts_new', {'ecc': 'employee'}) }}">
+                {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+                <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:0 -50px;" ></em>
+                {% endimage %}
+                {{ 'btn.add_employee'|trans }}
+            </a>
+        </li>
+    </ul>
+
+    <div class="fullwidth-space"></div>
+    
+    <div id="{{ ct_tab_div_id }}">
+        <ul>
+            <li><a href="{{ path('morus_fas_contacts_list', {'ecc': 'all'}) }}">{{ 'contact.all'|trans }}</a></li>
+            <li><a href="{{ path('morus_fas_contacts_list', {'ecc': 'supplier'}) }}">{{ 'contact.suppliers'|trans }}</a></li>
+            <li><a href="{{ path('morus_fas_contacts_list', {'ecc': 'customer'}) }}">{{ 'contact.customers'|trans }}</a></li>
+            <li><a href="{{ path('morus_fas_contacts_list', {'ecc': 'employee'}) }}">{{ 'contact.employees'|trans }}</a></li>
+        </ul>
+    </div>
+    
+    
+
+    
+
+    
+{% endblock %}
