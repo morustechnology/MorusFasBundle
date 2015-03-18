@@ -1,61 +1,131 @@
+<html>
+    <head>
+        {% stylesheets 
+            '@MorusAcceticBundle/Resources/public/css/style.css' filter='cssrewrite' 
+            '@MorusFasBundle/Resources/public/css/style.css' filter='cssrewrite' 
+        %}
+            <link type="text/css" rel="stylesheet" media="screen" href="{{ asset_url }}" />
+        {% endstylesheets %} 
+    </head>
+    
+    <body style="width:920px;margin: 0 auto;">
+        <br/>
+        <h1 style='font-size: 28px;font-weight: bold;'>晴朗汽車有限公司</h1>
+        <p>Sunny Day Motors Ltd<br/>
+        P.O. Box No.1563 Yuen Long Post Office<br/>
+        sunnydaymotorsltd@yahoo.com.hk<br/>
+        電話：90901108</p>
 
-<p style="font-family: Simsun, Arial Unicode MS">晴朗汽車有限公司</p>
-Sunny Day Motors Ltd<br/>
-P.O. Box No.1563 Yuen Long Post Office<br/>
-sunnydaymotorsltd@yahoo.com.hk<br/>
-電話：90901108<br/>
-<hr/>
-發票編號：{{ ar.invnumber }}
-發單日期：{{ ar.transdate|date('d/m/Y') }}
+        <div class="invoice-client-info">
+            <div class="col-1-2">
+                <h1>{{ ar.unit.name }}</h1>
+                <p>Sunny Day Motors Ltd<br/>
+                P.O. Box No.1563 Yuen Long Post Office<br/></p>
+            </div>
 
-<h2>{{ ar.unit.name }}</h2>
-{% for vehicle in ar.unit.vehicles %}
-<h4>車牌號碼︰: {{ vehicle.registrationNumber }}</h4>
-柴油及汽油月結單詳細交易報告								
-						每公升油價		
-<table>
-    <thead>
-        <tr>
-            <th>日期</th>
-            <th>時間</th>
-            <th>油站名稱</th>
-            <th>收據號碼</th>
-            <th>貨品</th>
-            <th>數量 (L)</th>
-            <th>每公升油價</th>
-            <th>每公升淨價</th>
-            <th>總額 HK$</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for invoice in ar.transaction.invoices %}
-            {% if invoice.licence == vehicle.registrationNumber %}
+            <div class="col-1-2 last">
+                <table class="invoice-info">
+                    <tr>
+                        <td colspan="2"></td>
+                        <td>發票編號：</td>
+                        <td>{{ ar.invnumber }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td>發單日期：</td>
+                        <td>{{ ar.transdate|date('d/m/Y') }}</td>
+                    </tr>
+                    <tr style="border-top:2px solid #000;">
+                        <td>日期由：</td>
+                        <td></td>
+                        <td style="text-align:center;">至</td>
+                        <td></td>
+                    </tr>
+                    <tr style="border-bottom:2px solid #000;">
+                        <td>共頁數：</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="border-bottom:2px solid #000;">
+                        <td width="100px">自動轉賬日期：</td>
+                        <td width="80px"></td>
+                        <td width="80px">客户編號：</td>
+                        <td width="80px"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+            
+        <div style="clear:both;"></div>
+        
+        <div class="invoice-subtitle">
+            <h4>柴油及汽油月結單詳細交易報告</h4>    
+        </div>
+        
+        <div style="clear:both;"></div>
+                
+        <table class="invoice-print head">
+            <thead>
                 <tr>
-                    <td>{{ invoice.transDate|date('d/m/Y') }}</td>
-                    <td>{{ invoice.transTime|date('H:i:s') }}</td>
-                    <td>{{ invoice.site }}</td>
-                    <td>{{ invoice.receiptNumber }}</td>
-                    <td>{{ invoice.description }}</td>
-                    <td>
-                        {% set qty = invoice.qty|number_format(2, '.', ',') %}
-                        {{ qty }}
-                    </td>
-                    <td>
-                        {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
-                        {{ sellprice }}
-                    </td>
-                    <td>
-                        {% set netprice = sellprice - invoice.selldiscount %}
-                        {{ netprice|number_format(2, '.', ',') }}
-                    </td>
-                    <td>
-                        {% set total = qty *  netprice %}
-                        {{ total|number_format(2, '.', ',') }}
-                    </td>
+                    <th width="70px">日期</th>
+                    <th width="70px">時間</th>
+                    <th width="200px">油站名稱</th>
+                    <th width="70px">收據號碼</th>
+                    <th width="200px">貨品</th>
+                    <th width="80px">數量 (L)</th>
+                    <th width="80px">每公升油價</th>
+                    <th width="80px">每公升淨價</th>
+                    <th width="80px">總額 HK$</th>
                 </tr>
-            {% endif %}
+            </thead>
+        <table>    
+            
+        {% for vehicle in ar.unit.vehicles %}
+        
+        
+        <table class="invoice-print">  
+            <thead>
+                <tr>
+                    <th class="left-text" colspan="4"><h4 style="margin:0;"><em>車牌號碼︰: {{ vehicle.registrationNumber }}</em></h4>	</th>
+                    <th class="left-text subtotal"  width="180px"><span style="font-size:15px;"><em>Sub Total</em></span></th>
+                    <th class="right-text subtotal" width="80px"></th>
+                    <th class="right-text subtotal" width="80px"></th>
+                    <th class="right-text subtotal" width="80px"></th>
+                    <th class="right-text subtotal" width="80px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in ar.transaction.invoices %}
+                    {% if invoice.licence == vehicle.registrationNumber %}
+                        <tr>
+                            <td width="80px">{{ invoice.transDate|date('d/m/Y') }}</td>
+                            <td width="60px">{{ invoice.transTime|date('H:i:s') }}</td>
+                            <td width="220px">{{ invoice.site }}</td>
+                            <td width="60px">{{ invoice.receiptNumber }}</td>
+                            <td width="180px">{{ invoice.description }}</td>
+                            <td width="80px" class="right-text">
+                                {% set qty = invoice.qty|number_format(2, '.', ',') %}
+                                {{ qty }}
+                            </td>
+                            <td width="80px" class="right-text">
+                                {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
+                                {{ sellprice }}
+                            </td>
+                            <td width="80px" class="right-text">
+                                {% set netprice = sellprice - invoice.selldiscount %}
+                                {{ netprice|number_format(2, '.', ',') }}
+                            </td>
+                            <td width="80px" class="right-text">
+                                {% set total = qty *  netprice %}
+                                {{ total|number_format(2, '.', ',') }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <br/>
         {% endfor %}
-    </tbody>
-</table>
-<br/>
-{% endfor %}
+    </body>
+</html>

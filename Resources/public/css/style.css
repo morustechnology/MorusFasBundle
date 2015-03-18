@@ -1,3 +1,6 @@
+body{
+    font-family: sans-serif ;
+}
 .fas-step-form button{
     margin: 0 0 0 10px;
 }
@@ -244,4 +247,56 @@ table.fas-tab tr td{
     background: none repeat scroll 0 0 #f2f6ff;
     font-weight: bold;
     padding: 5px 8px;
+}
+
+/*Print Invoice (Table + Div)*/
+.invoice-client-info{
+    float: left;
+    width: 920px;
+    border-top: 4px double #000;
+    border-bottom: 4px double #000;
+    padding: 30px 20px ;
+    margin-bottom: 15px;
+}
+table.invoice-info{
+    float: right;
+    width: 320px;
+}
+table.invoice-info tr td{
+    text-align: right;
+    padding: 5px 0;
+}
+.invoice-subtitle{
+    text-align: center;
+}
+.invoice-print{
+    width: 920px;
+    margin-top: 15px;
+}
+.invoice-print thead tr{
+    border: none;
+}
+.invoice-print.head thead th{
+    border-bottom: 2px solid #000;
+    border-top: 2px solid #000;
+}
+.invoice-print thead th.subtotal{
+    border-bottom: 1px solid #000;
+    border-top: 1px solid #000;
+    white-space: nowrap;
+    font-weight: normal;
+}
+.invoice-print .left-text{
+    text-align: left;
+}
+.invoice-print .right-text{
+    text-align: right;
+}
+.invoice-print tr th{
+    padding: 2px 0;
+    vertical-align: middle;
+}
+.invoice-print tr td{
+    padding: 2px 0;
+    vertical-align: middle;
 }

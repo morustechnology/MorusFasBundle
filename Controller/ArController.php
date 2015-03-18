@@ -56,7 +56,8 @@ class ArController extends Controller
             200,
             array(
                 'Content-Type'          => 'application/pdf',
-                'Content-Disposition'   => 'inline; filename="invoice.pdf"'
+                'Content-Disposition'   => 'inline; filename="invoice.pdf"',
+                'header-font-name'      => 'sans-serif'
             )
         ); 
     }
