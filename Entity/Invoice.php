@@ -31,10 +31,10 @@ class Invoice extends BaseInvoice
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="trans_time", type="date", nullable=false)
+     * @ORM\Column(name="trans_time", type="time", nullable=false)
      */
     protected $transTime;
-
+    
     /**
      * @var string
      *
