@@ -1,19 +1,76 @@
 <pdf>
     <dynamic-page>
-        Hello {{ name }}!
-        <div color="red" font-type="新細明體">
-            This text is red on pink backgroun into black border
-            新細明體新細明體新細明體新細明體新細明體
+        <div color="black" font-type="新細明體" font-size="26px">
+            晴朗汽車有限公司
         </div>
-        <div color="black" font-type="綜藝體繁">
-            This text is red on pink backgroun into black border
-            綜藝體繁綜藝體繁綜藝體繁綜藝體繁綜藝體繁綜藝體繁
+        <div color="black" font-type="courier" font-size="20px">
+        Sunny Day Motors Ltd
         </div>
-    </dynamic-page>
-    <dynamic-page encoding="UTF-8" font-type="新細明體">
-        Hello {{ name }}, 新細明體新細明體新細明體新細明體新細明體
-    </dynamic-page>
-    <dynamic-page encoding="UTF-8" font-type="綜藝體繁">
-        Hello {{ name }}, 儷字體系列儷字體系列儷字體系列
+        <div color="black" font-type="courier" font-size="14px">
+        P.O. Box No.1563 Yuen Long Post Office
+        </div>
+        <div color="black" font-type="新細明體" font-size="12px">
+        sunnydaymotorsltd@yahoo.com.hk<br/>
+        電話：90901108
+        </div>
+        <br/>
+        <div border.type="top+bottom" padding-top="3px" padding-bottom="3px">
+            <div border.type="top+bottom" padding-top="3px" padding-bottom="3px">
+                <h2>{{ ar.unit.name }}</h2>
+            </div>
+        </div>
+        <hr/>
+        <hr/>
+        <div color="black" font-type="新細明體" font-size="12px">
+            發票編號：{{ ar.invnumber }}
+            發單日期：{{ ar.transdate|date('d/m/Y') }}
+
+            
+            {% for vehicle in ar.unit.vehicles %}
+            <h4>車牌號碼︰: {{ vehicle.registrationNumber }}</h4>
+            柴油及汽油月結單詳細交易報告								
+                                                            每公升油價		
+            <table>
+                <tr>
+                    <td>日期</td>
+                    <td>時間</td>
+                    <td>油站名稱</td>
+                    <td>收據號碼</td>
+                    <td>貨品</td>
+                    <td>數量 (L)</td>
+                    <td>每公升油價</td>
+                    <td>每公升淨價</td>
+                    <td>總額 HK$</td>
+                </tr>
+                {% for invoice in ar.transaction.invoices %}
+                    {% if invoice.licence == vehicle.registrationNumber %}
+                        <tr>
+                            <td>{{ invoice.transDate|date('d/m/Y') }}</td>
+                            <td>{{ invoice.transTime|date('H:i:s') }}</td>
+                            <td>{{ invoice.site }}</td>
+                            <td>{{ invoice.receiptNumber }}</td>
+                            <td>{{ invoice.description }}</td>
+                            <td>
+                                {% set qty = invoice.qty|number_format(2, '.', ',') %}
+                                {{ qty }}
+                            </td>
+                            <td>
+                                {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
+                                {{ sellprice }}
+                            </td>
+                            <td>
+                                {% set netprice = sellprice - invoice.selldiscount %}
+                                {{ netprice|number_format(2, '.', ',') }}
+                            </td>
+                            <td>
+                                {% set total = qty *  netprice %}
+                                {{ total|number_format(2, '.', ',') }}  
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+        {% endfor %}
     </dynamic-page>
 </pdf>

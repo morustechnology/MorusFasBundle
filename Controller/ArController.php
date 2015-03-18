@@ -19,11 +19,25 @@ class ArController extends Controller
     /**
      * @Pdf()
      */
-    public function printInvoiceAction() {
+    public function printInvoiceAction($id) {
+        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+
+        // Get ar with invoices lines
+        $qb = $aem->getArRepository()
+                ->createQueryBuilder('ar');
+        
+        $query = $qb
+                ->select('ar')
+                ->join('ar.transaction', 't')
+                ->leftJoin('t.invoices', 'v')
+                ->where($qb->expr()->eq('ar.id', $id));
+        
+        $ar = $query->getQuery()->getSingleResult();
+        
         $format = $this->get('request')->get('_format');
         
         return $this->render(sprintf('MorusFasBundle:Ar:invoice.%s.twig', $format), array(
-            'name' => 'Michael',
+            'ar' => $ar,
         ));
     }
     
