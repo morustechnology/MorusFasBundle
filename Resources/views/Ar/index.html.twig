@@ -25,7 +25,7 @@
         {% for ar in ars %}
             <tr>
                 <td>
-                    <a id="fas_inv_print"  class="loading-btn" href="{{ path('morus_fas_ar_print', {'id': ar.id}) }}">
+                    <a id="fas_inv_print"  href="{{ path('morus_fas_ar_print', {'id': ar.id}) }}">
                         {{ 'btn.print'|trans }}
                     </a>
                 </td>
