@@ -2,17 +2,14 @@
 <fonts>
     <font name="新細明體">
         <normal src="%MorusFasBundle:fonts/新細明體/新細明體.ttf%" />
+        <bold src="%MorusFasBundle:fonts/新細明體/MSGothic.ttf" />
     </font>
-    <font name="綜藝體繁">
-        <normal src="%MorusFasBundle:fonts/綜藝體繁/綜藝體繁.ttf%" />
+    <font name="AppleGothic">
+        <normal src="%MorusFasBundle:fonts/AppleGothic/AppleGothic.ttf%" />
     </font>
-    <font name="華康中圓體">
-        <normal src="%MorusFasBundle:fonts/華康中圓體/DFYL1B.TTF%" />
-        <bold src="%MorusFasBundle:fonts/華康中圓體/DFYB1B.TTF%" />
-    </font>
-    <font name="華康儷圓">
-        <normal src="%MorusFasBundle:fonts/華康儷圓/normal.ttf" />
-        <bold src="%MorusFasBundle:fonts/華康儷圓/bold.ttf" />
+    <font name="微軟正黑體">
+        <normal src="%MorusFasBundle:fonts/微軟正黑體/msjh.ttf%" />
+        <bold src="%MorusFasBundle:fonts/微軟正黑體/msjhbd.ttf%" />
     </font>
     <font name="courier">
         <normal src="courier" />

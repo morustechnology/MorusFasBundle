@@ -191,14 +191,18 @@
                 var selldiscount = $('#fas_ar_transaction_invoices_' + index + '_selldiscount').val();
                 var netprice = (sellprice - selldiscount).toFixed(2);
                 var netamount = (qty * netprice).toFixed(2);
-                total += parseFloat(netamount);
-                subtotal += parseFloat(netamount);
+                netamount = parseFloat(netamount);
+                netprice = parseFloat(netprice);
+                total.toFixed(2);
+                total += netamount;
+                subtotal += netamount;
+                alert(total);
                 $('#fas_ar_transaction_invoices_' + index + '_netprice').text(netprice);
                 $('#fas_ar_transaction_invoices_' + index + '_netamount').text(netamount);
             });
             
-            $('#fas_ar_transaction_invoices_subtotal').text(subtotal.toFixed(2));
-            $('#fas_ar_transaction_invoices_total').text(total.toFixed(2));
+            $('#fas_ar_transaction_invoices_subtotal').text(subtotal);
+            $('#fas_ar_transaction_invoices_total').text(total);
             
         }
         

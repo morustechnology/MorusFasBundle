@@ -77,7 +77,7 @@
                             <td class="col6" >
                                 {% for registrationNumber, qty_subtotal in qty_subtotals %}
                                     {% if registrationNumber == vehicle.registrationNumber %}
-                                        {{ qty_subtotal }}
+                                        {{ qty_subtotal|number_format(2, '.', ',') }}
                                     {% endif %}
                                 {% endfor %}
                             </td>
@@ -86,7 +86,7 @@
                             <td class="col9" >
                                 {% for registrationNumber, amount_subtotal in amount_subtotals %}
                                     {% if registrationNumber == vehicle.registrationNumber %}
-                                        {{ amount_subtotal }}
+                                        {{ amount_subtotal|number_format(2, '.', ',') }}
                                     {% endif %}
                                 {% endfor %}
                                 
@@ -124,6 +124,9 @@
                     {% endfor %}
                 </div>
             {% endfor %}
+            
+            <div class="space"/>
+            
             <table class="invoice-total-table" >
                 <tr>
                     <td class="col1" ></td>
