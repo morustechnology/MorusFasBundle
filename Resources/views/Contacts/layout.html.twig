@@ -1,4 +1,4 @@
-{% block fas_person_widget %}
+{% block accetic_person_widget %}
     {% spaceless %}
         {# {{ form.class.vars.value }} #}
         {% if app.request.locale == 'zh_HK' or app.request.locale == 'zh_CN' %}
@@ -21,9 +21,9 @@
             </div>
         {% endif %}
     {% endspaceless %}
-{% endblock fas_person_widget %}
+{% endblock accetic_person_widget %}
 
-{% block fas_contact_widget %}
+{% block accetic_contact_widget %}
     {% spaceless %}
         {% if form.contactClassControlCode.vars.value == 'EMAIL'%}
             <label>{{ 'contact.email'|trans }}</label>
@@ -44,9 +44,9 @@
         {% endif %}
         {{ form_widget( form.contactClassControlCode ) }} {{ form.description.vars.label|trans }} {{ form_widget(form.description) }}
     {% endspaceless %}
-{% endblock fas_contact_widget %}
+{% endblock accetic_contact_widget %}
 
-{% block fas_location_widget %}
+{% block accetic_location_widget %}
     {% spaceless %}
         <div class="col-1-3">
             <fieldset>
@@ -54,7 +54,7 @@
                 {% if form.locationClassControlCode.vars.value == 'POSTAL'%}
                     {{ 'contact.postal_address'|trans }}
                 {% elseif form.locationClassControlCode.vars.value == 'PHYSICAL' %}
-                    {{ 'contact.physical_address'|trans }}
+                    {{ 'contact.physical_address'|trans }} <a id="copy_postal" href="#" >({{ 'contact.copy_postal'|trans }})</a>
                 {% else %}
                     {{ 'contact.address'|trans }}
                 {% endif %}
@@ -86,9 +86,21 @@
                 </div>
             </fieldset>
         </div>
-        
-        
         {{form_rest(form)}}
     {% endspaceless %}
-{% endblock fas_location_widget %}
+{% endblock accetic_location_widget %}
+
+{% block fas_vehicle_widget %}
+    {% spaceless %}
+        <label>{{ 'contact.registration_number'|trans }}</label> {{ form_widget(form.registrationNumber) }}
+        {{form_rest(form)}}
+    {% endspaceless %}
+{% endblock fas_vehicle_widget %}
+
+{% block fas_unit_parts_widget %}
+    {% spaceless %}
+        <label>{{ 'contact.product'|trans }}</label> {{ form_widget(form.parts) }} {{ 'contact.discount'|trans }} {{ form_widget(form.discount) }}
+    {% endspaceless %}
+{% endblock fas_unit_parts_widget %}
+
 

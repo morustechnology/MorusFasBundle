@@ -151,6 +151,8 @@ invoice:
     bank_transfer_date: Bank Transfer Date
     customer_number: Customer Number
     page_total: Total Page
+    sub_total: Sub Total
+    invoice_detail_total: Diesel and gasoline detailed transaction reports monthly statement
     
 contact:
     vehicle_list: Vehicle List

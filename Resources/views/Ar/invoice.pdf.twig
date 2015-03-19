@@ -18,7 +18,7 @@
             <div class="double-line"></div>
             
             <!-- Customer Section -->
-            <div class="customer-info">
+            <div class="customer-info" >
                 <div class="customer-name">{{ ar.unit.name }}</div>
                 <div class="customer-address">{{ postal.address|nl2br }}</div>
                 <div class="customer-contact">{{ postal.attention }}</div>
@@ -42,64 +42,107 @@
             </div>
             
             <div class="double-line"></div>
-            <div text-align="center" font-type="新細明體" font-size="10px">柴油及汽油月結單詳細交易報告</div>
             
-            					
-                <table class="invoice-details">
-                    <tr class="invoice-header">
-                        <td>日期</td>
-                        <td>時間</td>
-                        <td>油站名稱</td>
-                        <td>收據號碼</td>
-                        <td>貨品</td>
-                        <td>數量 (L)</td>
-                        <td>每公升油價</td>
-                        <td>每公升淨價</td>
-                        <td>總額 HK$</td>
-                    </tr>
-                    {% for vehicle in ar.unit.vehicles %}
+            <div class="doc-text" text-align="center" font-type="新細明體" font-size="10px" margin="5px 0px 8px 0px">
+                {{ 'invoice.invoice_detail_total'|trans }}
+            </div>
+            
+            <div>	
+                <table class="invoice-header-table">
                     <tr>
-                        <td>{{ 'invoice.registration_number'|trans }}: </td>
-                        <td>{{ vehicle.registrationNumber }}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td class="col1" >{{ 'invoice.date'|trans }}</td>
+                        <td class="col2" >{{ 'invoice.time'|trans }}</td>
+                        <td class="col3" >{{ 'invoice.site'|trans }}</td>
+                        <td class="col4" >{{ 'invoice.receipt_number'|trans }}</td>
+                        <td class="col5" >{{ 'invoice.product'|trans }}</td>
+                        <td class="col6" >{{ 'invoice.qty'|trans }}</td>
+                        <td class="col7" >{{ 'invoice.sellprice'|trans }}</td>
+                        <td class="col8" >{{ 'invoice.netprice'|trans }}</td>
+                        <td class="col9" >{{ 'invoice.total'|trans }}</td>
                     </tr>
-                        {% for invoice in ar.transaction.invoices %}
-
-                            {% if invoice.licence == vehicle.registrationNumber %}
+                </table>
+            </div>
+            
+            {% for vehicle in ar.unit.vehicles %}
+                
+                <div breakable="false">
+                    <div class="space"/>
+                    <table class="invoice-vehcile-table">
+                        <tr>
+                            <td class="col1" >{{ 'invoice.registration_number'|trans }}: </td>
+                            <td class="col2" >{{ vehicle.registrationNumber }}</td>
+                            <td class="col3" ></td>
+                            <td class="col4" ></td>
+                            <td class="col5" >Sub Total:</td>
+                            <td class="col6" >
+                                {% for registrationNumber, qty_subtotal in qty_subtotals %}
+                                    {% if registrationNumber == vehicle.registrationNumber %}
+                                        {{ qty_subtotal }}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="col7" ></td>
+                            <td class="col8" ></td>
+                            <td class="col9" >
+                                {% for registrationNumber, amount_subtotal in amount_subtotals %}
+                                    {% if registrationNumber == vehicle.registrationNumber %}
+                                        {{ amount_subtotal }}
+                                    {% endif %}
+                                {% endfor %}
+                                
+                            </td>
+                        </tr>
+                    </table>
+                    {% for invoice in ar.transaction.invoices %}
+                        {% if invoice.licence == vehicle.registrationNumber %}
+                            <table class="invoice-detail-table">
                                 <tr>
-                                    <td>{{ invoice.transDate|date('d/m/Y') }}</td>
-                                    <td>{{ invoice.transTime|date('H:i:s') }}</td>
-                                    <td>{{ invoice.site }}</td>
-                                    <td>{{ invoice.receiptNumber }}</td>
-                                    <td>{{ invoice.description }}</td>
-                                    <td>
+                                    <td class="col1" >{{ invoice.transDate|date('d/m/Y') }}</td>
+                                    <td class="col2" >{{ invoice.transTime|date('H:i:s') }}</td>
+                                    <td class="col3" >{{ invoice.site }}</td>
+                                    <td class="col4" >{{ invoice.receiptNumber }}</td>
+                                    <td class="col5" >{{ invoice.description }}</td>
+                                    <td class="col6" >
                                         {% set qty = invoice.qty|number_format(2, '.', ',') %}
                                         {{ qty }}
                                     </td>
-                                    <td>
+                                    <td class="col7" >
                                         {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
                                         {{ sellprice }}
                                     </td>
-                                    <td>
+                                    <td class="col8" >
                                         {% set netprice = sellprice - invoice.selldiscount %}
                                         {{ netprice|number_format(2, '.', ',') }}
                                     </td>
-                                    <td>
+                                    <td class="col9" >
                                         {% set total = qty *  netprice %}
                                         {{ total|number_format(2, '.', ',') }}  
                                     </td>
                                 </tr>
-                            {% endif %}
-                        {% endfor %}
+                            </table>
+                        {% endif %}
                     {% endfor %}
-                </table>
-                
+                </div>
+            {% endfor %}
+            <table class="invoice-total-table" >
+                <tr>
+                    <td class="col1" ></td>
+                    <td class="col2" ></td>
+                    <td class="col3" ></td>
+                    <td class="col4" ></td>
+                    <td class="col5" >Total</td>
+                    <td class="col6" >{{ qty_total }}</td>
+                    <td class="col7" ></td>
+                    <td class="col8" ></td>
+                    <td class="col9" >{{ amount_total }}</td>
+                </tr>
+            </table>
+            
+            <div class="space"/>
+            <div class="remark" >{{ 'invoice.remark'|trans }}:</div>
+            <div class="remark" >{{ 'invoice.discount_exclude'|trans }}</div>
+            <div class="thank-you" >{{ 'invoice.thank_you'|trans }}!</div>
         </div>
+        
     </dynamic-page>
 </pdf>

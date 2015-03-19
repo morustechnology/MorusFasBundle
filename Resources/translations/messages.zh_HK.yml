@@ -150,6 +150,11 @@ invoice:
     bank_transfer_date: 自動轉賬日期
     customer_number: 客戶編號
     page_total: 共頁數
+    sub_total: 總計
+    invoice_detail_total: 柴油及汽油月結單詳細交易報告
+    remark: 備註
+    discount_exclude: 機場貨運站及客運站入油並無折扣優惠
+    thank_you: 多謝惠顧
 
 contact:
     vehicle_list: 車輛名單

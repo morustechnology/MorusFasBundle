@@ -16,112 +16,76 @@ use PHPPdf\Core\FacadeBuilder;
  */
 class ArController extends Controller
 {
-    function create_zip($files = array(), $destination = '',$overwrite = false) {
-	//if the zip file already exists and overwrite is false, return false
-	if(file_exists($destination) && !$overwrite) { return false; }
-	//vars
-	$valid_files = array();
-	//if files were passed in...
-	if(is_array($files)) {
-		//cycle through each file
-		foreach($files as $file) {
-			//make sure the file exists
-			if(file_exists($file)) {
-				$valid_files[] = $file;
-			}
-		}
-	}
-	//if we have good files...
-	if(count($valid_files)) {
-		//create the archive
-		$zip = new ZipArchive();
-		if($zip->open($destination,$overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
-			return false;
-		}
-		//add the files
-		foreach($valid_files as $file) {
-			$zip->addFile($file,$file);
-		}
-		//debug
-		//echo 'The zip archive contains ',$zip->numFiles,' files with a status of ',$zip->status;
-		
-		//close the zip -- done!
-		$zip->close();
-		
-		//check to make sure the file exists
-		return file_exists($destination);
-	}
-	else
-	{
-		return false;
-	}
-    }
-    
-    public function bulkPrintAction() {
-        $session = $this->get('session');
-        if ($session && $session->get('bulk_print_ids')) {
-            $ids = $session->get('bulk_print_ids');
-            
-            $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+    /**
+     * @Pdf(stylesheet="MorusFasBundle:Ar:invoice.stylesheet.twig")
+     */
+    public function printTestAction($id) {
+        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
 
-            // Get ar with invoices lines
-            $qb = $aem->getArRepository()
-                    ->createQueryBuilder('ar');
-
-            $query = $qb
-                    ->select('ar')
-                    ->join('ar.transaction', 't')
-                    ->leftJoin('t.invoices', 'v')
-                    ->where($qb->expr()->in('ar.id', $ids));
-
-            $ars = $query->getQuery()->getResult();
-            
-            $pdfs = array();
-            
-            foreach($ars as $ar) {
-                // Get postal address
-                $postqb = $aem->getLocationRepository()
-                        ->createQueryBuilder('l');
-
-                $postquery = $postqb
-                        ->join('l.unit', 'u')
-                        ->join('l.locationClass', 'lc', 'WITH', 'lc.controlCode = :controlCode')
-                        ->where('l.unit = :unit')
-                        ->setParameter('controlCode', 'POSTAL')
-                        ->setParameter('unit', $ar->getUnit());
-
-                $postal = $postquery->getQuery()->getSingleResult();
+        // Get ar with invoices lines
+        $qb = $aem->getArRepository()
+                ->createQueryBuilder('ar');
+        
+        $query = $qb
+                ->select('ar')
+                ->join('ar.transaction', 't')
+                ->leftJoin('t.invoices', 'v')
+                ->where($qb->expr()->eq('ar.id', $id));
+        
+        $ar = $query->getQuery()->getSingleResult();
+        
+        // Get postal address
+        $postqb = $aem->getLocationRepository()
+                ->createQueryBuilder('l');
+        
+        $postquery = $postqb
+                ->join('l.unit', 'u')
+                ->join('l.locationClass', 'lc', 'WITH', 'lc.controlCode = :controlCode')
+                ->where('l.unit = :unit')
+                ->setParameter('controlCode', 'POSTAL')
+                ->setParameter('unit', $ar->getUnit());
                 
-                $path = $this->container->getParameter('kernel.root_dir') . '/../src/Morus/FasBundle/Resources/views/Ar/invoice.stylesheet.twig';
-
-                $stylesheet = file_get_contents($path);
-
-                $facade = $this->get('ps_pdf.facade');
-                
-                $response = new Response();
-                $this->render('MorusFasBundle:Ar:invoice.pdf.twig', array(
-                    'ar' => $ar,
-                    'postal' => $postal,
-                ), $response);
-
-                $xml = $response->getContent();
-
-                $content = $facade->render($xml, $stylesheet);
-                
-                $pdfs[] = $content;
-                
-                
-            } // end looping ars
+        $postal = $postquery->getQuery()->getSingleResult();
+        
+        // Total qty total
+        $qty_subtotals = array();
+        $amount_subtotals = array();
+        $qty_total = 0;
+        $amount_total = 0;
+        foreach($ar->getTransaction()->getInvoices() as $invoice)
+        {
+            $vehicle_number = $invoice->getLicence();
             
-            $this->create_zip($pdfs, __DIR__.'/../../../../web/zip/invoice.zip', true);
+            if (array_key_exists($vehicle_number, $qty_subtotals)) {
+                $qty = $qty_subtotals[$vehicle_number];
+                $qty = $qty + $invoice->getQty();
+                $qty_subtotals[$vehicle_number] = $qty;
+            } else {
+                $qty_subtotals[$vehicle_number] = $invoice->getQty();
+            }
             
-            $zip = file(__DIR__.'/../../../../web/zip/invoice.zip');
+            if (array_key_exists($vehicle_number, $amount_subtotals)) {
+                $amt = $amount_subtotals[$vehicle_number];
+                $amt = $amt + $invoice->getAmount();
+                $amount_subtotals[$vehicle_number] = $amt;
+            } else {
+                $amount_subtotals[$vehicle_number] = $invoice->getAmount();
+            }
             
-            return new Response($zip, 200, array(
-                'content-type' => 'application/zip', 
-                'Content-Disposition'   => 'attachment; filename="invoices.zip"')
-                );
+            $qty_total = $qty_total + round($invoice->getQty(),2);
+            $amount_total = $amount_total + round($invoice->getAmount(), 2);
         }
+        
+        $format = $this->get('request')->get('_format');
+        
+        return $this->render(sprintf('MorusFasBundle:Ar:invoice.%s.twig', $format), array(
+            'ar' => $ar,
+            'postal' => $postal,
+            'qty_subtotals' => $qty_subtotals,
+            'amount_subtotals' => $amount_subtotals,
+            'qty_total' => $qty_total,
+            'amount_total' => $amount_total
+        ));
     }
     
     /**

@@ -6,6 +6,14 @@
     <font name="綜藝體繁">
         <normal src="%MorusFasBundle:fonts/綜藝體繁/綜藝體繁.ttf%" />
     </font>
+    <font name="華康中圓體">
+        <normal src="%MorusFasBundle:fonts/華康中圓體/DFYL1B.TTF%" />
+        <bold src="%MorusFasBundle:fonts/華康中圓體/DFYB1B.TTF%" />
+    </font>
+    <font name="華康儷圓">
+        <normal src="%MorusFasBundle:fonts/華康儷圓/normal.ttf" />
+        <bold src="%MorusFasBundle:fonts/華康儷圓/bold.ttf" />
+    </font>
     <font name="courier">
         <normal src="courier" />
         <bold src="courier-bold" />

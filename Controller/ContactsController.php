@@ -207,7 +207,7 @@ class ContactsController extends Controller
 
         return $this->render('MorusFasBundle:Contacts:edit.html.twig', array(
             'unit'      => $unit,
-            'edit_form'   => $editForm->createView(),
+            'form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -262,7 +262,7 @@ class ContactsController extends Controller
 
         return $this->render('MorusFasBundle:Contacts:edit.html.twig', array(
             'unit'      => $unit,
-            'edit_form'   => $editForm->createView(),
+            'form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }

@@ -261,7 +261,16 @@ class ExportFlow extends FormFlow {
                     $invoice->setTransTime($transDatetime->format('H:i:s'));
                 }
                 
-                
+                // Check if gas station is discount exclusive
+                $ignore = false;
+                foreach( $ignoreKeywords as $keywords) {
+                    if (strpos($site, $keywords) !== false) {
+                        $invoice->setSelldiscount(0);
+                        $invoice->setcustomerdiscount(false);
+                        $ignore = true;
+                        break;
+                    }
+                }
                 
                 // search unit with registration number
                 $qb = $this->entityManager
@@ -281,7 +290,7 @@ class ExportFlow extends FormFlow {
                 }
                 
                 // 2. Search Units with the same vehicle number / also check for discount
-                $this->getUnitPartsDiscount($sunit, $invoice, $productName, $ignoreKeywords);
+                $this->getUnitPartsDiscount($sunit, $invoice, $productName, $ignore);
                 
 
             }
@@ -295,20 +304,7 @@ class ExportFlow extends FormFlow {
      * 
      * Search for customer product discount, use product default discount if not found
      */
-    private function getUnitPartsDiscount($unit, $invoice, $productName, $ignoreKeywords) {
-        
-        // Check if gas station is discount exclusive
-        $ignore = false;
-        foreach( $ignoreKeywords as $keywords) {
-            if (strpos($site, $keywords) !== false) {
-                $invoice->setSelldiscount(0);
-                $invoice->setcustomerdiscount(false);
-                $ignore = true;
-                break;
-            }
-        }
-                
-                
+    private function getUnitPartsDiscount($unit, $invoice, $productName, $ignore) {
         // Get Product which appear in statements
         $pqb = $this->entityManager
                 ->getRepository('MorusFasBundle:Parts')

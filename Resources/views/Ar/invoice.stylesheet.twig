@@ -1,6 +1,6 @@
 <stylesheet>
-    <dynamic-page margin="30px 20px 30px 20px" >
-        <div class="doc" font-size="12px" color="black" font-type="helvetica">
+    <dynamic-page margin="20px 20px 20px 20px" >
+        <div class="doc" font-size="11px" color="black" font-type="courier">
             <!-- Header Company Info -->
             <div class="title"  margin="0px 0px 10px 0px" >
                 <div class="company-chi-name" font-type="新細明體" font-size="26px">
@@ -18,7 +18,7 @@
             <!-- Customer Section -->
             <!-- Customer Section -->
             <div class="customer-info" font-type="新細明體" float="left" width="400px" height="100px" >
-                <div class="customer-name" margin="5px 0px 5px 0px" font-size="18px"></div>
+                <div class="customer-name" margin="5px 0px 5px 0px" font-size="18px" ></div>
                 <div class="customer-address" margin-bottom="15px"></div>
                 <div class="customer-contact"></div>
             </div>
@@ -26,11 +26,66 @@
                 <div class="invoice-info-line" margin="3px 0px 3px 0px"></div>
             </div>
             
-            <table class="invoice-details" font-type="新細明體">
-                <tr><td border.color="white"></td></tr>
-                <tr class="invoice-header" ><td border.color="black" border.type="top+bottom" ></td></tr>
-                <tr class="invoice-vehicle" font-size="14px"><td border.color="white"></td></tr>
+            <div class="space" height="20px" />
+            
+            <table class="invoice-header-table" font-type="新細明體">
+                <tr>
+                    <td class="col1" width="30px"  border.color="black" border.type="top+bottom" border.size="2px" text-align="center" height="15px" ></td>
+                    <td class="col2" width="30px"  border.color="black" border.type="top+bottom" border.size="2px" text-align="center" ></td>
+                    <td class="col3" width="160px" border.color="black" border.type="top+bottom" border.size="2px" text-align="center" ></td>
+                    <td class="col4" width="30px"  border.color="black" border.type="top+bottom" border.size="2px" text-align="center" ></td>
+                    <td class="col5" width="80px" border.color="black" border.type="top+bottom" border.size="2px" text-align="center" ></td>
+                    <td class="col6" width="35px"  border.color="black" border.type="top+bottom" border.size="2px" text-align="center" ></td>
+                    <td class="col7" width="35px"  border.color="black" border.type="top+bottom" border.size="2px" text-align="center" ></td>
+                    <td class="col8" width="35px"  border.color="black" border.type="top+bottom" border.size="2px" text-align="center" ></td>
+                    <td class="col9" width="35px"  border.color="black" border.type="top+bottom" border.size="2px" text-align="center" ></td>
+                </tr>
             </table>
+            
+            <table class="invoice-vehcile-table" font-type="新細明體">
+                <tr>
+                    <td class="col1" width="30px"  border.type="none" ></td>
+                    <td class="col2" width="30px"  border.type="none" ></td>
+                    <td class="col3" width="160px" border.type="none" ></td>
+                    <td class="col4" width="30px"  border.color="black" border.type="top+bottom" border.size="1px" ></td>
+                    <td class="col5" width="80px"  border.color="black" border.type="top+bottom" border.size="1px" ></td>
+                    <td class="col6" width="35px"  border.color="black" border.type="top+bottom" border.size="1px" text-align="right" ></td>
+                    <td class="col7" width="35px"  border.color="black" border.type="top+bottom" border.size="1px" text-align="right" ></td>
+                    <td class="col8" width="35px"  border.color="black" border.type="top+bottom" border.size="1px" text-align="right" ></td>
+                    <td class="col9" width="35px"  border.color="black" border.type="top+bottom" border.size="1px" text-align="right" ></td>
+                </tr>
+            </table>
+            
+            <table class="invoice-detail-table" font-type="新細明體">
+                <tr>
+                    <td class="col1" width="30px"  border.type="none" ></td>
+                    <td class="col2" width="30px"  border.type="none" ></td>
+                    <td class="col3" width="160px" border.type="none" ></td>
+                    <td class="col4" width="30px"  border.type="none" ></td>
+                    <td class="col5" width="80px"  border.type="none" ></td>
+                    <td class="col6" width="35px"  border.type="none" text-align="right" ></td>
+                    <td class="col7" width="35px"  border.type="none" text-align="right" ></td>
+                    <td class="col8" width="35px"  border.type="none" text-align="right" ></td>
+                    <td class="col9" width="35px"  border.type="none" text-align="right" ></td>
+                </tr>
+            </table>
+            
+            <table class="invoice-total-table" >
+                <tr>
+                    <td class="col1" width="30px"  border.type="none" ></td>
+                    <td class="col2" width="30px"  border.type="none" ></td>
+                    <td class="col3" width="160px" border.type="none" ></td>
+                    <td class="col4" width="30px"  border.color="black" border.type="top+bottom" border.size="1px" ></td>
+                    <td class="col5" width="80px"  border.color="black" border.type="top+bottom" border.size="1px" ></td>
+                    <td class="col6" width="35px"  border.color="black" border.type="top+bottom" border.size="1px" text-align="right" ></td>
+                    <td class="col7" width="35px"  border.color="black" border.type="top+bottom" border.size="1px" text-align="right" ></td>
+                    <td class="col8" width="35px"  border.color="black" border.type="top+bottom" border.size="1px" text-align="right" ></td>
+                    <td class="col9" width="35px"  border.color="black" border.type="top+bottom" border.size="1px" text-align="right" ></td>
+                </tr>
+            </table>
+            
+            <div class="remark" font-type="新細明體"></div>
+            <div class="thank-you" font-type="新細明體" font-size="26px" text-align="center"></div>
         </div>
     </dynamic-page>
 </stylesheet>
