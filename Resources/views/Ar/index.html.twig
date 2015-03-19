@@ -26,9 +26,7 @@
             <tr>
                 <td>
                     <a id="fas_inv_print"  class="loading-btn" href="{{ path('morus_fas_ar_print', {'id': ar.id}) }}">
-                        {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
-                        <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-172px -16px;background-size:260px;" ></em>
-                        {% endimage %}
+                        {{ 'btn.print'|trans }}
                     </a>
                 </td>
                 <td><a href="{{ path('morus_fas_ar_edit', { 'id': ar.id }) }}">{{ ar.invnumber }}</a></td>
