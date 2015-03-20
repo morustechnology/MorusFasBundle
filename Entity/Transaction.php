@@ -14,5 +14,11 @@ use Morus\AcceticBundle\Entity\Transaction as BaseTransaction;
  */
 class Transaction extends BaseTransaction
 {
-    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="Morus\AcceticBundle\Model\InvoiceInterface", mappedBy="transaction", cascade={"persist","remove"}, orphanRemoval=true)
+     * @ORM\OrderBy({"licence" = "ASC"})
+     */
+    protected $invoices;
 }

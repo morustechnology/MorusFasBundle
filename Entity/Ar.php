@@ -115,5 +115,8 @@ class Ar extends BaseAr
         return $total;
     }
     
-    
+    public function getUnitName()
+    {
+        return $this->unit->getName();
+    }
 }

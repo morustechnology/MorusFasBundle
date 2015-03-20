@@ -227,22 +227,8 @@ class ArController extends Controller
         $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
 
         // Get ar with invoices lines
-        $sqb = $aem->getArRepository()
-                ->createQueryBuilder('ar');
-        
-        $query = $sqb
-                ->select('ar.id, ar.invnumber, ar.reference, ar.transdate, ar.duedate, ar.emailed, SUM(v.qty * (v.sellprice - v.selldiscount)) as amount')
-                ->addSelect('u.name as to')
-                ->join('ar.unit', 'u')
-                ->join('ar.transaction', 't')
-                
-                ->leftJoin('t.invoices', 'v')
-                ->groupBy('ar.id');
-        
-        $ars = $query->getQuery()->getResult();
-        
-        
-        
+        $ars = $aem->getArRepository()
+                ->findAll();
         
         $form = $this->createForm('fas_ar_list', $ars, array(
             'attr'   => array('id' => 'fas_inv_list_frm'),
@@ -290,7 +276,7 @@ class ArController extends Controller
         $query = $qb
                 ->select('ar')
                 ->join('ar.transaction', 't')
-                ->leftJoin('t.invoices', 'v')
+                ->leftJoin('t.invoices', 'i')
                 ->where($qb->expr()->eq('ar.id', $id));
         
         $ar = $query->getQuery()->getSingleResult();

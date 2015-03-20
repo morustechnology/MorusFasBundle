@@ -179,6 +179,10 @@
             });
         }
         
+        function roundTwoDecimal(num) {
+            return Number(Math.round(num+'e2')+'e-2');
+        }
+        
         // Update total amount
         function calculateTotal() {
             var total = 0;
@@ -186,23 +190,24 @@
             // Add delete row link button to each row
             $invTbl.find('tr').each(function () {
                 var index = this.id.replace('{{ inv_obj_pfx }}', '');
-                var qty = $('#fas_ar_transaction_invoices_' + index + '_qty').val();
-                var sellprice = $('#fas_ar_transaction_invoices_' + index + '_sellprice').val();
-                var selldiscount = $('#fas_ar_transaction_invoices_' + index + '_selldiscount').val();
-                var netprice = (sellprice - selldiscount).toFixed(2);
-                var netamount = (qty * netprice).toFixed(2);
-                netamount = parseFloat(netamount);
-                netprice = parseFloat(netprice);
-                total.toFixed(2);
+                var qty = roundTwoDecimal($('#fas_ar_transaction_invoices_' + index + '_qty').val());
+                
+                var sellprice = roundTwoDecimal($('#fas_ar_transaction_invoices_' + index + '_sellprice').val());
+                var selldiscount = roundTwoDecimal($('#fas_ar_transaction_invoices_' + index + '_selldiscount').val());
+                var netprice = roundTwoDecimal(sellprice - selldiscount);
+                var netamount = roundTwoDecimal(qty * netprice);
+                
                 total += netamount;
+                total = roundTwoDecimal(total);
                 subtotal += netamount;
-                alert(total);
-                $('#fas_ar_transaction_invoices_' + index + '_netprice').text(netprice);
-                $('#fas_ar_transaction_invoices_' + index + '_netamount').text(netamount);
+                subtotal = roundTwoDecimal(subtotal);
+
+                $('#fas_ar_transaction_invoices_' + index + '_netprice').text(netprice.toFixed(2));
+                $('#fas_ar_transaction_invoices_' + index + '_netamount').text(netamount.toFixed(2));
             });
             
-            $('#fas_ar_transaction_invoices_subtotal').text(subtotal);
-            $('#fas_ar_transaction_invoices_total').text(total);
+            $('#fas_ar_transaction_invoices_subtotal').text(subtotal.toFixed(2));
+            $('#fas_ar_transaction_invoices_total').text(total.toFixed(2));
             
         }
         

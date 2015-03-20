@@ -31,10 +31,10 @@
                 </td>
                 <td><a href="{{ path('morus_fas_ar_edit', { 'id': ar.id }) }}">{{ ar.invnumber }}</a></td>
                 <td>{{ ar.reference }}</td>
-                <td>{{ ar.to }}</td>
+                <td>{{ ar.unitName }}</td>
                 <td>{% if ar.transdate %}{{ ar.transdate|date('d/m/Y') }}{% endif %}</td>
                 <td>{% if ar.duedate %}{{ ar.duedate|date('d/m/Y') }}{% endif %}</td>
-                <td>${{ ar.amount|number_format(2, '.', ',') }}</td>
+                <td>${{ ar.total|number_format(2, '.', ',') }}</td>
                 <td>{% if ar.emailed %}OK{% else %}No{% endif %}</td>
             </tr>
         {% endfor %}
