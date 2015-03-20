@@ -493,18 +493,18 @@
                                                     {% set rec = rec|round(2) + invoice.amount %}
                                                 {% endif %}
                                             {% endfor %}
-                                            {% set netsubtotal = netsubtotal|round(2) + net %}
-                                            {% set recsubtotal = recsubtotal|round(2) + rec %}
-                                            {% set nettotal = nettotal|round(2) + netsubtotal %}
-                                            {% set rectotal = rectotal|round(2) + recsubtotal %}
-                                            <td>{{ net|round(2) }}</td>
-                                            <td>{{ rec|round(2) }}</td>
+                                            {% set netsubtotal = netsubtotal|round(2) + net|round(2) %}
+                                            {% set recsubtotal = recsubtotal|round(2) + rec|round(2) %}
+                                            {% set nettotal = nettotal|round(2) + net|round(2) %}
+                                            {% set rectotal = rectotal|round(2) + rec|round(2) %}
+                                            <td>{{ net|number_format(2, '.', ',') }}</td>
+                                            <td>{{ rec|number_format(2, '.', ',') }}</td>
                                             <td>{% set pl = rec - net %}
-                                                {{ pl|round(2) }}
+                                                {{ pl|number_format(2, '.', ',') }}
                                             </td>
                                             <td>
                                                 {% set per = (pl / net) * 100 %}
-                                                {{ per|round(2) }}%
+                                                {{ per|number_format(2, '.', ',') }}%
                                             </td>
                                             </tr>
                                         {% endfor %}
@@ -515,7 +515,7 @@
                                         <td style="background: #f3f3f3;">{{ recsubtotal }}</td>
                                         <td style="background: #f3f3f3;">
                                             {% set plsubtotal = recsubtotal - netsubtotal %}
-                                            {{ plsubtotal }}
+                                            {{ plsubtotal|number_format(2, '.', ',') }}
                                         </td>
                                         <td style="background: #f3f3f3;">
                                             {% set persubtotal = ( plsubtotal / netsubtotal) * 100 %}
