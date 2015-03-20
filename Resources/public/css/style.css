@@ -318,6 +318,13 @@ table.invoice-info tr td{
     vertical-align: middle;
 }
 
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+ table.ar .fas-chrome-date input{
+    width: 85%;
+}
+}
+
+
 /*Remove input control in Chrome*/
 /*input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="date"]::-webkit-inner-spin-button,
