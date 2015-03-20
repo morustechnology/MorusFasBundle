@@ -35,8 +35,8 @@
             <td>{{ ar.unitName }}</td>
             <td>{% if ar.transdate %}{{ ar.transdate|date('d/m/Y') }}{% endif %}</td>
             <td>{% if ar.duedate %}{{ ar.duedate|date('d/m/Y') }}{% endif %}</td>
-            <td>${{ ar.total|number_format(2, '.', ',') }}</td>
-            <td>{% if ar.emailed %}OK{% else %}No{% endif %}</td>
+            <td class="right">${{ ar.total|number_format(2, '.', ',') }}</td>
+            <td class="center">{% if ar.emailed %}OK{% else %}No{% endif %}</td>
         </tr>
     {% endfor %}
     </table>

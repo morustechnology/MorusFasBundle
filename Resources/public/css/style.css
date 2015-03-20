@@ -317,3 +317,15 @@ table.invoice-info tr td{
     padding: 2px 0;
     vertical-align: middle;
 }
+
+/*Remove input control in Chrome*/
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-clear-button{
+    display: none;
+}
+
+input[type="time"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-clear-button{
+    display: none;
+}

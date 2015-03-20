@@ -1,12 +1,12 @@
 {% block fas_invoice_widget %}
     {% spaceless %}
         <tr id="{{ form.vars.id }}" class="test">
-            <td width="100px" class="left">{{ form_widget(form.licence)}}</td>
-            <td width="100px" class="left">{{ form_widget(form.transDate)}}</td>
+            <td width="90px" class="left">{{ form_widget(form.licence)}}</td>
+            <td width="90px" class="left">{{ form_widget(form.transDate)}}</td>
             <td width="60px" class="left">{{ form_widget(form.transTime)}}</td>
             <td width="160px" class="left">{{ form_widget(form.site)}}</td>
             <td width="60px" class="left">{{ form_widget(form.receiptNumber)}}</td>
-            <td width="160px" class="left non-textable">{{ form_widget(form.parts)}}</td>
+            <td width="180px" class="left non-textable">{{ form_widget(form.parts)}}</td>
             <td width="100px" class="left">{{ form_widget(form.description)}}</td>
             <td width="40px" class="right">{{ form_widget(form.qty) }}</td>
             <td width="40px" class="right">{{ form_widget(form.sellprice)}}</td>
