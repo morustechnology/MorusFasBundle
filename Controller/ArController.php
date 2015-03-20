@@ -230,6 +230,17 @@ class ArController extends Controller
         $ars = $aem->getArRepository()
                 ->findAll();
         
+        $query = $aem->getArRepository()
+                ->createQueryBuilder('ar')
+                ->getQuery();
+                
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1)/*page number*/,
+            30/*limit per page*/
+        );
+        
         $form = $this->createForm('fas_ar_list', $ars, array(
             'attr'   => array('id' => 'fas_inv_list_frm'),
             'action' => $this->generateUrl('morus_fas_ar'),
@@ -257,6 +268,7 @@ class ArController extends Controller
         
         return $this->render('MorusFasBundle:Ar:index.html.twig', array(
             'ars' => $ars,
+            'pagination' => $pagination,
             'form' => $form->createView(),
         ));
     }

@@ -155,6 +155,7 @@ invoice:
     remark: 備註
     discount_exclude: 機場貨運站及客運站入油並無折扣優惠
     thank_you: 多謝惠顧
+    page: 頁數
 
 contact:
     vehicle_list: 車輛名單

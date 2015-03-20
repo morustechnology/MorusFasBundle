@@ -153,6 +153,7 @@ invoice:
     page_total: Total Page
     sub_total: Sub Total
     invoice_detail_total: Diesel and gasoline detailed transaction reports monthly statement
+    page: Page
     
 contact:
     vehicle_list: Vehicle List

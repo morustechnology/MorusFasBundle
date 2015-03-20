@@ -5,39 +5,44 @@
 {% endblock %}
 
 {% block body -%}
-                    
     <div class="fullwidth-space"></div>
     
     <table class="records_list ar">
         <thead>
             <tr>
+            {# sorting of properties based on query components #}
                 <th></th>
-                <th>{{ ('ar.number' |trans)}}</th>
-                <th>{{ ('ar.reference' |trans)}}</th>
-                <th>{{ ('ar.to' |trans)}}</th>
-                <th>{{ ('ar.date' |trans)}}</th>
-                <th>{{ ('ar.due_date' |trans)}}</th>
-                <th>{{ ('invoice.amount' |trans)}}</th>
-                <th>{{ ('ar.sent' |trans)}}</th>
+                <th{% if pagination.isSorted('ar.invnumber') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'ar.number'|trans, 'ar.invnumber') }}</th>
+                <th{% if pagination.isSorted('ar.reference') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'ar.reference'|trans, 'ar.invnumber') }}</th>
+                <th{% if pagination.isSorted('ar.unitName') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'ar.to'|trans, 'ar.invnumber') }}</th>
+                <th{% if pagination.isSorted('ar.transdate') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'ar.date'|trans, 'ar.invnumber') }}</th>
+                <th{% if pagination.isSorted('ar.duedate') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'ar.due_date'|trans, 'ar.invnumber') }}</th>
+                <th{% if pagination.isSorted('ar.total') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'invoice.amount'|trans, 'ar.invnumber') }}</th>
+                <th{% if pagination.isSorted('ar.emailed') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'ar.sent'|trans, 'ar.invnumber') }}</th>
             </tr>
         </thead>
         <tbody>
-        {% for ar in ars %}
-            <tr>
-                <td>
-                    <a id="fas_inv_print"  href="{{ path('morus_fas_ar_print', {'id': ar.id}) }}">
-                        {{ 'btn.print'|trans }}
-                    </a>
-                </td>
-                <td><a href="{{ path('morus_fas_ar_edit', { 'id': ar.id }) }}">{{ ar.invnumber }}</a></td>
-                <td>{{ ar.reference }}</td>
-                <td>{{ ar.unitName }}</td>
-                <td>{% if ar.transdate %}{{ ar.transdate|date('d/m/Y') }}{% endif %}</td>
-                <td>{% if ar.duedate %}{{ ar.duedate|date('d/m/Y') }}{% endif %}</td>
-                <td>${{ ar.total|number_format(2, '.', ',') }}</td>
-                <td>{% if ar.emailed %}OK{% else %}No{% endif %}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
+        {# table body #}
+        {% for ar in pagination %}
+        <tr {% if loop.index is odd %}class="color"{% endif %}>
+            <td>
+                <a id="fas_inv_print"  href="{{ path('morus_fas_ar_print', {'id': ar.id}) }}">
+                    {{ 'btn.print'|trans }}
+                </a>
+            </td>
+            <td><a href="{{ path('morus_fas_ar_edit', { 'id': ar.id }) }}">{{ ar.invnumber }}</a></td>
+            <td>{{ ar.reference }}</td>
+            <td>{{ ar.unitName }}</td>
+            <td>{% if ar.transdate %}{{ ar.transdate|date('d/m/Y') }}{% endif %}</td>
+            <td>{% if ar.duedate %}{{ ar.duedate|date('d/m/Y') }}{% endif %}</td>
+            <td>${{ ar.total|number_format(2, '.', ',') }}</td>
+            <td>{% if ar.emailed %}OK{% else %}No{% endif %}</td>
+        </tr>
+    {% endfor %}
     </table>
-    {% endblock %}
+    
+    {# display navigation #}
+    <div class="navigation">
+        {{ 'invoice.page'|trans }}: {{ knp_pagination_render(pagination) }}
+    </div>
+{% endblock %}
