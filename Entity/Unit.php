@@ -98,14 +98,14 @@ class Unit extends BaseUnit
     }
 
     /**
-     * Add unitParts
+     * Add unitPart
      *
-     * @param \Morus\FasBundle\Entity\UnitParts $unitParts
+     * @param \Morus\FasBundle\Entity\UnitParts $unitPart
      * @return Unit
      */
-    public function addUnitParts(\Morus\FasBundle\Entity\UnitParts $unitParts)
+    public function addUnitPart(\Morus\FasBundle\Entity\UnitParts $unitPart)
     {
-        $this->unitParts[] = $unitParts;
+        $this->unitPart[] = $unitPart;
 
         return $this;
     }
@@ -115,9 +115,9 @@ class Unit extends BaseUnit
      *
      * @param \Morus\FasBundle\Entity\UnitParts $unitParts
      */
-    public function removeUnitParts(\Morus\FasBundle\Entity\UnitParts $unitParts)
+    public function removeUnitPart(\Morus\FasBundle\Entity\UnitParts $unitPart)
     {
-        $this->unitParts->removeElement($unitParts);
+        $this->unitParts->removeElement($unitPart);
     }
 
     /**
