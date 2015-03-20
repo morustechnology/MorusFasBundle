@@ -8,7 +8,7 @@ use Morus\AcceticBundle\Entity\InvoiceNote as BaseInvoiceNote;
 /**
  * InvoiceNote
  *
- * @ORM\Table(name="accetic_invoice_note", indexes={@ORM\Index(name="IDX_entity_id", columns={"entity_id"})})
+ * @ORM\Table(name="accetic_invoice_note", indexes={@ORM\Index(name="IDX_invoice_id", columns={"invoice_id"})})
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
