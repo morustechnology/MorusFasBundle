@@ -7,43 +7,47 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-use Morus\FasBundle\Entity\Parts;
+use Morus\FasBundle\Entity\Product;
 
 /**
- * Parts controller.
+ * Product controller.
  *
  */
 class InventoryController extends Controller
 {
     /**
-     * Handle Ajax call for deleting Parts.
+     * Handle Ajax call for deleting Product.
      *
      */
     public function editAjaxAction(Request $request){
         try {
-            $em = $this->getDoctrine()->getManager();
+            $data = $request->get('fas_product');
+            $id = $request->get('id');
             
-            $data = $request->get('fas_parts');
-            $id = $data['id'];
-            $parts = $em->getRepository('MorusFasBundle:Parts')->find($id);
-            $parts->setItemcode(array_key_exists('itemcode', $data) ? $data['itemcode'] : null);
-            $parts->setItemname(array_key_exists('itemname', $data) ? $data['itemname'] : null);
-            $parts->setUnit(array_key_exists('unit', $data) ? $data['unit'] : null);
-            $parts->setForsale(array_key_exists('forsale', $data) ? $data['forsale'] : null);
-            $parts->setListprice(array_key_exists('listprice', $data) ? floatval($data['listprice']) : null);
-            $parts->setSaleDescription(array_key_exists('saleDescription', $data) ? $data['saleDescription'] : null);
-            $parts->setForpurchase(array_key_exists('forpurchase', $data) ? $data['forpurchase'] : null);
-            $parts->setLastcost(array_key_exists('lastcost', $data) ? floatval($data['lastcost']) : null);
-            $parts->setPurchaseDescription(array_key_exists('purchaseDescription', $data) ? $data['purchaseDescription'] : null);
+            $aem = $this->get('morus_accetic.entity_manager'); // Get Fas Entity Manager from service
             
+            $product = $aem->getProductRepository()->find($id);
+
+            if (!$product) {
+                throw $this->createNotFoundException('Unable to find Product entity.');
+            }
             
-            $em->persist($parts);
+            // Edit Item Form
+            $form = $this->genEditForm($product);
             
-            $em->flush();
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($product);
+                $em->flush();
+                
+                $response = array("success" => true);
+            } else {
+                $response = array("success" => false);
+            }
             
-            return new Response(json_encode(array(
-                "success" => true
-                )));
+            return new Response(json_encode($response));
         } catch (Exception $ex) {
             return new Response(json_encode(array(
                 "success" => false
@@ -52,7 +56,7 @@ class InventoryController extends Controller
     }
     
     /**
-     * Handle Ajax call for deleting Parts.
+     * Handle Ajax call for deleting Product.
      *
      */
     public function deleteAjaxAction(Request $request){
@@ -60,8 +64,8 @@ class InventoryController extends Controller
             $ids = array();
             $em = $this->getDoctrine()->getManager();
             foreach($request->request->all() as $req){
-                $parts = $this->getDoctrine()->getRepository('MorusFasBundle:Parts')->findOneById($req);
-                $em->remove($parts);
+                $product = $this->getDoctrine()->getRepository('MorusFasBundle:Product')->findOneById($req);
+                $em->remove($product);
             }
             $em->flush();
             
@@ -76,29 +80,32 @@ class InventoryController extends Controller
     }
     
     /**
-     * Handle Ajax call for creating new Parts.
+     * Handle Ajax call for creating new Product.
      *
      */
     public function newAjaxAction(Request $request) {
         try {
-            $data = $request->get('fas_parts');
             
-            $parts = new Parts();
-            $parts->setItemcode(array_key_exists('itemcode', $data) ? $data['itemcode'] : null);
-            $parts->setItemname(array_key_exists('itemname', $data) ? $data['itemname'] : null);
-            $parts->setUnit(array_key_exists('unit', $data) ? $data['unit'] : null);
-            $parts->setForsale(array_key_exists('forsale', $data) ? $data['forsale'] : null);
-            $parts->setListprice(array_key_exists('listprice', $data) ? floatval($data['listprice']) : null);
-            $parts->setSaleDescription(array_key_exists('saleDescription', $data) ? $data['saleDescription'] : null);
-            $parts->setForpurchase(array_key_exists('forpurchase', $data) ? $data['forpurchase'] : null);
-            $parts->setLastcost(array_key_exists('lastcost', $data) ? floatval($data['lastcost']) : null);
-            $parts->setPurchaseDescription(array_key_exists('purchaseDescription', $data) ? $data['purchaseDescription'] : null);
+            $aem = $this->get('morus_accetic.entity_manager'); // Get Fas Entity Manager from service
             
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($parts);
+            $newProduct = $aem->createProduct();
+            $newProduct->setForSale(true);
             
-            $em->flush();
-            $response = array("success" => true);
+            $form = $this->genCreateForm($newProduct);
+            
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($newProduct);
+                $em->flush();
+                
+                $response = array("success" => true);
+            } else {
+                $response = array("success" => false);
+            }
+        
+            
             return new Response(json_encode($response));
         } catch (Exception $ex) {
             $response = array("success" => false);
@@ -107,93 +114,122 @@ class InventoryController extends Controller
     }
     
     /**
-     * Lists all Parts entities.
+     * Lists all Product entities.
      *
      */
     public function indexAction(Request $request)
     {
-        // List All parts
+        // List All product
         $aem = $this->get('morus_accetic.entity_manager'); // Get Fas Entity Manager from service
         
         
-        $parts = $aem->getPartsRepository()->findAll();
+        $product = $aem->getProductRepository()->findAll();
         
-        $parts_list_form = $this->createForm('fas_parts_list', $parts, array(
-            'attr' => array('id' => 'fas_parts_list'),
+        $product_list_form = $this->createForm('fas_product_list', $product, array(
+            'attr' => array('id' => 'fas_product_list'),
             'action' => $this->generateUrl('morus_fas_inventory_delete_ajax'),
             'method' => 'POST',
         ));
         
-        $parts_list_form->add('delete_parts', 'submit', array(
+        $product_list_form->add('delete_product', 'submit', array(
                 'label' => $this->get('translator')->trans('btn.delete'),
                 'attr' => array('style' => 'display:none')
             ));
         
         // New Item Form
-        $newParts = $aem->createParts();
-        $newParts->setForSale(true);
-        $parts_new_form = $this->createForm('fas_parts', $newParts, array(
-            'attr' => array('id' => 'fas_parts_new'),
-            'action' => $this->generateUrl('morus_fas_inventory_new_ajax'),
-            'method' => 'POST',
-        ));
+        $newProduct = $aem->createProduct();
+        $newProduct->setForSale(true);
         
-        $parts_new_form->add('submit', 'submit', array(
-            'label' => $this->get('translator')->trans('btn.save'),
-            'attr' => array('style' => 'display:none')
-        ));
+        $product_new_form = $this->genCreateForm($newProduct);
         
         return $this->render('MorusFasBundle:Inventory:index.html.twig', array(
-            'parts_new_form' => $parts_new_form->createView(),
-            'parts_list_form' => $parts_list_form->createView(),
-            'parts' => $parts
+            'product_new_form' => $product_new_form->createView(),
+            'product_list_form' => $product_list_form->createView(),
+            'product' => $product
         ));
     }
     
     /**
-     * Finds and displays a Parts entity.
+     * Creates a form to create a Entity unit.
+     *
+     * @param Unit $unit The unit
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function genCreateForm($product)
+    {
+        $form = $this->createForm('fas_product', $product, array(
+            'attr' => array('id' => 'fas_product_new'),
+            'action' => $this->generateUrl('morus_fas_inventory_new_ajax'),
+            'method' => 'POST',
+        ));
+        
+        $form->add('submit', 'submit', array(
+            'label' => $this->get('translator')->trans('btn.save'),
+            'attr' => array('style' => 'display:none')
+        ));
+
+        return $form;
+    }
+    
+    /**
+    * Creates a form to edit a Entity unit.
+    *
+    * @param Entity $unit The Unit
+    *
+    * @return \Symfony\Component\Form\Form The form
+    */
+    private function genEditForm($product)
+    {
+        $form = $this->createForm('fas_product', $product, array(
+            'attr' => array('id' => 'fas_product_edit'),
+            'action' => $this->generateUrl('morus_fas_inventory_edit_ajax'),
+            'method' => 'POST',
+        ));
+        
+        $form->add('submit', 'submit', array(
+                'label' => $this->get('translator')->trans('btn.save'),
+                'attr' => array('style' => 'display:none'),
+            ));
+
+        return $form;
+    }
+    
+    /**
+     * Finds and displays a Product entity.
      *
      */
     public function showAction($id)
     {
         $aem = $this->get('morus_accetic.entity_manager'); // Get Fas Entity Manager from service
 
-        $parts = $aem->getPartsRepository()->find($id);
+        $product = $aem->getProductRepository()->find($id);
 
-        if (!$parts) {
-            throw $this->createNotFoundException('Unable to find Parts entity.');
+        if (!$product) {
+            throw $this->createNotFoundException('Unable to find Product entity.');
         }
         
         // Edit Item Form
-        $parts_edit_form = $this->createForm('fas_parts', $parts, array(
-            'attr' => array('id' => 'fas_parts_edit'),
-            'action' => $this->generateUrl('morus_fas_inventory_edit_ajax'),
-            'method' => 'POST',
-        ));
-        
-        $parts_edit_form->add('submit', 'submit', array(
-                'label' => $this->get('translator')->trans('btn.save'),
-                'attr' => array('style' => 'display:none'),
-            ));
+        $product_edit_form = $this->genEditForm($product);
         
         return $this->render('MorusFasBundle:Inventory:show.html.twig', array(
-            'parts'      => $parts,
-            'parts_edit_form' => $parts_edit_form->createView(),
+            'product'      => $product,
+            'product_edit_form' => $product_edit_form->createView(),
         ));
     }
     
     /**
-     * Deletes a Parts entity.
+     * Deletes a Product entity.
      *
      */
     public function deleteAction($id)
     {
         $em = $this->getDoctrine()->getManager();
         $aem = $this->get('morus_accetic.entity_manager'); // Get Fas Entity Manager from service
-        $entity = $aem->getPartsRepository()->find($id);
+        $entity = $aem->getProductRepository()->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Parts entity.');
+            throw $this->createNotFoundException('Unable to find Product entity.');
         }
 
         $em->remove($entity);
@@ -203,7 +239,7 @@ class InventoryController extends Controller
     }
 
     /**
-     * Creates a form to delete a Parts entity by id.
+     * Creates a form to delete a Product entity by id.
      *
      * @param mixed $id The entity id
      *

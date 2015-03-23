@@ -20,6 +20,7 @@
 {# Step 4 #}
 {% set fas_sam_tab = 'fas_sam_tab' %}
 {% set tab_pl = 'fas_tab_pl' %}
+{% set tab_pl_2 = 'fas_tab_pl2' %}
 {% set tab_exp_dtl = 'fas_tab_dtl_sam' %}
 
 {% block stylesheets %}
@@ -52,7 +53,7 @@
         
         jQuery(document).ready(function() {
             $prodDlg = $( "#{{ prod_dlg_div_id }}" );
-            $prodForm = $('#{{ parts_form.vars.attr.id }}');
+            $prodForm = $('#{{ product_form.vars.attr.id }}');
             
             refreshProductList();
             
@@ -94,18 +95,18 @@
                 var itemcode = this.id.replace("{{ prod_dlg_btn_prfx }}","").replace('_' + index, "" );
                 var itemname = this.name;
                 $prodForm.find('#{{ prod_dlg_idx_id }}').val(index);
-                $prodForm.find('#{{ parts_form.itemcode.vars.id }}').val(itemcode);
-                $prodForm.find('#{{ parts_form.itemname.vars.id }}').val(itemname);
-                $prodForm.find('#{{ parts_form.defaultDiscount.vars.id }}').val('0.0');
-                $prodForm.find('#{{ parts_form.othername.vars.id }}').val('');
-                $prodForm.find('#{{ parts_form.useOthername.vars.id }}').attr("checked", false);
+                $prodForm.find('#{{ product_form.itemcode.vars.id }}').val(itemcode);
+                $prodForm.find('#{{ product_form.itemname.vars.id }}').val(itemname);
+                $prodForm.find('#{{ product_form.defaultDiscount.vars.id }}').val('0.0');
+                $prodForm.find('#{{ product_form.othername.vars.id }}').val('');
+                $prodForm.find('#{{ product_form.useOthername.vars.id }}').attr("checked", false);
                 
                 $prodDlg.data('btn_id', this.id)
                         .dialog( "open" );
             });
             
             // Apply input mask to default discount box
-            $('#{{ parts_form.defaultDiscount.vars.id }}').inputmask("decimal", { 
+            $('#{{ product_form.defaultDiscount.vars.id }}').inputmask("decimal", { 
                 radixPoint: ".", groupSeparator: ",", groupSize: 3, digits: 2,
                 autoGroup: true, placeholder: "0.00"
             });
@@ -135,17 +136,17 @@
         
         // Make Ajax Call to refresh Customer Vehicle List 
         function refreshProductList() { 
-            var parts = {};
+            var product = {};
                 
             {% for key, value in flow.stmtProd %}
-            parts['{{ key }}'] = '{{ value }}';
+            product['{{ key }}'] = '{{ value }}';
             {% endfor %}
 
             var values = {};
-            values['parts'] = parts;
+            values['product'] = product;
 
             $.ajax({
-                url         : "{{ path('morus_fas_statement_export_parts_list')}}",
+                url         : "{{ path('morus_fas_statement_export_product_list')}}",
                 type        : "GET",
                 data        : values,
                 success     : function(data) {
@@ -449,100 +450,84 @@
                 {% elseif flow.getCurrentStepNumber() == 4 %}  {# Summary Step #}
                     <div id="{{ fas_sam_tab }}">
                         <ul>
-                          <li><a href="#{{ tab_pl }}">{{ 'export_step.profit_and_loss'|trans }}</a></li>
-                          <li><a href="#{{ tab_exp_dtl }}">{{ 'export_step.export_detail'|trans }}</a></li>
+                            <li><a href="#{{ tab_pl }}">{{ 'export_step.profit_and_loss'|trans }}</a></li>
+                            <li><a href="#{{ tab_exp_dtl }}">{{ 'export_step.export_detail'|trans }}</a></li>
                         </ul>
                         <div id="{{ tab_pl }}"> {# Profit and Lost tab#}
-                            <table class="fas-tab ar">
-                                <thead>
-                                    <tr>
-                                        <th>{{ 'pl.customer'|trans }}</th>
-                                        <th>{{ 'pl.licence_number'|trans }}</th>
-                                        <th>{{ 'pl.nett'|trans }}</th>
-                                        <th>{{ 'pl.receivable'|trans }}</th>
-                                        <th>{{ 'pl.pl'|trans }}</th>
-                                        <th>{{ 'pl.percentage'|trans }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% set nettotal = 0 %}
-                                    {% set rectotal = 0 %}
-                                    {% set unitname = null %}
-                                    {% for ar in flow.ars %}
-                                    <tr>
-                                        <td>{{ ar.unit.name }}</td>
-                                        
-                                        {% set recsubtotal = 0 %}
-                                        {% set netsubtotal = 0 %}
-                                        
-                                        {% for vehicle in ar.unit.vehicles %}
-                                            {% if unitname != ar.unit.name %}
-                                                {% set unitname = ar.unit.name %}
-                                                <td>{{ vehicle.registrationNumber }}</td>
-                                            {% else %}
-                                                <tr>
-                                                    <td></td>
-                                                    <td>{{ vehicle.registrationNumber }}</td>
-                                            {% endif %}
-
-                                            {% set net = 0 %}
-                                            {% set rec = 0 %}
-                                            {% for invoice in ar.transaction.invoices %}
-                                                {% if invoice.licence == vehicle.registrationNumber %}
-                                                    {% set net = net|round(2) + invoice.nettcost %}
-                                                    {% set rec = rec|round(2) + invoice.amount %}
-                                                {% endif %}
-                                            {% endfor %}
-                                            {% set netsubtotal = netsubtotal|round(2) + net|round(2) %}
-                                            {% set recsubtotal = recsubtotal|round(2) + rec|round(2) %}
-                                            {% set nettotal = nettotal|round(2) + net|round(2) %}
-                                            {% set rectotal = rectotal|round(2) + rec|round(2) %}
-                                            <td>{{ net|number_format(2, '.', ',') }}</td>
-                                            <td>{{ rec|number_format(2, '.', ',') }}</td>
-                                            <td>{% set pl = rec - net %}
-                                                {{ pl|number_format(2, '.', ',') }}
+                            {% for supplier in flow.pl %}
+                                <table class="fas-tab ar">
+                                    <thead>
+                                        <tr><th colspan="6">{{ supplier.name }}</th></tr>
+                                        <tr>
+                                            <th>{{ 'pl.customer'|trans }}</th>
+                                            <th>{{ 'pl.licence_number'|trans }}</th>
+                                            <th>{{ 'pl.nett'|trans }}</th>
+                                            <th>{{ 'pl.receivable'|trans }}</th>
+                                            <th>{{ 'pl.pl'|trans }}</th>
+                                            <th>{{ 'pl.percentage'|trans }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% set customername = null %}
+                                        {% for customer in supplier.customers %}
+                                            <tr>
+                                                <td>{{ customer.name }}</td>
+                                                {% for customerVehicle in customer.customerVehicles %}
+                                                    {% if customername != customer.name %}
+                                                        {% set customername = customer.name %}
+                                                    {% else %}
+                                                        <tr>
+                                                            <td></td>
+                                                    {% endif %}
+                                                        <td>{{ customerVehicle.registrationNumber }}</td>
+                                                        <td>{{ customerVehicle.nett|number_format(2, '.', ',') }}</td>
+                                                        <td>{{ customerVehicle.receivable|number_format(2, '.', ',') }}</td>
+                                                        <td>
+                                                            {% set pl = customerVehicle.receivable -  customerVehicle.nett %}
+                                                            {{ pl|number_format(2, '.', ',') }}
+                                                        </td>
+                                                        <td>
+                                                            {% set percentage = (pl / customerVehicle.nett) * 100 %}
+                                                            {{ percentage|number_format(2, '.', ',') }}%
+                                                        </td>
+                                                {% endfor %}
+                                            </tr>
+                                            
+                                            <tr id="space" > {# Customer Total #}
+                                                <td style="background: #f3f3f3;"/><td style="background: #f3f3f3;"/>
+                                                <td style="background: #f3f3f3;">{{ customer.nettTotal|number_format(2, '.', ',') }}</td>
+                                                <td style="background: #f3f3f3;">{{ customer.receivableTotal|number_format(2, '.', ',') }}</td>
+                                                <td style="background: #f3f3f3;">
+                                                    {% set plsubtotal = customer.receivableTotal - customer.nettTotal %}
+                                                    {{ plsubtotal|number_format(2, '.', ',') }}
+                                                </td>
+                                                <td style="background: #f3f3f3;">
+                                                    {% set persubtotal = ( plsubtotal / customer.nettTotal) * 100 %}
+                                                    {{ persubtotal|number_format(2, '.', ',') }}%
+                                                </td>
+                                            </tr> {# Space between every #}
+                                            <tr id="space"><td style="height: 10px; background: #fff;"/><td/><td/><td/><td/><td/></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td>Total:</td>
+                                            <td>{{ supplier.nettTotal|number_format(2, '.', ',') }}</td>
+                                            <td>{{ supplier.receivableTotal|number_format(2, '.', ',') }}</td>
+                                            <td>{% set pltotal = supplier.receivableTotal - supplier.nettTotal %}
+                                                {{ pltotal|number_format(2, '.', ',') }}
                                             </td>
                                             <td>
-                                                {% set per = (pl / net) * 100 %}
-                                                {{ per|number_format(2, '.', ',') }}%
+                                                {% set totalper = ( pltotal / supplier.nettTotal) * 100 %}
+                                                {{ totalper|number_format(2, '.', ',') }}%
                                             </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tr>
-                                    <tr id="space" >
-                                        <td/><td/>
-                                        <td style="background: #f3f3f3;">{{ netsubtotal }}</td>
-                                        <td style="background: #f3f3f3;">{{ recsubtotal }}</td>
-                                        <td style="background: #f3f3f3;">
-                                            {% set plsubtotal = recsubtotal - netsubtotal %}
-                                            {{ plsubtotal|number_format(2, '.', ',') }}
-                                        </td>
-                                        <td style="background: #f3f3f3;">
-                                            {% set persubtotal = ( plsubtotal / netsubtotal) * 100 %}
-                                            {{ persubtotal|number_format(2, '.', ',') }}%
-                                        </td>
-                                    </tr> {# Space between every #}
-                                    <tr id="space"><td colspan="6" style="height: 5px; background: #f3f3f3;"/></tr> {# Space between every #}
-                                    {% endfor %}
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <td></td>
-                                    <td>Total:</td>
-                                    <td>{{ nettotal|number_format(2, '.', ',') }}</td>
-                                    <td>{{ rectotal|number_format(2, '.', ',') }}</td>
-                                    <td>{% set pltotal = rectotal - nettotal %}
-                                        {{ pltotal|number_format(2, '.', ',') }}
-                                    </td>
-                                    <td>
-                                        {% set totalper = ( pltotal / nettotal) * 100 %}
-                                        {{ totalper|number_format(2, '.', ',') }}%
-                                    </td>
-                                </tr>
-                              </tfoot>
-                            </table>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            {% endfor %}
                         </div>
-
+                        
                         <div id="{{ tab_exp_dtl }}"> {# export detail tab#}
                             {% for ar in flow.ars %}
                                 <div class="col-1-2">
@@ -655,26 +640,27 @@
     
     {#  New Product Popup #}
     <div id="{{ prod_dlg_div_id }}" title="{{ 'inventory.new_inventory_item'|trans }}" style="display:none">  
-        {{ form_start(parts_form) }}
-            {{ form_errors(parts_form) }}
+        {{ form_start(product_form) }}
+            {{ form_errors(product_form) }}
             <input type="hidden" id="{{ prod_dlg_idx_id  }}" value="" />
             
             <table>
                 <tr>
-                    <td style="padding-top: 10px;">{{ 'inventory.itemcode'|trans }} {{ form_widget(parts_form.itemcode) }}{{ form_errors(parts_form.itemcode) }}</td>
-                    <td style="padding-top: 10px;">{{ 'inventory.itemname'|trans }} {{ form_widget(parts_form.itemname) }} {{ form_errors(parts_form.itemname) }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.itemcode'|trans }} {{ form_widget(product_form.itemcode) }}{{ form_errors(product_form.itemcode) }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.itemname'|trans }} {{ form_widget(product_form.itemname) }} {{ form_errors(product_form.itemname) }}</td>
                 </tr>
                 <tr>
-                    <td style="padding-top: 10px;">{{ 'inventory.othername'|trans }} {{ form_widget(parts_form.othername) }}</td>
-                    <td style="padding-top: 10px;">{{ 'inventory.use_othername'|trans }} {{ form_widget(parts_form.useOthername) }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.othername'|trans }} {{ form_widget(product_form.othername) }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.use_othername'|trans }} {{ form_widget(product_form.useOthername) }}</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="padding-top: 10px;">{{ 'inventory.default_discount'|trans }} {{ form_widget(parts_form.defaultDiscount) }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.default_discount'|trans }} {{ form_widget(product_form.defaultDiscount) }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.non_fuel_item'|trans }} {{ form_widget(product_form.nonfuelitem) }}</td>
                 </tr>
             </table>
-            {{ form_widget( parts_form.submit ) }}
-            {{ form_rest(parts_form) }}
-        {{ form_end(parts_form) }}
+            {{ form_widget( product_form.submit ) }}
+            {{ form_rest(product_form) }}
+        {{ form_end(product_form) }}
     </div>
     
 {% endblock %}

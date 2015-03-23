@@ -8,7 +8,7 @@ use Morus\AcceticBundle\Entity\Invoice as BaseInvoice;
 /**
  * Invoice
  *
- * @ORM\Table(name="accetic_invoice", indexes={@ORM\Index(name="invoice_trans_id_key", columns={"transaction_id"}), @ORM\Index(name="IDX_parts_id", columns={"parts_id"})})
+ * @ORM\Table(name="accetic_invoice", indexes={@ORM\Index(name="invoice_trans_id_key", columns={"transaction_id"}), @ORM\Index(name="IDX_product_id", columns={"product_id"})})
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
@@ -90,6 +90,14 @@ class Invoice extends BaseInvoice
      * @ORM\Column(name="customer_discount", type="boolean")
      */
     protected $customerdiscount;
+    
+    /**
+     *
+     * @var type 
+     * 
+     * @ORM\Column(name="unit_group_id", type="integer", nullable=true)
+     */
+    protected $suppliergroupid;
     
     /**
      * constructor
@@ -333,7 +341,7 @@ class Invoice extends BaseInvoice
      * Set customerdiscount
      *
      * @param boolean $customerdiscount
-     * @return Statement
+     * @return Invoice
      */
     public function setCustomerdiscount($customerdiscount)
     {
@@ -350,6 +358,29 @@ class Invoice extends BaseInvoice
     public function getCustomerdiscount()
     {
         return $this->customerdiscount;
+    }
+    
+    /**
+     * Set suppliergroupid
+     *
+     * @param integer $suppliergroupid
+     * @return Invoice
+     */
+    public function setSuppliergroupid($suppliergroupid)
+    {
+        $this->suppliergroupid = $suppliergroupid;
+
+        return $this;
+    }
+
+    /**
+     * Get suppliergroupid
+     *
+     * @return integer 
+     */
+    public function getSuppliergroupid()
+    {
+        return $this->suppliergroupid;
     }
     
     public function getNettcost() 

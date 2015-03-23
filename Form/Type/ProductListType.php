@@ -5,9 +5,21 @@ namespace Morus\FasBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 
-class UnitPartsType extends AbstractType
+class ProductListType extends AbstractType
 {
+    protected $container;
+    
+    /**
+     * 
+     * @param Container $container
+     */
+    public function __construct($container)
+    {
+        $this->container = $container;
+    }
+    
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -15,10 +27,11 @@ class UnitPartsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('discount' , 'text')
-            ->add('parts', 'entity', array(
-                'class' => 'MorusFasBundle:Parts',
+            ->add('id', 'entity', array(
+                'class' => $this->container->getParameter('morus_accetic.model.product'),
                 'property' => 'itemname',
+                'expanded' => true,
+                'multiple' => true
             ));
     }
     
@@ -27,9 +40,7 @@ class UnitPartsType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Morus\FasBundle\Entity\UnitParts'
-        ));
+        
     }
 
     /**
@@ -37,6 +48,6 @@ class UnitPartsType extends AbstractType
      */
     public function getName()
     {
-        return 'fas_unit_parts';
+        return 'fas_product_list';
     }
 }

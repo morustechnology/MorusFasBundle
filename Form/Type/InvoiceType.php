@@ -15,8 +15,8 @@ class InvoiceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('parts', 'entity', array(
-                'class' => 'MorusFasBundle:Parts',
+            ->add('product', 'entity', array(
+                'class' => 'MorusFasBundle:Product',
                 'property' => 'itemcode',
                 'required' => false
             ))

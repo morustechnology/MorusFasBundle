@@ -1,0 +1,84 @@
+{% extends '::base.html.twig' %}
+
+{% set pts_del_lk_id = 'acc_pts_del_lk' %}
+{% set pts_dlg_lk_id = 'acc_pts_dlg_lk' %}
+{% set pts_dlg_title = 'inventory.edit_inventory_item'|trans %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@MorusAcceticBundle/Resources/public/js/jquery-1.9.1.min.js' %}
+        <script type="text/ecmascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
+    <script type='text/javascript'>
+        
+    </script>
+{% endblock javascripts %}
+
+{% block body_title -%}
+    {{ product.itemname }}
+{% endblock %}
+
+{% block body -%}
+    <ul class="page-control">
+        <li>
+            <a class="loading-btn" href="{{ path('morus_fas_inventory') }}">
+                {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+                <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-140px -50px;" ></em>
+                {% endimage %}
+                {{ 'btn.back'|trans }}
+            </a>
+        </li>
+        <li>
+            <a id="{{ pts_dlg_lk_id }}" class="loading-btn" href="#" />
+            {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+            <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-120px -50px;" ></em>
+            {% endimage %}
+            {{ 'btn.edit_item'|trans }}
+            </a>
+        </li>
+        <li>
+            <a id="{{ pts_del_lk_id }}" class="loading-btn" href="{{ path('morus_fas_inventory_delete', {'id' : product.id}) }}" />
+            {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+            <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-220px -50px;" ></em>
+            {% endimage %}
+            {{ 'btn.delete'|trans }}
+            </a>
+        </li>
+    </ul>
+    
+    <div id="container-box" class="">
+        <div class="section-header">
+            <h2>{{ product.itemname }}</h2>
+            {{ product.itemcode }}<br/>
+        </div>
+    
+        <div class="section-form inset form">
+            <table>
+                <tr>
+                    <td style="padding-top: 10px;">{{ 'inventory.itemcode'|trans }} {{ product.itemcode }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.itemname'|trans }} {{ product.itemname }}</td>
+                </tr>
+                <tr>
+                    <td style="padding-top: 10px;">{{ 'inventory.othername'|trans }} {{ product.othername }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.use_othername'|trans }} {% if product.useOthername %} yes {% else %} no  {% endif %}</td>
+                </tr>
+                <tr>
+                    <td style="padding-top: 10px;">{{ 'inventory.default_discount'|trans }} {{ product.defaultDiscount }}</td>
+                    <td style="padding-top: 10px;">{{ 'inventory.non_fuel_item'|trans }} {% if product.nonfuelitem %} yes {% else %} no  {% endif %}</td>
+                </tr>
+            </table>
+            <hr/>
+
+            {# Edit Product Dialog #}
+            {{ include('MorusFasBundle:Inventory:product.dialog.html.twig', {  
+                'pts_dlg_title' : pts_dlg_title,
+                'pts_dlg_lk_id' : pts_dlg_lk_id,
+                'product_id' : product.id,
+                'product_form' : product_edit_form
+            }) }}
+        </div>
+    </div>
+{% endblock %}

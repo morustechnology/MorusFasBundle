@@ -67,12 +67,12 @@
         });
         
         jQuery(document).ready(function() {
-            $('select[id$=_parts]').change(function() {
+            $('select[id$=_product]').change(function() {
                 var id = $(this).attr('id');
-                var parts_id = $(this).val();
-                var descInputId = id.replace('_parts', '_description');
+                var product_id = $(this).val();
+                var descInputId = id.replace('_product', '_description');
                 // Throw the id value to server
-                getProdDesc( parts_id, function( response ) {
+                getProdDesc( product_id, function( response ) {
                     if (response.success) {
                         $('#' + descInputId).val(response.description);
                     } else {

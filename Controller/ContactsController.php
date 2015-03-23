@@ -4,6 +4,7 @@ namespace Morus\FasBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Contact controller.
@@ -31,21 +32,29 @@ class ContactsController extends Controller
         $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
         $unitRepos = $aem->getUnitRepository();
         
-        $qb = $unitRepos->createQueryBuilder('u')
-                ->select('u.id, u.name')
-                ->addSelect('p.firstName, p.lastName')
-                ->addSelect('c.description')                
-                ->join('u.persons', 'p', 'WITH', 'p.isPrimary = 1')
-                ->join('p.contacts', 'c')
-                ->where('u.active = 1')
-                ->orderBy('u.name', 'ASC');
-
+//        $qb = $unitRepos->createQueryBuilder('u')
+//                ->select('u.id, u.name')
+//                ->addSelect('p.firstName, p.lastName')
+//                ->addSelect('c.description')
+//                ->addSelect('v.registrationNumber')
+//                ->leftJoin('u.vehicles', 'v')
+//                ->join('u.persons', 'p', 'WITH', 'p.isPrimary = 1')
+//                ->join('p.contacts', 'c')
+//                ->where('u.active = 1')
+//                ->orderBy('u.name', 'ASC');
+        
+                $qb = $unitRepos->createQueryBuilder('u')
+                    ->addSelect('v')
+                    ->leftJoin('u.vehicles', 'v')
+                    ->leftJoin('u.unitProducts', 'uv')
+                    ->where('u.active = 1')
+                    ->orderBy('u.name', 'ASC');
+        
         if ($controlCode == 'ALL') {
             $qb->leftJoin('u.unitClasses', 'uc');
         } else {
             $qb->join('u.unitClasses', 'uc', 'WITH', 'uc.controlCode = :ecc')
             ->setParameter('ecc', $ecc);
-                    
         }
         
         $contacts = $qb->getQuery()->getResult();
@@ -68,7 +77,7 @@ class ContactsController extends Controller
         
         return $this->render('MorusFasBundle:Contacts:new.html.twig', array(
             'unit' => $unit,
-            'form'   => $form->createView(),
+            'form'   => $form->createView(), 
         ));
     }
     
@@ -114,6 +123,11 @@ class ContactsController extends Controller
         
         $form->add('submit', 'submit', array(
                 'label' => $this->get('translator')->trans('btn.save'),
+                'attr' => array('class' => 'green-btn')
+                ));
+        
+        $form->add('cancel', 'submit', array(
+                'label' => $this->get('translator')->trans('btn.cancel'),
                 'attr' => array('class' => 'green-btn')
                 ));
 
@@ -230,9 +244,15 @@ class ContactsController extends Controller
             'label' => $this->get('translator')->trans('btn.save'),
             'attr' => array('class' => 'green-btn')
         ));
+        
+        $form->add('cancel', 'submit', array(
+                'label' => $this->get('translator')->trans('btn.cancel'),
+                'attr' => array('class' => 'green-btn')
+                ));
 
         return $form;
     }
+    
     /**
      * Edits an existing Entity unit.
      *
@@ -241,19 +261,44 @@ class ContactsController extends Controller
     {
         $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
         $unitRepos = $aem->getUnitRepository();
-
+        
         $unit = $unitRepos->find($id);
-
+        
         if (!$unit) {
             throw $this->createNotFoundException('Unable to find Entity unit.');
         }
-
+        
+        $originalVehicles = new ArrayCollection();
+        foreach( $unit->getVehicles() as $vehicle){
+            $originalVehicles->add($vehicle);
+        }
+        
+        $originalUnitProducts = new ArrayCollection();
+        foreach( $unit->getUnitProducts() as $unitProduct){
+            $originalUnitProducts->add($unitProduct);
+        }
+        
         $deleteForm = $this->genDeleteForm($id);
         $editForm = $this->genEditForm($unit);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            
+            // remove the vehicle from database
+            foreach ($originalVehicles as $vehicle) {
+                if (false === $unit->getVehicles()->contains($vehicle)) {
+                     $em->remove($vehicle);
+                }
+            }
+
+            // remove the unitproduct from database
+            foreach ($originalUnitProducts as $unitProduct) {
+                if (false === $unit->getUnitProducts()->contains($unitProduct)) {
+                     $em->remove($unitProduct);
+                }
+            }
+            
             $em->persist($unit);
             $em->flush();
 
@@ -270,6 +315,7 @@ class ContactsController extends Controller
      * Deletes a Entity unit.
      *
      */
+    
     public function deleteAction(Request $request, $id)
     {
         $form = $this->genDeleteForm($id);

@@ -11,6 +11,10 @@ services:
         arguments: ["@doctrine.orm.entity_manager", "@service_container"]
         parent: craue.form.flow
         scope: request
+        
+    morus_fas.form.flow.invoice.export.pl:
+        class: Morus\FasBundle\Classes\PL
+        arguments: ["@doctrine.orm.entity_manager", "@service_container"]
     
     # Form Type
     morus_fas.form.type.statement:
@@ -23,20 +27,20 @@ services:
         tags:
             - { name: form.type, alias: fas_statement_list }
     
-    morus_fas.form.type.parts:
-        class: Morus\FasBundle\Form\Type\PartsType
+    morus_fas.form.type.product:
+        class: Morus\FasBundle\Form\Type\ProductType
         tags:
-            - { name: form.type, alias: fas_parts }
+            - { name: form.type, alias: fas_product }
     
     morus_fas.form.type.unit:
         class: Morus\FasBundle\Form\Type\UnitType
         tags:
             - { name: form.type, alias: fas_unit }
     
-    morus_fas.form.type.unit_parts:
-        class: Morus\FasBundle\Form\Type\UnitPartsType
+    morus_fas.form.type.unit_product:
+        class: Morus\FasBundle\Form\Type\UnitProductType
         tags:
-            - { name: form.type, alias: fas_unit_parts }
+            - { name: form.type, alias: fas_unit_product }
             
     morus_fas.form.type.vehicle:
         class: Morus\FasBundle\Form\Type\VehicleType
@@ -82,6 +86,18 @@ services:
         class: Morus\FasBundle\Form\Type\PersonType
         tags:
             - { name: form.type, alias: fas_person }
+    
+    morus_fas.form.type.product:
+        class: Morus\FasBundle\Form\Type\ProductType
+        arguments: ['@service_container']
+        tags:
+            - { name: form.type, alias: fas_product }
+
+    morus_fas.form.type.product_list:
+        class: Morus\FasBundle\Form\Type\ProductListType
+        arguments: ['@service_container']
+        tags:
+            - { name: form.type, alias: fas_product_list }
             
     # Utility Classes
     morus_fas.classes.importlog:

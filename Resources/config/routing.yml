@@ -13,3 +13,7 @@ morus_fas_accountsReceivable:
 morus_fas_contacts:
     resource: "@MorusFasBundle/Resources/config/routing/contacts.yml"
     prefix:   /Fas/Contacts
+    
+morus_fas_inventory:
+    resource: "@MorusFasBundle/Resources/config/routing/Inventory.yml"
+    prefix:   /Fas/Inventory

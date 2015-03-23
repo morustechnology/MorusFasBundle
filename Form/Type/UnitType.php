@@ -29,9 +29,9 @@ class UnitType extends AbstractType
             ->add('contacts', 'collection', array(
                 'type' => 'accetic_contact'
             ))
-            ->add('unitParts', 'collection', array(
+            ->add('unitProducts', 'collection', array(
                 'label' => false,
-                'type' => 'fas_unit_parts',
+                'type' => 'fas_unit_product',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,

@@ -1,0 +1,182 @@
+{% set pts_dlg_div_id = 'acc_pts_dlg_div' %}
+{% set pts_dlg_sal_dtl_id = 'acc_pts_dlg_sal_dtl' %}
+{% set pts_dlg_pur_dtl_id = 'acc_pts_dlg_pur_dtl' %}
+
+{% stylesheets '@MorusAcceticBundle/Resources/public/css/jquery-ui.min.css' filter='cssrewrite' %}
+    <link type="text/css" rel="stylesheet" media="screen" href="{{ asset_url }}" />
+{% endstylesheets %}
+    
+{% javascripts 
+    '@MorusAcceticBundle/Resources/public/js/jquery-1.9.1.min.js'
+    '@MorusAcceticBundle/Resources/public/js/jquery-ui.min.js'
+    '@MorusAcceticBundle/Resources/public/js/jquery.inputmask.js'
+    '@MorusAcceticBundle/Resources/public/js/jquery.inputmask.numeric.extensions.js'
+%}
+    <script type="text/ecmascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+<script type='text/javascript'>
+    jQuery(document).ready(function() {
+        // Initialize Document
+        // =====================================================================
+
+        {# init();
+        function init() {
+            // Show/Hide purchase division base on default value
+            var purchase = $('#{{ product_form.forpurchase.vars.id }}').prop('checked');
+            if ( purchase ) {
+                $('#{{ pts_dlg_pur_dtl_id }}').show();
+            } else {
+                $('#{{ pts_dlg_pur_dtl_id }}').hide();
+            }
+
+            // Show/Hide sale division base on default value
+            var sale = $('#{{ product_form.forsale.vars.id }}').prop('checked');
+            if ( sale ) {
+                $('#{{ pts_dlg_sal_dtl_id }}').show();
+            } else {
+                $('#{{ pts_dlg_sal_dtl_id }}').hide();
+            }
+
+            $('#{{ product_form.listprice.vars.id }}').inputmask("decimal", { 
+                radixPoint: ".", 
+                groupSeparator: ",",
+                groupSize: 3,
+                digits: 2,
+                autoGroup: true,
+                placeholder: "0.00"
+            });
+            $('#{{ product_form.lastcost.vars.id }}').inputmask("decimal", { 
+                radixPoint: ".", 
+                groupSeparator: ",",
+                groupSize: 3,
+                digits: 2,
+                autoGroup: true,
+                placeholder: "0.00"
+            });
+        } #}
+
+
+        // New Product Dialog
+        // =====================================================================
+        // Init New Product Dialog Box
+        $( "#{{ pts_dlg_div_id }}" ).dialog({
+            autoOpen: false,
+            height: 300,
+            width: 650,
+            modal: true,
+            buttons: {
+                "{{ 'btn.save'|trans }}": function() {
+                    $('#{{ product_form.vars.attr.id }}').find(':submit').click();  // Trigger form submit button
+                },
+                "{{ 'btn.cancel'|trans }}": function() {
+                    $( "#{{ pts_dlg_div_id }}" ).dialog( "close" );
+                }
+            },
+            show: {
+                effect: "fade",
+                duration: 500
+            },
+            hide: {
+                effect: "fade",
+                duration: 500
+            }
+        });
+
+        // When purchse checkbox value change
+        {# $('#{{ product_form.forpurchase.vars.id }}').change(function() {
+            if (this.checked) {
+                $('#{{ pts_dlg_pur_dtl_id }}').show('blind');
+            } else {
+                $('#{{ pts_dlg_pur_dtl_id }}').hide('blind');
+            }
+        }); 
+
+        // When sale checkbox value change
+        $('#{{ product_form.forsale.vars.id }}').change(function() {
+            if (this.checked) {
+                $('#{{ pts_dlg_sal_dtl_id }}').show('blind');
+            } else {
+                $('#{{ pts_dlg_sal_dtl_id }}').hide('blind');
+            }
+        }); #}
+
+        // Init Add New Product button
+        $( "#{{ pts_dlg_lk_id }}" ).on('click', function(event){
+            event.preventDefault();
+            $( "#{{ pts_dlg_div_id }}" ).dialog( "open" );
+        });
+
+        // Init Dialog Box -> New Product form submit action
+        $('#{{ product_form.vars.attr.id }}').submit(function(event) {
+            event.preventDefault();
+            
+            {% if product_id is not null %} 
+                    var product_id = '{{ product_id }}';
+            {% else %}
+                var product_id = null;
+            {% endif %}
+                    
+            postNewForm( product_id, $(this), function( response ) {
+                if (response.success) {
+                    location.reload();
+                }
+                $( "#{{ pts_dlg_div_id }}" ).dialog( "close" );
+            });
+
+            return false;
+        });
+
+        // Post Form and get result
+        function postNewForm( product_id, $form, callback ){
+            /*
+             * Get all form values
+             */
+            var values = {};
+            $.each( $form.serializeArray(), function(i, field) {
+                var id = $('input[name="' + field.name + '"]').attr("id");
+                values[field.name] = field.value;
+            });
+            
+            values['id'] = product_id;
+            
+            
+            /*
+             * Throw the form values to the server!
+             */
+            $.ajax({
+                type        : $form.attr( 'method' ),
+                url         : $form.attr( 'action' ),
+                data        : values,
+                success     : function(response) {
+                    callback( jQuery.parseJSON(response) );
+                }
+            });
+        }
+    });
+</script>
+
+{#  New Product Popup #}
+<div id="{{ pts_dlg_div_id }}" title="{{ pts_dlg_title }}" style="display:none">  
+    {{ form_start(product_form) }}
+        {{ form_errors(product_form) }}
+        <input type="hidden" id="product_id" value="{% if product_id is not null %} {{ product_id }} {% endif %}" />
+        
+        <table>
+            <tr>
+                <td style="padding-top: 10px;">{{ 'inventory.itemcode'|trans }} {{ form_widget(product_form.itemcode) }} {{ form_errors(product_form.itemcode) }}</td>
+                <td style="padding-top: 10px;">{{ 'inventory.itemname'|trans }} {{ form_widget(product_form.itemname) }} {{ form_errors(product_form.itemname) }}</td>
+            </tr>
+            <tr>
+                <td style="padding-top: 10px;">{{ 'inventory.othername'|trans }} {{ form_widget(product_form.othername) }}</td>
+                <td style="padding-top: 10px;">{{ 'inventory.use_othername'|trans }} {{ form_widget(product_form.useOthername) }}</td>
+            </tr>
+            <tr>
+                <td style="padding-top: 10px;">{{ 'inventory.default_discount'|trans }} {{ form_widget(product_form.defaultDiscount) }}</td>
+                <td style="padding-top: 10px;">{{ 'inventory.non_fuel_item'|trans }} {{ form_widget(product_form.nonfuelitem) }}</td>
+            </tr>
+        </table>
+        {{ form_widget( product_form.submit ) }}
+        {{ form_rest(product_form) }}
+    {{ form_end(product_form) }}
+</div>

@@ -5,13 +5,13 @@ namespace Morus\FasBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * UnitParts
+ * UnitProduct
  *
- * @ORM\Table(name="accetic_unit_parts")
+ * @ORM\Table(name="accetic_unit_product")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class UnitParts {
+class UnitProduct {
     /**
      * @var integer
      *
@@ -64,16 +64,16 @@ class UnitParts {
     protected $inactiveDate;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Unit", inversedBy="unitParts", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Unit", inversedBy="unitProduct", cascade={"persist"})
      * @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
      **/
     protected $unit;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Parts", inversedBy="unitParts", cascade={"persist"})
-     * @ORM\JoinColumn(name="parts_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="unitProduct", cascade={"persist"})
+     * @ORM\JoinColumn(name="product_id", referencedColumnName="id")
      **/
-    protected $parts;
+    protected $product;
     
     /**
      * Constructor
@@ -98,7 +98,7 @@ class UnitParts {
      * Set discount
      *
      * @param float $discount
-     * @return UnitParts
+     * @return UnitProduct
      */
     public function setDiscount($discount)
     {
@@ -121,7 +121,7 @@ class UnitParts {
      * Set sortOrder
      *
      * @param integer $sortOrder
-     * @return UnitParts
+     * @return UnitProduct
      */
     public function setSortOrder($sortOrder)
     {
@@ -144,7 +144,7 @@ class UnitParts {
      * Set active
      *
      * @param boolean $active
-     * @return UnitParts
+     * @return UnitProduct
      */
     public function setActive($active)
     {
@@ -167,7 +167,7 @@ class UnitParts {
      * Set createDate
      *
      * @param \DateTime $createDate
-     * @return UnitParts
+     * @return UnitProduct
      */
     public function setCreateDate($createDate)
     {
@@ -190,7 +190,7 @@ class UnitParts {
      * Set lastModifiedDate
      *
      * @param \DateTime $lastModifiedDate
-     * @return UnitParts
+     * @return UnitProduct
      */
     public function setLastModifiedDate($lastModifiedDate)
     {
@@ -213,7 +213,7 @@ class UnitParts {
      * Set inactiveDate
      *
      * @param \DateTime $inactiveDate
-     * @return UnitParts
+     * @return UnitProduct
      */
     public function setInactiveDate($inactiveDate)
     {
@@ -236,7 +236,7 @@ class UnitParts {
      * Set unit
      *
      * @param \Morus\FasBundle\Entity\Unit $unit
-     * @return UnitParts
+     * @return UnitProduct
      */
     public function setUnit(\Morus\FasBundle\Entity\Unit $unit = null)
     {
@@ -256,25 +256,25 @@ class UnitParts {
     }
     
     /**
-     * Set parts
+     * Set product
      *
-     * @param \Morus\FasBundle\Entity\Parts $parts
-     * @return UnitParts
+     * @param \Morus\FasBundle\Entity\Product $product
+     * @return UnitProduct
      */
-    public function setParts(\Morus\FasBundle\Entity\Parts $parts = null)
+    public function setProduct(\Morus\FasBundle\Entity\Product $product = null)
     {
-        $this->parts = $parts;
+        $this->product = $product;
 
         return $this;
     }
 
     /**
-     * Get parts
+     * Get product
      *
-     * @return \Morus\FasBundle\Entity\Parts 
+     * @return \Morus\FasBundle\Entity\Product 
      */
-    public function getParts()
+    public function getProduct()
     {
-        return $this->parts;
+        return $this->product;
     }
 }

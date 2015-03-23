@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Morus\FasBundle\Entity\Export;
 use Morus\FasBundle\Entity\Statement;
-use Morus\FasBundle\Entity\Parts;
+use Morus\FasBundle\Entity\Product;
 use Ddeboer\DataImport\Reader\CsvReader;
 use Ddeboer\DataImport\Reader\ExcelReader;
 use Ddeboer\DataImport\Workflow;
@@ -76,25 +76,25 @@ class StatementController extends Controller
         try {
             
             $index = $request->get('index');
-            $data = $request->get('fas_parts');
+            $data = $request->get('fas_product');
 
-            $parts = new Parts();
-            $parts->setItemcode($data['itemcode']);
-            $parts->setItemname($data['itemname']);
+            $product = new Product();
+            $product->setItemcode($data['itemcode']);
+            $product->setItemname($data['itemname']);
             
-            $parts->setOthername($data['othername']);
+            $product->setOthername($data['othername']);
             
             if (array_key_exists('useOthername',$data)) {
-                $parts->setUseOthername($data['useOthername']);
+                $product->setUseOthername($data['useOthername']);
             } else {
-                $parts->setUseOthername(false);
+                $product->setUseOthername(false);
             }
             
-            $parts->setUnit('L');
-            $parts->setDefaultDiscount($data['defaultDiscount']);
+            $product->setUnit('L');
+            $product->setDefaultDiscount($data['defaultDiscount']);
             
             $em = $this->getDoctrine()->getManager();
-            $em->persist($parts);
+            $em->persist($product);
             $em->flush();
             
             $response = array("success" => true);
@@ -177,9 +177,9 @@ class StatementController extends Controller
                 }
             }
 
-            if( array_key_exists('unitParts', $aUnit )) {
-                $aUnitParts = $aUnit['unitParts'];
-            } else { $aUnitParts = null; }
+            if( array_key_exists('unitProduct', $aUnit )) {
+                $aUnitProduct = $aUnit['unitProduct'];
+            } else { $aUnitProduct = null; }
             if( array_key_exists('vehicles', $aUnit )) {
                 $aVehicles = $aUnit['vehicles'];
             } else { $aVehicles = null; }
@@ -264,47 +264,47 @@ class StatementController extends Controller
                 }
             }
             
-            if ($aUnitParts && count($aUnitParts) > 0 && count($unit->getUnitParts()) > 0) {
-                // search for delete unit parts
-                foreach($unit->getUnitParts() as $unitParts){
+            if ($aUnitProduct && count($aUnitProduct) > 0 && count($unit->getUnitProduct()) > 0) {
+                // search for delete unit product
+                foreach($unit->getUnitProduct() as $unitProduct){
                     $found = false;
-                    foreach($aUnitParts as $aup) {
-                        if ($unitParts->getParts()->getId() == $aup['parts']){
+                    foreach($aUnitProduct as $aup) {
+                        if ($unitProduct->getProduct()->getId() == $aup['product']){
                             $found = true;
                             break;
                         }
                     }
                     if (!$found) {
-                        $em->remove($unitParts);
+                        $em->remove($unitProduct);
                     }
                 }
 
-                // Search for new unit parts
-                foreach($aUnitParts as $aup) {
+                // Search for new unit product
+                foreach($aUnitProduct as $aup) {
                     $found = false;
-                    foreach($unit->getUnitParts() as $unitParts){
-                        if ($unitParts->getParts()->getId() == $aup['parts']){
+                    foreach($unit->getUnitProduct() as $unitProduct){
+                        if ($unitProduct->getProduct()->getId() == $aup['product']){
                             $found = true;
                             break;
                         }
                     }
                     if (!$found) {
-                        $newUnitParts = new \Morus\FasBundle\Entity\UnitParts();
-                        $parts = $em->getRepository('MorusFasBundle:Parts')->find($aup['parts']);
-                        $newUnitParts->setDiscount($aup['discount']);
-                        $newUnitParts->setParts($parts);
-                        $unit->addUnitParts($newUnitParts);
-                        $newUnitParts->setUnit($unit);
+                        $newUnitProduct = new \Morus\FasBundle\Entity\UnitProduct();
+                        $product = $em->getRepository('MorusFasBundle:Product')->find($aup['product']);
+                        $newUnitProduct->setDiscount($aup['discount']);
+                        $newUnitProduct->setProduct($product);
+                        $unit->addUnitProduct($newUnitProduct);
+                        $newUnitProduct->setUnit($unit);
                     }
                 }
-            } elseif ($aUnitParts) {
-                foreach($aUnitParts as $aup){
-                    $newUnitParts = new \Morus\FasBundle\Entity\UnitParts();
-                    $parts = $em->getRepository('MorusFasBundle:Parts')->find($aup['parts']);
-                    $newUnitParts->setDiscount($aup['discount']);
-                    $newUnitParts->setParts($parts);
-                    $unit->addUnitParts($newUnitParts);
-                    $newUnitParts->setUnit($unit);
+            } elseif ($aUnitProduct) {
+                foreach($aUnitProduct as $aup){
+                    $newUnitProduct = new \Morus\FasBundle\Entity\UnitProduct();
+                    $product = $em->getRepository('MorusFasBundle:Product')->find($aup['product']);
+                    $newUnitProduct->setDiscount($aup['discount']);
+                    $newUnitProduct->setProduct($product);
+                    $unit->addUnitProduct($newUnitProduct);
+                    $newUnitProduct->setUnit($unit);
                 }
             }
             
@@ -426,24 +426,24 @@ class StatementController extends Controller
     }
     
     /**
-     * Lists parts entities.
+     * Lists product entities.
      *
      */
-    public function partsListAction(Request $request)
+    public function productListAction(Request $request)
     {
-        $itemnames = $request->get('parts');
+        $itemnames = $request->get('product');
         $qb = $this->getDoctrine()
                 ->getManager()
-                ->getRepository('MorusFasBundle:Parts')
+                ->getRepository('MorusFasBundle:Product')
                 ->createQueryBuilder('p');
             
         $query = $qb
                 ->where($qb->expr()->in('p.itemname', $itemnames));
         
-        $parts = $query->getQuery()->getResult();
+        $product = $query->getQuery()->getResult();
         
         return $this->render('MorusFasBundle:Statement:export.product.list.html.twig', array(
-            'parts' => $parts,
+            'product' => $product,
         ));
     }
     
@@ -531,23 +531,23 @@ class StatementController extends Controller
             }
 
             // ----------------------------------------------------
-            // New Parts Form
+            // New Product Form
             // ----------------------------------------------------
-            $parts = new Parts();
-            $parts_form = $this->createForm('fas_parts', $parts, array(
-                'attr' => array('id' => 'accetic_parts_list'),
+            $product = new Product();
+            $product_form = $this->createForm('fas_product', $product, array(
+                'attr' => array('id' => 'accetic_product_list'),
                 'action' => $this->generateUrl('morus_fas_statement_export_create_product_ajax'),
                 'method' => 'POST',
             ));
             
-            $parts_form->add('submit', 'submit', array(
+            $product_form->add('submit', 'submit', array(
                     'label' => $this->get('translator')->trans('btn.save'),
                     'attr' => array('style' => 'display:none')
                 ));
             
             return $this->render('MorusFasBundle:Statement:export.html.twig', array(
                 'export_form' => $export_form->createView(),
-                'parts_form' => $parts_form->createView(),
+                'product_form' => $product_form->createView(),
                 'flow' => $flow,
             ));
         } else {

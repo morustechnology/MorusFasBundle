@@ -1,0 +1,23 @@
+morus_fas_inventory:
+    path:     /
+    defaults: { _controller: "MorusFasBundle:Inventory:index" }
+
+morus_fas_inventory_show:
+    path:     /{id}/show
+    defaults: { _controller: "MorusFasBundle:Inventory:show" }
+    
+morus_fas_inventory_new_ajax:
+    path:     /newAjax
+    defaults: { _controller: "MorusFasBundle:Inventory:newAjax" }
+
+morus_fas_inventory_edit_ajax:
+    path:     /editAjax
+    defaults: { _controller: "MorusFasBundle:Inventory:editAjax" }
+
+morus_fas_inventory_delete_ajax:
+    path:     /deleteAjax
+    defaults: { _controller: "MorusFasBundle:Inventory:deleteAjax" }
+
+morus_fas_inventory_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "MorusFasBundle:Inventory:delete" }

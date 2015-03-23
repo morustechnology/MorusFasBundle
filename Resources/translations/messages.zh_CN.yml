@@ -7,6 +7,7 @@ inventory:
     itemcode: 货品编号
     itemname: 货品名称
     default_discount: 默认折扣
+    non_fuel_item: 非燃料项目
     
 menu:
     home: 主页

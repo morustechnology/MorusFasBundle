@@ -14,9 +14,9 @@ morus_fas_statement_export_unit_vehicle_list:
     path:     /unit_vehicle_list
     defaults: { _controller: "MorusFasBundle:Statement:unitVehicleList" }
  
-morus_fas_statement_export_parts_list:
-    path:     /parts_list
-    defaults: { _controller: "MorusFasBundle:Statement:partsList" }
+morus_fas_statement_export_product_list:
+    path:     /product_list
+    defaults: { _controller: "MorusFasBundle:Statement:productList" }
     
 morus_fas_statement_export_create_product_ajax:
     path:     /product/new

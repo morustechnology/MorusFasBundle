@@ -25,9 +25,9 @@ class Unit extends BaseUnit
     protected $vehicles;
     
     /**
-     * @ORM\OneToMany(targetEntity="UnitParts", mappedBy="unit", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="UnitProduct", mappedBy="unit", cascade={"persist"})
      **/
-    protected $unitParts;
+    protected $unitProducts;
     
     /**
      * Add statement
@@ -73,7 +73,7 @@ class Unit extends BaseUnit
     public function addVehicle(\Morus\FasBundle\Entity\Vehicle $vehicle)
     {
         $this->vehicles[] = $vehicle;
-
+        $vehicle->setUnit($this);
         return $this;
     }
 
@@ -85,6 +85,7 @@ class Unit extends BaseUnit
     public function removeVehicle(\Morus\FasBundle\Entity\Vehicle $vehicle)
     {
         $this->vehicles->removeElement($vehicle);
+        $vehicle->setUnit(null);
     }
 
     /**
@@ -98,35 +99,36 @@ class Unit extends BaseUnit
     }
 
     /**
-     * Add unitPart
+     * Add unitProduct
      *
-     * @param \Morus\FasBundle\Entity\UnitParts $unitPart
+     * @param \Morus\FasBundle\Entity\UnitProduct $unitProduct
      * @return Unit
      */
-    public function addUnitPart(\Morus\FasBundle\Entity\UnitParts $unitPart)
+    public function addUnitProduct(\Morus\FasBundle\Entity\UnitProduct $unitProduct)
     {
-        $this->unitPart[] = $unitPart;
-
+        $this->unitProducts[] = $unitProduct;
+        $unitProduct->setUnit($this);
         return $this;
     }
 
     /**
-     * Remove unitParts
+     * Remove unitProduct
      *
-     * @param \Morus\FasBundle\Entity\UnitParts $unitParts
+     * @param \Morus\FasBundle\Entity\UnitProduct $unitProduct
      */
-    public function removeUnitPart(\Morus\FasBundle\Entity\UnitParts $unitPart)
+    public function removeUnitProduct(\Morus\FasBundle\Entity\UnitProduct $unitProduct)
     {
-        $this->unitParts->removeElement($unitPart);
+        $this->unitProducts->removeElement($unitProduct);
+        $unitProduct->setUnit(null);
     }
 
     /**
-     * Get unitParts
+     * Get unitProduct
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getUnitParts()
+    public function getUnitProducts()
     {
-        return $this->unitParts;
+        return $this->unitProducts;
     }
 }

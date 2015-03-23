@@ -1,0 +1,149 @@
+{% extends '::base.html.twig' %}
+
+{% set pts_del_lk_id = 'acc_pts_del_lk' %}
+{% set pts_dlg_lk_id = 'acc_pts_dlg_lk' %}
+{% set pts_dlg_title = 'inventory.new_inventory_item'|trans %}
+
+{% block stylesheets %}
+    {% stylesheets '@MorusAcceticBundle/Resources/public/css/jquery-ui.min.css' filter='cssrewrite' %}
+        <link type="text/css" rel="stylesheet" media="screen" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts 
+        '@MorusAcceticBundle/Resources/public/js/jquery-1.9.1.min.js'
+        '@MorusAcceticBundle/Resources/public/js/jquery-ui.min.js'
+        '@MorusAcceticBundle/Resources/public/js/jquery.inputmask.js'
+        '@MorusAcceticBundle/Resources/public/js/jquery.inputmask.numeric.extensions.js'
+    %}
+        <script type="text/ecmascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
+    <script type='text/javascript'>
+        jQuery(document).ready(function() {
+            // Product List Script
+            // =====================================================================
+            
+            // Check All input box action
+            $('#check_all').change(function() {
+                if (this.checked) {
+                    $("input[id^='accetic_product_list_id']").prop('checked', true);
+                } else {
+                    $("input[id^='accetic_product_list_id']").prop('checked', false);
+                }
+            });
+            
+            // Replace Form Submit button
+            $('#{{ pts_del_lk_id }}').on('click', function(event){
+                event.preventDefault();
+                $('#{{ product_list_form.vars.attr.id }}').find(':submit').click(); 
+            });
+        
+            // Delete Action
+            $('#{{ product_list_form.vars.attr.id }}').submit(function(event) {
+                event.preventDefault();
+                postDeleteForm( $(this), function( response ) {
+                    if (response.success) {
+                        location.reload();
+                    }
+                });
+                
+                return false;
+            });
+            
+            // Post Form and get result
+            function postDeleteForm( $form, callback ){
+                /*
+                 * Get all form values
+                 */
+                var values = {};
+                $("input[name^=fas_product_list]", $form).each( function(index) {
+                    if ( this.checked ) {
+                        values[this.id] = this.value;
+                    }
+                });
+        
+                /*
+                 * Throw the form values to the server!
+                 */
+                $.ajax({
+                    type        : $form.attr( 'method' ),
+                    url         : $form.attr( 'action' ),
+                    data        : values,
+                    success     : function(response) {
+                        callback( jQuery.parseJSON(response) );
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock javascripts %}
+
+{% block body_title -%}
+    {{ 'inventory.inventory_items'|trans }}
+{% endblock %}
+
+{% block body -%}
+    <ul class="page-control">
+        <li>
+            <a id="{{ pts_dlg_lk_id }}" class="loading-btn" />
+            {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+            <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:0 -50px;" ></em>
+            {% endimage %}
+            {{ 'btn.add_new_item'|trans }}
+            </a>
+        </li>
+        <li>
+            <a id="{{ pts_del_lk_id }}" class="loading-btn" />
+            {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+            <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-220px -50px;" ></em>
+            {% endimage %}
+            {{ 'btn.delete'|trans }}
+            </a>
+        </li>
+    </ul>
+            
+            
+    <br/><br/>
+    <div id="accetic_inventory_list">
+        {{ form_start(product_list_form) }}
+            {{ form_errors(product_list_form) }}
+            
+            {{ form_widget(product_list_form.delete_product) }}
+            <table class="fas-records-list">
+                <tr>
+                {# sorting of properties based on query components #}
+                    <th><input id="check_all" type="checkbox"/></th>
+                    <th>{{ 'inventory.itemcode'|trans }}</th>
+                    <th>{{ 'inventory.itemname'|trans }}</th>
+                    <th>{{ 'inventory.default_discount'|trans }}</th>
+                    <th>{{ 'inventory.non_fuel_item'|trans }}</th>
+
+                </tr>
+
+                {# table body #}
+                {% for p in product %}
+                <tr>
+                    <td>{{ form_widget(product_list_form.id[p.id], { 'attr' : { 'name' : p.id  }}) }}</td>
+                    <td><a href="{{ path('morus_fas_inventory_show', { 'id': p.id }) }}">{{ p.itemcode }}</a></td>
+                    <td>{{ p.itemname }}</td>
+                    <td class="right">{{ p.defaultDiscount|number_format(2, '.', ',') }}</td>
+                    <td class="right">{% if p.nonfuelitem %}yes{% endif %}</td>
+
+                </tr>
+                {% endfor %}
+            </table>
+            {{ form_rest(product_list_form) }}
+        {{ form_end(product_list_form) }}
+    </div>
+    
+    {# New Product Dialog #}
+    {{ include('MorusFasBundle:Inventory:product.dialog.html.twig', {  
+        'pts_dlg_title' : pts_dlg_title,
+        'pts_dlg_lk_id' : pts_dlg_lk_id,
+        'product_id' : null,
+        'product_form' : product_new_form
+    }) }}
+    
+{% endblock %}

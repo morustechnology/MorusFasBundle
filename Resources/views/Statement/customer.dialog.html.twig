@@ -1,4 +1,4 @@
-{% set unit_parts_ul = 'fas_unit_parts_ul' %}
+{% set unit_product_ul = 'fas_unit_product_ul' %}
 {% set vehicle_ul = 'fas_vehicle_ul' %}
 
 {% form_theme form 'MorusFasBundle:Contacts:layout.html.twig' %}
@@ -13,9 +13,9 @@
 {% endjavascripts %}
     
 <script type='text/javascript'>
-    var $unitPartsCollectionHolder;
-    var $addUnitPartsLink = $('<a href="#" class="add_link green-btn">{{ 'btn.add_new_product_discount'|trans }}</a>');
-    var $newUnitPartsLinkLi = $('<li></li>').append($addUnitPartsLink);
+    var $unitProductCollectionHolder;
+    var $addUnitProductLink = $('<a href="#" class="add_link green-btn">{{ 'btn.add_new_product_discount'|trans }}</a>');
+    var $newUnitProductLinkLi = $('<li></li>').append($addUnitProductLink);
     
     jQuery(document).ready(function() {
        $('#copy_postal').on('click', function(event){
@@ -29,65 +29,65 @@
            
        }); 
     });
-    // Add Parts Discount Functions
+    // Add Product Discount Functions
     jQuery(document).ready(function() {
         
         // Get the ul that holds the collection of tags
-        $unitPartsCollectionHolder = $('ul[id={{ unit_parts_ul }}]');
+        $unitProductCollectionHolder = $('ul[id={{ unit_product_ul }}]');
         
         // add the "add a tag" anchor and li to the tags ul
-        $unitPartsCollectionHolder.after($addUnitPartsLink);
+        $unitProductCollectionHolder.after($addUnitProductLink);
 
         // count the current form inputs we have (e.g. 2), use that as the new
         // index when inserting a new item (e.g. 2)
-        $unitPartsCollectionHolder.data('index', $unitPartsCollectionHolder.find(':input').length);
+        $unitProductCollectionHolder.data('index', $unitProductCollectionHolder.find(':input').length);
 
-        $addUnitPartsLink.on('click', function(e) {
+        $addUnitProductLink.on('click', function(e) {
             // prevent the link from creating a "#" on the URL
             e.preventDefault();
             
             // add a new tag form (see next code block)
-            addUnitPartsForm($unitPartsCollectionHolder, $newUnitPartsLinkLi);
+            addUnitProductForm($unitProductCollectionHolder, $newUnitProductLinkLi);
         });
         
         // add a delete link to all of the existing tag form li elements
-        $unitPartsCollectionHolder.find('li').each(function() {
-            addUnitPartsFormDeleteLink($(this));
+        $unitProductCollectionHolder.find('li').each(function() {
+            addUnitProductFormDeleteLink($(this));
         });
     });
     
-    function addUnitPartsForm($unitPartsCollectionHolder, $newUnitPartsLinkLi) {
+    function addUnitProductForm($unitProductCollectionHolder, $newUnitProductLinkLi) {
         // Get the data-prototype explained earlier
-        var prototype = $unitPartsCollectionHolder.data('prototype');
+        var prototype = $unitProductCollectionHolder.data('prototype');
 
         // get the new index
-        var index = $unitPartsCollectionHolder.data('index');
+        var index = $unitProductCollectionHolder.data('index');
 
         // Replace '__name__' in the prototype's HTML to
         // instead be a number based on how many items we have
         var newForm = prototype.replace(/__name__/g, index);
 
         // increase the index with one for the next item
-        $unitPartsCollectionHolder.data('index', index + 1);
+        $unitProductCollectionHolder.data('index', index + 1);
 
         // Display the form in the page in an li, before the "Add a tag" link li
         var $newFormLi = $('<li></li>').append(newForm);
         
-        addUnitPartsFormDeleteLink($newFormLi);
+        addUnitProductFormDeleteLink($newFormLi);
         
-        $unitPartsCollectionHolder.append($newFormLi);
+        $unitProductCollectionHolder.append($newFormLi);
     }
     
-    function addUnitPartsFormDeleteLink($unitPartsFormLi) {
+    function addUnitProductFormDeleteLink($unitProductFormLi) {
         var $removeFormA = $('<a href="#" class="delete-link">X</a>');
-        $unitPartsFormLi.append($removeFormA);
+        $unitProductFormLi.append($removeFormA);
 
         $removeFormA.on('click', function(e) {
             // prevent the link from creating a "#" on the URL
             e.preventDefault();
 
             // remove the li for the tag form
-            $unitPartsFormLi.remove();
+            $unitProductFormLi.remove();
         });
     }
     
@@ -97,7 +97,7 @@
     var $addVehicleLink = $('<a href="#" class="add_link green-btn">{{ 'btn.add_new_vehicle'|trans }}</a>');
     var $newVehicleLinkLi = $('<li></li>').append($addVehicleLink);
     
-    // Add Parts Discount Functions
+    // Add Product Discount Functions
     jQuery(document).ready(function() {
         
         // Get the ul that holds the collection of tags
@@ -220,9 +220,9 @@
                 <h4>{{ 'contact.product_discount'|trans }}</h4>
                 
                 <div class="fas-discount-list-prototype">
-                    <ul id="{{ unit_parts_ul }}" data-prototype="{{ form_widget(form.unitParts.vars.prototype)|e }}">
-                        {% for up in form.unitParts %}
-                            <li><label>{{ 'contact.product'|trans }}</label>{{ form_widget(up.parts) }} {{ 'contact.discount'|trans }}{{ form_widget(up.discount) }}</li>
+                    <ul id="{{ unit_product_ul }}" data-prototype="{{ form_widget(form.unitProduct.vars.prototype)|e }}">
+                        {% for up in form.unitProduct %}
+                            <li><label>{{ 'contact.product'|trans }}</label>{{ form_widget(up.product) }} {{ 'contact.discount'|trans }}{{ form_widget(up.discount) }}</li>
                         {% endfor %}
                     </ul>
                 </div>

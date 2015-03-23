@@ -97,10 +97,10 @@
     {% endspaceless %}
 {% endblock fas_vehicle_widget %}
 
-{% block fas_unit_parts_widget %}
+{% block fas_unit_product_widget %}
     {% spaceless %}
-        <label>{{ 'contact.product'|trans }}</label> {{ form_widget(form.parts) }} {{ 'contact.discount'|trans }} {{ form_widget(form.discount) }}
+        <label>{{ 'contact.product'|trans }}</label> {{ form_widget(form.product) }} {{ 'contact.discount'|trans }} {{ form_widget(form.discount) }}
     {% endspaceless %}
-{% endblock fas_unit_parts_widget %}
+{% endblock fas_unit_product_widget %}
 
 

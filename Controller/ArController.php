@@ -189,7 +189,7 @@ class ArController extends Controller
             
             $aem = $this->get('morus_accetic.entity_manager');
             
-            $qb = $aem->getPartsRepository()
+            $qb = $aem->getProductRepository()
                 ->createQueryBuilder('p');
             
             $query = $qb
@@ -197,14 +197,14 @@ class ArController extends Controller
                     ->setParameter('id', $id);
 
             
-            $parts = $query->getQuery()->getSingleResult();
+            $product = $query->getQuery()->getSingleResult();
             
-            $useOthername = $parts->getUseOthername();
+            $useOthername = $product->getUseOthername();
             
             if ( $useOthername == true) {
-                $description = $parts->getItemname();
+                $description = $product->getItemname();
             } else {
-                $description = $parts->getOthername();
+                $description = $product->getOthername();
             }
             
             $response = array(

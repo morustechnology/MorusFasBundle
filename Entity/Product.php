@@ -3,16 +3,16 @@
 namespace Morus\FasBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Morus\AcceticBundle\Entity\Parts as BaseParts;
+use Morus\AcceticBundle\Entity\Product as BaseProduct;
 
 /**
- * Parts
+ * Product
  *
- * @ORM\Table(name="accetic_parts", uniqueConstraints={@ORM\UniqueConstraint(name="parts_itemcode_index_u", columns={"itemcode"})})
+ * @ORM\Table(name="accetic_product", uniqueConstraints={@ORM\UniqueConstraint(name="product_itemcode_index_u", columns={"itemcode"})})
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class Parts extends BaseParts
+class Product extends BaseProduct
 {   
     /**
      * @var string
@@ -36,9 +36,16 @@ class Parts extends BaseParts
     protected $defaultDiscount;
     
     /**
-     * @ORM\OneToMany(targetEntity="UnitParts", mappedBy="parts", cascade={"persist"})
+     * @var boolean
+     *
+     * @ORM\Column(name="non_fuel_item", type="boolean", nullable=true)
+     */
+    protected $nonfuelitem;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="UnitProduct", mappedBy="product", cascade={"persist"})
      **/
-    protected $unitParts;
+    protected $unitProducts;
     
     /**
      * Constructor
@@ -46,6 +53,7 @@ class Parts extends BaseParts
      */
     public function __construct() {
         parent::__construct();
+        $this->nonfuelitem = false;
         $this->useOthername = false;
     }
     
@@ -53,7 +61,7 @@ class Parts extends BaseParts
      * Set othername
      *
      * @param string $othername
-     * @return Parts
+     * @return Product
      */
     public function setOthername($othername)
     {
@@ -76,7 +84,7 @@ class Parts extends BaseParts
      * Set useOthername
      *
      * @param boolean $useOthername
-     * @return Parts
+     * @return Product
      */
     public function setUseOthername($useOthername)
     {
@@ -99,7 +107,7 @@ class Parts extends BaseParts
      * Set defaultDiscount
      *
      * @param float $defaultDiscount
-     * @return Parts
+     * @return Product
      */
     public function setDefaultDiscount($defaultDiscount)
     {
@@ -119,35 +127,58 @@ class Parts extends BaseParts
     }
     
     /**
-     * Add unitParts
+     * Set nonfuelitem
      *
-     * @param \Morus\FasBundle\Entity\UnitParts $unitParts
-     * @return Parts
+     * @param boolean $nonfuelitem
+     * @return Product
      */
-    public function addUnitParts(\Morus\FasBundle\Entity\UnitParts $unitParts)
+    public function setNonfuelitem($nonfuelitem)
     {
-        $this->unitParts[] = $unitParts;
+        $this->nonfuelitem = $nonfuelitem;
 
         return $this;
     }
 
     /**
-     * Remove unitParts
+     * Get nonfuelitem
      *
-     * @param \Morus\FasBundle\Entity\UnitParts $unitParts
+     * @return boolean 
      */
-    public function removeUnitParts(\Morus\FasBundle\Entity\UnitParts $unitParts)
+    public function getNonfuelitem()
     {
-        $this->unitParts->removeElement($unitParts);
+        return $this->nonfuelitem;
+    }
+    
+    /**
+     * Add unitProduct
+     *
+     * @param \Morus\FasBundle\Entity\UnitProduct $unitProduct
+     * @return Product
+     */
+    public function addUnitProduct(\Morus\FasBundle\Entity\UnitProduct $unitProduct)
+    {
+        $this->unitProducts[] = $unitProduct;
+
+        return $this;
     }
 
     /**
-     * Get unitParts
+     * Remove unitProduct
+     *
+     * @param \Morus\FasBundle\Entity\UnitProduct $unitProduct
+     */
+    public function removeUnitProduct(\Morus\FasBundle\Entity\UnitProduct $unitProduct)
+    {
+        $this->unitProducts->removeElement($unitProduct);
+    }
+
+    /**
+     * Get unitProducts
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getUnitParts()
+    public function getUnitProducts()
     {
-        return $this->unitParts;
+        return $this->unitProducts;
     }
 }

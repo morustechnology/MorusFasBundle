@@ -16,6 +16,8 @@ class ExportFlow extends FormFlow {
     
     protected $revalidatePreviousSteps = false;
     
+    public $pl;
+    
     public $nextInvoiceNumber;
     public $ars = array(); // Ar for summary step
     
@@ -28,9 +30,13 @@ class ExportFlow extends FormFlow {
     public $newProdList = array();  // Store new products
     public $newVecList = array();   // Store new vechicles
     
+    private $entityManager, $container;
+    
     public function __construct(EntityManager $entityManager, Container $container) {
         $this->entityManager = $entityManager;
         $this->container = $container;
+        
+        //$this->exportprocess = $this->container->get('morus_fas.form.flow.invoice.export.process');
     }
     
     protected function loadStepsConfig() {
@@ -126,7 +132,7 @@ class ExportFlow extends FormFlow {
         // Search DB for matching product
         foreach( $prodList as $key => $value) {
             $p = $this->entityManager
-                ->getRepository('MorusFasBundle:Parts')
+                ->getRepository('MorusFasBundle:Product')
                 ->findOneByItemname($value);
 
             $p ? null : $this->newProdList[$key] = $value;
@@ -207,6 +213,8 @@ class ExportFlow extends FormFlow {
         }
         
         foreach( $stmts as $stmt) {
+            // Supplier ID
+            $supplierid = $stmt->getUnit()->getId();
             // Open file to read each row
             $file = new SplFileObject($stmt->getWebPath());
             $mineType = mime_content_type($file->getFileInfo()->getPathname());
@@ -227,6 +235,7 @@ class ExportFlow extends FormFlow {
                 
                 // 1. Process Statment, create Invoice for each row.
                 $invoice = new \Morus\FasBundle\Entity\Invoice();
+                $invoice->setSuppliergroupid($supplierid);
                 $invoice->setCardNumber($row[$stmt->getCardNumberHeader()]);
                 $invoice->setSite($row[$stmt->getSiteHeader()]);
                 $invoice->setReceiptNumber($row[$stmt->getReceiptNumberHeader()]);
@@ -290,59 +299,62 @@ class ExportFlow extends FormFlow {
                 }
                 
                 // 2. Search Units with the same vehicle number / also check for discount
-                $this->getUnitPartsDiscount($sunit, $invoice, $productName, $ignore);
+                $this->getUnitProductDiscount($sunit, $invoice, $productName, $ignore);
                 
 
             }
         } // End process statement
+        
+        $exportpl = $this->container->get('morus_fas.form.flow.invoice.export.pl');
+        $this->pl = $exportpl->getPL($this->ars);
     }
     
     /**
      * 
-     * @param type $unitParts
+     * @param type $unitProduct
      * @param type $invoice
      * 
      * Search for customer product discount, use product default discount if not found
      */
-    private function getUnitPartsDiscount($unit, $invoice, $productName, $ignore) {
+    private function getUnitProductDiscount($unit, $invoice, $productName, $ignore) {
         // Get Product which appear in statements
         $pqb = $this->entityManager
-                ->getRepository('MorusFasBundle:Parts')
+                ->getRepository('MorusFasBundle:Product')
                 ->createQueryBuilder('p');
         $pQuery = $pqb
                 ->where($pqb->expr()->in('p.itemname', $this->stmtProd));
         
-        $parts = $pQuery->getQuery()->getResult(); 
+        $product = $pQuery->getQuery()->getResult(); 
         
-        foreach ($parts as $p ) {
+        foreach ($product as $p ) {
             if ($p->getItemname() == $productName) {
-                $invoice->setParts($p);
+                $invoice->setProduct($p);
                 
                 if($p->getUseOthername()) {
-                    $partsName = $p->getOthername();
+                    $productName = $p->getOthername();
                 } else {
-                    $partsName = $p->getItemName();
+                    $productName = $p->getItemName();
                 }
                     
-                $invoice->setDescription($partsName);
+                $invoice->setDescription($productName);
                 
                 if (!$ignore) {
                     // Get All unit who has vehicle appear in statements
                     $qb = $this->entityManager
-                            ->getRepository('MorusFasBundle:UnitParts')
+                            ->getRepository('MorusFasBundle:UnitProduct')
                             ->createQueryBuilder('up');
                     $query = $qb
-                            ->join('up.parts', 'p', 'WITH', 'p = :parts')
+                            ->join('up.product', 'p', 'WITH', 'p = :product')
                             ->join('up.unit', 'u', 'WITH', 'u = :unit')
-                            ->setParameter('parts', $p)
+                            ->setParameter('product', $p)
                             ->setParameter('unit', $unit);
 
-                    $unitParts = $query->getQuery()->getResult();
+                    $unitProduct = $query->getQuery()->getResult();
 
 
-                    if ($unitParts) {
+                    if ($unitProduct) {
 
-                        $discount = $unitParts[0]->getDiscount();
+                        $discount = $unitProduct[0]->getDiscount();
                         $invoice->setSelldiscount($discount);
                         $invoice->setcustomerdiscount(true);
                     } else {

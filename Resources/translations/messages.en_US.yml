@@ -7,6 +7,7 @@ inventory:
     itemcode: Item Code
     itemname: Item Name
     default_discount: Default Discount
+    non_fuel_item: Non Fuel Item
         
 menu:
     home: Home
