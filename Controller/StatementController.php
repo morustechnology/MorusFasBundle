@@ -508,10 +508,19 @@ class StatementController extends Controller
                             $em->persist($config);
                         }
                 
-                        // Add generated ar to export
                         
+                        // Add generated ar to export
                         foreach($flow->ars as $ar){
                             $export->addAr($ar);
+                        }
+                        
+                        // Update statement status
+                        $complete = $em->getRepository('MorusFasBundle:StatementStatus')
+                                ->findOneByControlCode('COMPLETE');
+                        
+                        foreach($export->getStatments() as $stmt) {
+                            $stmt->setStatementStatus($complete);
+                            $em->persist($stmt);                            
                         }
                         
                         $em->persist($export);
