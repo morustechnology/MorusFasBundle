@@ -20,6 +20,7 @@ menu:
     settings_inventory: Inventory
     
 statement:
+    data_sample: Data Sample
     upload_new_statement: Upload New Statement
     separate_date_time_column: Separate Date Time Column
     date_time: Date＆Time
@@ -115,7 +116,6 @@ export_step:
     total_products_discovered: Total Proudcts Discovered
     total_vehicles_discovered: Total Vehicles Discovered
     total_records_discovered: Total Records Discovered
-    
     msg:
         total_records_processed: Total of %records Row Processed
     

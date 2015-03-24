@@ -104,16 +104,16 @@ class ExportFlow extends FormFlow {
                 $this->stmtRowCnt = $this->stmtRowCnt + 1;
                 
                 // Find Unique Product Name in statement
-                $pName = $row[$stmt->getProductNameHeader()];
+                $pName = trim($row[$stmt->getProductNameHeader()]);
                 if (!in_array($pName, $this->stmtProd)) {
-                    $pCode = strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $pName)));
+                    $pCode = strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', trim($pName))));
                     $this->stmtProd[$pCode] = $pName;
                 }
 
                 // Find Unique License number in statement
-                $vNum = $row[$stmt->getLicenceNumberHeader()];
+                $vNum = trim($row[$stmt->getLicenceNumberHeader()]);
                 if (!in_array($vNum, $this->stmtVec)) {
-                    $vCode = strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $vNum)));
+                    $vCode = strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', trim($vNum))));
                     $this->stmtVec[$vCode] = $vNum;
                 }
             }
@@ -228,23 +228,23 @@ class ExportFlow extends FormFlow {
             $reader->setHeaderRowNumber(0);
             
             foreach ($reader as $rowNum => $row) {
-                $site = $row[$stmt->getSiteHeader()];
-                $registrationNumber = $row[$stmt->getLicenceNumberHeader()];
-                $productName = $row[$stmt->getProductNameHeader()]; 
+                $site = trim($row[$stmt->getSiteHeader()]);
+                $registrationNumber = trim($row[$stmt->getLicenceNumberHeader()]);
+                $productName = trim($row[$stmt->getProductNameHeader()]); 
                 
                 
                 // 1. Process Statment, create Invoice for each row.
                 $invoice = new \Morus\FasBundle\Entity\Invoice();
                 $invoice->setSuppliergroupid($supplierid);
-                $invoice->setCardNumber($row[$stmt->getCardNumberHeader()]);
-                $invoice->setSite($row[$stmt->getSiteHeader()]);
-                $invoice->setReceiptNumber($row[$stmt->getReceiptNumberHeader()]);
-                $invoice->setQty($row[$stmt->getVolumeHeader()]);
+                $invoice->setCardNumber(trim($row[$stmt->getCardNumberHeader()]));
+                $invoice->setSite(trim($row[$stmt->getSiteHeader()]));
+                $invoice->setReceiptNumber(trim($row[$stmt->getReceiptNumberHeader()]));
+                $invoice->setQty(trim($row[$stmt->getVolumeHeader()]));
                 
-                $invoice->setNetamount(str_replace(',', '', $row[$stmt->getNetAmountHeader()]));
-                $invoice->setLicence($row[$stmt->getLicenceNumberHeader()]);
-                $unitPrice = $row[$stmt->getUnitPriceHeader()];
-                $unitDiscount = abs($row[$stmt->getUnitDiscountHeader()]);
+                $invoice->setNetamount(str_replace(',', '', trim($row[$stmt->getNetAmountHeader()])));
+                $invoice->setLicence(trim(trim($row[$stmt->getLicenceNumberHeader()])));
+                $unitPrice = trim($row[$stmt->getUnitPriceHeader()]);
+                $unitDiscount = abs(trim($row[$stmt->getUnitDiscountHeader()]));
                 $sellPx = $unitPrice + $unitDiscount; // Calculate sell price
                 $invoice->setUnitprice($unitPrice);
                 $invoice->setUnitDiscount($unitDiscount);
@@ -253,18 +253,18 @@ class ExportFlow extends FormFlow {
                 
                 if ($stmt->getSplitDateTime() == true) { // Set transaction date time
                     // Convert Date Fomat
-                    $date = $row[$stmt->getTransactionDateHeader()];
+                    $date = trim($row[$stmt->getTransactionDateHeader()]);
                     $dateFormat = $stmt->getDateFormat();
                     $transDate = \DateTime::createFromFormat($dateFormat, $date);
                     $invoice->setTransDate($transDate);
                     
-                    $time = $row[$stmt->getTransactionTimeHeader()];
+                    $time = trim($row[$stmt->getTransactionTimeHeader()]);
                     $timeFormat = $stmt->getTimeFormat();
                     $transTime = \DateTime::createFromFormat($timeFormat, $time);
                     $invoice->setTransTime($transTime);
                 } else {
                     $datetimeFormat = $stmt->getDatetimeFormat();
-                    $dateTime = $row[$stmt->getTransactionDatetimeHeader()];
+                    $dateTime = trim($row[$stmt->getTransactionDatetimeHeader()]);
                     $transDatetime = \DateTime::createFromFormat($datetimeFormat, $dateTime);
                     $invoice->setTransDate($transDatetime->format('Y-m-d'));
                     $invoice->setTransTime($transDatetime->format('H:i:s'));
@@ -274,8 +274,6 @@ class ExportFlow extends FormFlow {
                 $ignore = false;
                 foreach( $ignoreKeywords as $keywords) {
                     if (strpos($site, $keywords) !== false) {
-                        $invoice->setSelldiscount(0);
-                        $invoice->setcustomerdiscount(false);
                         $ignore = true;
                         break;
                     }
@@ -292,7 +290,7 @@ class ExportFlow extends FormFlow {
                 $sunit = $query->getQuery()->getSingleResult();
                 
                 foreach ($this->ars as $ar) {
-                    if ($ar->getUnit() == $sunit) {
+                    if ($ar->getUnit()->getId() == $sunit->getId()) {
                         $ar->getTransaction()->addInvoice($invoice);
                         $invoice->setTransaction($ar->getTransaction());
                     }
@@ -324,19 +322,23 @@ class ExportFlow extends FormFlow {
         $pQuery = $pqb
                 ->where($pqb->expr()->in('p.itemname', $this->stmtProd));
         
-        $product = $pQuery->getQuery()->getResult(); 
+        $products = $pQuery->getQuery()->getResult(); 
         
-        foreach ($product as $p ) {
-            if ($p->getItemname() == $productName) {
+        if(!$products) {
+            $asdf = 1;
+        }
+        
+        foreach ($products as $p ) {
+            if (strtoupper($p->getItemname()) == strtoupper($productName)) {
                 $invoice->setProduct($p);
                 
                 if($p->getUseOthername()) {
-                    $productName = $p->getOthername();
+                    $invoice->setDescription($p->getOthername());
                 } else {
-                    $productName = $p->getItemName();
+                    $invoice->setDescription($p->getItemName());
                 }
                     
-                $invoice->setDescription($productName);
+                
                 
                 if (!$ignore) {
                     // Get All unit who has vehicle appear in statements
@@ -363,6 +365,9 @@ class ExportFlow extends FormFlow {
                         $invoice->setcustomerdiscount(false);
 
                     }
+                } else { 
+                    $invoice->setSelldiscount(0);
+                    $invoice->setcustomerdiscount(false);
                 }
             }
         }

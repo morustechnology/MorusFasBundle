@@ -20,6 +20,7 @@ menu:
     settings_inventory: 庫存貨品
     
 statement:
+    data_sample: 數據樣本
     upload_new_statement: 上載新月結單
     separate_date_time_column: 日期/時間分行
     date_time: 日期及時間
@@ -114,7 +115,6 @@ export_step:
     total_products_discovered: 總共發現產品數量
     total_vehicles_discovered: 總共發現車牌數量
     total_records_discovered: 總共發現行数
-    
     msg:
         total_records_processed: 總共分析了%records行
 

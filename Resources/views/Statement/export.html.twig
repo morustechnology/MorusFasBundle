@@ -227,7 +227,8 @@
                 var jsonLic = JSON.stringify(licAry);
                 
                 $custDlg.empty();
-                $custDlg.load('{{ path('morus_fas_statement_customer_dialog')}}', 
+                
+                $custDlg.load('{{ path('morus_fas_contacts_dialog')}}', 
                             { ACTION: comboboxValue, LICENCES: jsonLic }, function(data){}) 
                         .data('ACTION', comboboxValue)  // Pass selected licences to dialog
                         .dialog('open');
@@ -376,7 +377,6 @@
                     <p>
                         {{ 'export_step.total_products_discovered'|trans }}: {{ flow.stmtProd|length }}<br/>
                         {{ 'export_step.total_vehicles_discovered'|trans }}: {{ flow.stmtVec|length }}<br/>
-                        {{ 'export_step.total_records_discovered'|trans }}: {{ flow.stmtRowCnt|length }}<br/>
                         {{ 'export_step.msg.total_records_processed'|trans({ '%records' : flow.stmtRowCnt }) }}
                     </p>
 

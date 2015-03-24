@@ -154,6 +154,48 @@
                 {% elseif flow.getCurrentStepNumber() == 3 %}
                     {# Display Error #}
                     <div class="fas-steplist-result">
+                        <h3>{{ 'statement.data_sample'|trans }}</h3>
+                        <table class="fas-error-table">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'statement.headers.card_number'|trans }}</th>
+                                    <th>{{ 'statement.headers.licence_number'|trans }}</th>
+                                    <th>{{ 'statement.headers.site'|trans }}</th>
+                                    <th>{{ 'statement.headers.receipt_number'|trans }}</th>
+                                    {% if flow.isSplitDateTime %}
+                                        <th>{{ 'statement.headers.transaction_date'|trans }}</th>
+                                        <th>{{ 'statement.headers.transaction_time'|trans }}</th>
+                                    {% else %}
+                                        <th>{{ 'statement.headers.transaction_datetime'|trans }}</th>
+                                    {% endif %}
+                                    <th>{{ 'statement.headers.product_name'|trans }}</th>
+                                    <th>{{ 'statement.headers.unit_discount'|trans }}</th>
+                                    <th>{{ 'statement.headers.volume'|trans }}</th>
+                                    <th>{{ 'statement.headers.unit_price'|trans }}</th>
+                                    <th>{{ 'statement.headers.net_amount'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ flow.sample['CardNumber'] }}</td>
+                                    <td>{{ flow.sample['LicenceNumber'] }}</td>
+                                    <td>{{ flow.sample['Site'] }}</td>
+                                    <td>{{ flow.sample['ReceiptNumber'] }}</td>
+                                    {% if flow.isSplitDateTime %}
+                                        <td>{{ flow.sample['TransactionDate'] }}</td>
+                                        <td>{{ flow.sample['TransactionTime'] }}</td>
+                                    {% else %}
+                                        <td>{{ flow.sample['TransactionDatetime'] }}</td>
+                                    {% endif %}
+                                    <td>{{ flow.sample['ProductName'] }}</td>
+                                    <td>{{ flow.sample['UnitDiscount'] }}</td>
+                                    <td>{{ flow.sample['Volume'] }}</td>
+                                    <td>{{ flow.sample['UnitPrice'] }}</td>
+                                    <td>{{ flow.sample['NetAmount'] }}</td>
+                                </tr>
+                            </tbody>
+                        <table/>
+                        
                     {% if not flow.hasError %} 
                         <br/>
                         <h3 style="margin-top: 50px;">{{ 'statement.msg.statement_valid'|trans }}</h3>

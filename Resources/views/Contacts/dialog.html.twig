@@ -11,12 +11,12 @@
 %}
     <script type="text/ecmascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
-
+    
 <script type='text/javascript'>
     var $unitProductCollectionHolder;
     var $addUnitProductLink = $('<a href="#" class="add_link green-btn">{{ 'btn.add_new_product_discount'|trans }}</a>');
     var $newUnitProductLinkLi = $('<li></li>').append($addUnitProductLink);
-
+    
     jQuery(document).ready(function() {
        $('#copy_postal').on('click', function(event){
            event.preventDefault();
@@ -26,15 +26,15 @@
            $('#fas_unit_locations_1_state').val($('#fas_unit_locations_0_state').val());
            $('#fas_unit_locations_1_zipCode').val($('#fas_unit_locations_0_zipCode').val());
            $('#fas_unit_locations_1_country').val($('#fas_unit_locations_0_country').val());
-
+           
        }); 
     });
     // Add Product Discount Functions
     jQuery(document).ready(function() {
-
+        
         // Get the ul that holds the collection of tags
         $unitProductCollectionHolder = $('ul[id={{ unit_product_ul }}]');
-
+        
         // add the "add a tag" anchor and li to the tags ul
         $unitProductCollectionHolder.after($addUnitProductLink);
 
@@ -45,17 +45,17 @@
         $addUnitProductLink.on('click', function(e) {
             // prevent the link from creating a "#" on the URL
             e.preventDefault();
-
+            
             // add a new tag form (see next code block)
             addUnitProductForm($unitProductCollectionHolder, $newUnitProductLinkLi);
         });
-
+        
         // add a delete link to all of the existing tag form li elements
         $unitProductCollectionHolder.find('li').each(function() {
             addUnitProductFormDeleteLink($(this));
         });
     });
-
+    
     function addUnitProductForm($unitProductCollectionHolder, $newUnitProductLinkLi) {
         // Get the data-prototype explained earlier
         var prototype = $unitProductCollectionHolder.data('prototype');
@@ -72,12 +72,12 @@
 
         // Display the form in the page in an li, before the "Add a tag" link li
         var $newFormLi = $('<li></li>').append(newForm);
-
+        
         addUnitProductFormDeleteLink($newFormLi);
-
+        
         $unitProductCollectionHolder.append($newFormLi);
     }
-
+    
     function addUnitProductFormDeleteLink($unitProductFormLi) {
         var $removeFormA = $('<a href="#" class="delete-link">X</a>');
         $unitProductFormLi.append($removeFormA);
@@ -90,19 +90,19 @@
             $unitProductFormLi.remove();
         });
     }
-
-
-
+    
+    
+    
     var $vehicleCollectionHolder;
     var $addVehicleLink = $('<a href="#" class="add_link green-btn">{{ 'btn.add_new_vehicle'|trans }}</a>');
     var $newVehicleLinkLi = $('<li></li>').append($addVehicleLink);
-
+    
     // Add Product Discount Functions
     jQuery(document).ready(function() {
-
+        
         // Get the ul that holds the collection of tags
         $vehicleCollectionHolder = $('ul[id={{ vehicle_ul }}]');
-
+        
         // add the "add a tag" anchor and li to the tags ul
         $vehicleCollectionHolder.after($addVehicleLink);
 
@@ -117,13 +117,13 @@
             // add a new tag form (see next code block)
             addVehicleForm($vehicleCollectionHolder, $newVehicleLinkLi);
         });
-
+        
         // add a delete link to all of the existing tag form li elements
         $vehicleCollectionHolder.find('li').each(function() {
             addVehicleFormDeleteLink($(this));
         });
     });
-
+    
     function addVehicleForm($vehicleCollectionHolder, $newVehicleLinkLi) {
         // Get the data-prototype explained earlier
         var prototype = $vehicleCollectionHolder.data('prototype');
@@ -140,13 +140,13 @@
 
         // Display the form in the page in an li, before the "Add a tag" link li
         var $newFormLi = $('<li></li>').append(newForm);
-
+        
         addVehicleFormDeleteLink($newFormLi);
         $vehicleCollectionHolder.append($newFormLi);
     }
-
+    
     function addVehicleFormDeleteLink($vehicleFormLi) {
-
+        
         var $removeFormA = $('<a href="#" class="delete-link">X</a>');
         $vehicleFormLi.append($removeFormA);
 
@@ -159,100 +159,87 @@
         });
     }
 </script>
-    
-<div id="container-box" class="contact-new">
 
-    <div class="section-header">
-        <h3>{{ 'contact.contact_information'|trans }}</h3>
-    </div>
-
+<div id="container-box" class="popup">
     <div class="section-form inset form">
-
         {{ form_start(form) }}
-            <h4 class="first">{{ 'contact.add_contact'|trans }}</h4>
-            <fieldset>
-                <div class="field long">
-                    <label>{{ 'contact.display_name'|trans }}</label>
-                    {{ form_errors(form) }}
-                    {{ form_widget(form.name) }} {{ form_errors(form.name) }}
-                </div>
-            </fieldset>
-            <fieldset>
-                <div class="field inline">
-                    <label>{{ 'contact.customer_number'|trans }}</label>
-                    {{ form_widget(form.accountNumber) }} {{ form_errors(form.accountNumber) }}
-                </div>
-            </fieldset>
+            {{ form_errors(form) }}
+                {# Division to hold licence numbers #}
+                <h4 class="first">{{ 'contact.add_contact'|trans }}</h4>
+                <fieldset>
+                    <div class="field inline">
+                        <label>{{ 'contact.display_name'|trans }}</label>
+                        {{ form_widget(form.name) }} {{ form_errors(form.name) }}
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div class="field inline">
+                        <label>{{ 'contact.customer_number'|trans }}</label>
+                        {{ form_widget(form.accountNumber) }} {{ form_errors(form.accountNumber) }}
+                    </div>
+                </fieldset>
 
-            <div id="entity_persons" >
-                {% for person in form.persons %}
-                    {% if loop.index == 1 %}
-                        <h4>{{ 'contact.primary_person'|trans }}</h4>
-                    {% endif %}
-                    <div id="entity_person_contacts" >
-                        <fieldset>
-                            {{ form_widget(person) }}
-                            {% for contact in person.contacts %}
-                                <div class="field inline long">{{ form_widget(contact) }}</div>
+                <div id="entity_persons" data-prototype-persons="">
+                    {% for person in form.persons %}
+                        {% if loop.index == 1 %}
+                        {% endif %}
+                        <div id="entity_person_contacts" data-prototype-contacts="">
+                            <fieldset>
+                                {{ form_widget(person) }}
+                                {% for contact in person.contacts %}
+                                    <div class="field inline long">{{ form_widget(contact) }}</div>
+                                {% endfor %}
+                            </fieldset>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <h4>{{ 'contact.contact_details'|trans }}</h4>
+                
+                <div class="column">
+                    {% for location in form.locations %}
+                        {{ form_widget(location) }}
+                    {% endfor %}
+                    <div class="col-1-3 last">
+                        <fieldset id="numbers">
+                            <h6>{{ 'contact.others'|trans }}</h6>
+                            {% for contact in form.contacts %}
+                                <div class="field">{{ form_widget(contact) }}</div>
                             {% endfor %}
                         </fieldset>
                     </div>
-                {% endfor %}
-            </div>
 
-            {# <a href="#" class="btn-add" data-target="entity_persons" contact-data-target="entity_person_contacts" >{{ 'contact.add_another_person'|trans }}</a> #}
-
-            <h4>{{ 'contact.contact_details'|trans }}</h4>
-
-            <div class="column">
-
-                {% for location in form.locations %}
-                    {{ form_widget(location) }}
-                {% endfor %}
-
-                <div class="col-1-3 last">
-                    <fieldset id="numbers">
-                        <h6>{{ 'contact.others'|trans }}</h6>
-                        {% for contact in form.contacts %}
-                            <div class="field">{{ form_widget(contact) }}</div>
+                </div>
+                        
+                <div style="clear:both;"></div>
+                <h4>{{ 'contact.vehicle_list'|trans }}</h4>
+                
+                <div class="fas-vechicle-list-prototype">
+                    <ul id="{{ vehicle_ul }}" data-prototype="{{ form_widget(form.vehicles.vars.prototype)|e }}">
+                        {% for vehicle in form.vehicles %}
+                        <li><label>{{ 'contact.registration_number'|trans }}</label>{{ form_widget(vehicle.registrationNumber) }}</li>
                         {% endfor %}
-                    </fieldset>
+                    </ul>
                 </div>
 
-            </div>
-
-            <div style="clear:both;"></div>
-            <h4>{{ 'contact.vehicle_list'|trans }}</h4>
-
-            <div class="fas-vechicle-list-prototype">
-                <ul id="{{ vehicle_ul }}" data-prototype="{{ form_widget(form.vehicles.vars.prototype)|e }}">
-                    {% for vehicle in form.vehicles %}
-                    <li><label>{{ 'contact.registration_number'|trans }}</label>{{ form_widget(vehicle.registrationNumber) }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <div style="clear:both;"></div>    
-            <h4>{{ 'contact.product_discount'|trans }}</h4>
-
-            <div class="fas-discount-list-prototype">
-                <ul id="{{ unit_product_ul }}" data-prototype="{{ form_widget(form.unitProducts.vars.prototype)|e }}">
-                    {% for up in form.unitProducts %}
-                        <li><label>{{ 'contact.product'|trans }}</label>{{ form_widget(up.product) }} {{ 'contact.discount'|trans }}{{ form_widget(up.discount) }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            
-
-            <div style="clear:both;"></div>    
-            
-            <div>
-                {{ form_widget(form.submit) }} {{ form_widget(form.cancel) }}
-            </div>
-
-            {{ form_rest(form) }}
+                <div style="clear:both;"></div>    
+                <h4>{{ 'contact.product_discount'|trans }}</h4>
+                
+                <div class="fas-discount-list-prototype">
+                    <ul id="{{ unit_product_ul }}" data-prototype="{{ form_widget(form.unitProducts.vars.prototype)|e }}">
+                        {% for up in form.unitProducts %}
+                            <li><label>{{ 'contact.product'|trans }}</label>{{ form_widget(up.product) }} {{ 'contact.discount'|trans }}{{ form_widget(up.discount) }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                    
+                <div>
+                    {{ form_widget(form.submit) }}
+                </div>
+                
+                <div style="clear:both;"></div>    
+                
+                {{ form_rest(form) }}
         {{ form_end(form) }}
-
     </div>
 </div>

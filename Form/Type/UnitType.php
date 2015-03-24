@@ -16,6 +16,9 @@ class UnitType extends AbstractType
     {
         $builder
             ->add('name' , 'text')
+            ->add('accountNumber' , 'text', array(
+                'required' => false,
+            ))
             ->add('persons', 'collection', array(
                 'type' => 'accetic_person',
                 'allow_add'    => true,

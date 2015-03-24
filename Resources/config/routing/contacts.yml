@@ -32,3 +32,11 @@ morus_fas_contacts_delete:
     path:     /{id}/delete
     defaults: { _controller: "MorusFasBundle:Contacts:delete" }
     requirements: { _method: post|delete }
+
+morus_fas_contacts_dialog_update:
+    path:     /Dialog/Post
+    defaults: { _controller: "MorusFasBundle:Contacts:dialogUpdate" }
+
+morus_fas_contacts_dialog:
+    path:     /Dialog
+    defaults: { _controller: "MorusFasBundle:Contacts:dialog" }

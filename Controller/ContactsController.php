@@ -5,6 +5,7 @@ namespace Morus\FasBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Contact controller.
@@ -31,17 +32,6 @@ class ContactsController extends Controller
         
         $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
         $unitRepos = $aem->getUnitRepository();
-        
-//        $qb = $unitRepos->createQueryBuilder('u')
-//                ->select('u.id, u.name')
-//                ->addSelect('p.firstName, p.lastName')
-//                ->addSelect('c.description')
-//                ->addSelect('v.registrationNumber')
-//                ->leftJoin('u.vehicles', 'v')
-//                ->join('u.persons', 'p', 'WITH', 'p.isPrimary = 1')
-//                ->join('p.contacts', 'c')
-//                ->where('u.active = 1')
-//                ->orderBy('u.name', 'ASC');
         
                 $qb = $unitRepos->createQueryBuilder('u')
                     ->addSelect('v')
@@ -311,11 +301,11 @@ class ContactsController extends Controller
             'delete_form' => $deleteForm->createView(),
         ));
     }
+    
     /**
      * Deletes a Entity unit.
      *
      */
-    
     public function deleteAction(Request $request, $id)
     {
         $form = $this->genDeleteForm($id);
@@ -350,5 +340,139 @@ class ContactsController extends Controller
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => $this->get('translator')->trans('btn.delete')))
             ->getForm();
+    }
+    
+    //*****************************************************************
+    // Contacts Dialog Section
+    //*****************************************************************
+    
+    /**
+     * Return customer update form to dialog
+     *
+     */
+    public function dialogAction(Request $request) {
+        $action = $request->get('ACTION');
+        $licenses = json_decode($request->get('LICENCES'), true);
+        
+        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+        
+        if ($action == 'NEW') {
+            
+            $unit = $aem->createUnit('customer');
+
+        } else { 
+            $em = $this->getDoctrine()->getManager();
+            $unit = $em->getRepository('MorusFasBundle:Unit')->find($action);
+            foreach( $unit->getVehicles() as $vehicle) {
+                if(($key = array_search($vehicle->getRegistrationNumber(), $licenses)) !== false) {
+                    unset($licenses[$key]);
+                }
+            }
+            
+            
+        }
+        
+        foreach ($licenses as $license) {
+            $vehicle = new \Morus\FasBundle\Entity\Vehicle();
+            $vehicle->setRegistrationNumber($license);
+            $unit->addVehicle($vehicle);
+            $vehicle->setUnit($unit);
+        }
+        
+        $form = $this->genDialogForm($unit);
+        
+        return $this->render('MorusFasBundle:Contacts:dialog.html.twig', array(
+            'unit' => $unit,
+            'form'   => $form->createView(),
+        ));
+    }
+    
+    public function dialogUpdateAction(Request $request) {
+        try {
+            $action = $request->get('ACTION');
+//            $licenses = json_decode($request->get('LICENCES'), true);
+
+            $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+
+            if ($action == 'NEW') {
+                $unit = $aem->createUnit('customer');
+            } else { 
+                $em = $this->getDoctrine()->getManager();
+                $unit = $em->getRepository('MorusFasBundle:Unit')->find($action);
+                
+                // Create an ArrayCollection of the current Tag objects in the database
+                $originalVehicles = new ArrayCollection();
+                foreach ($unit->getVehicles() as $vehicle) {
+                    $originalVehicles->add($vehicle);
+                }
+            }
+            
+            if (!$unit) {
+                throw $this->createNotFoundException('No customer infor found.');
+            }
+
+            // Edit Item Form
+            $form = $this->genDialogForm($unit);
+            
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                
+                $addList = array();
+                $deleteList = array();
+                if ($action == 'NEW') {
+                    // update addlist
+                    foreach ($unit->getVehicles() as $vehicle) {
+                        $vCode = strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $vehicle->getRegistrationNumber())));
+                        $addList[] = $vCode;
+                    }
+                } else { 
+                    // remove the vehicle from database and update deletelist
+                    foreach ($originalVehicles as $vehicle) {
+                        if (false === $unit->getVehicles()->contains($vehicle)) {
+                            $vCode = strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $vehicle->getRegistrationNumber())));
+                            $deleteList[] = $vCode;
+                            $em->remove($vehicle);
+                        }
+                    }
+
+                    // update addlist
+                    foreach ($unit->getVehicles() as $vehicle) {
+                        if (false === $originalVehicles->contains($vehicle)) {
+                            $vCode = strtoupper(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $vehicle->getRegistrationNumber())));
+                            $addList[] = $vCode;
+                        }
+                    }
+                }
+                $em->persist($unit);
+                $em->flush();
+                
+                $response = array("success" => true, 'updatedLicences' => $addList, 'deletedLicences' => $deleteList);
+            } else {
+                $response = array("success" => false);
+            }
+            
+            return new Response(json_encode($response));
+        } catch (Exception $ex) {
+            return new Response(json_encode(array(
+                "success" => false
+                )));
+        }
+    }
+    
+    private function genDialogForm($unit) {
+        $form = $this->createForm('fas_unit', $unit, array(
+                'attr' => array('id' => 'fas_customer_update_form'),
+                'action' => $this->generateUrl('morus_fas_contacts_dialog_update'),
+                'method' => 'POST',
+            ));
+        
+        $form->add('submit', 'submit', array(
+                'label' => $this->get('translator')->trans('btn.save'),
+                'attr' => array('style' => 'display:none')
+                ));
+        
+        return $form;
     }
 }

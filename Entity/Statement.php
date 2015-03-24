@@ -165,8 +165,8 @@ class Statement
 //        $this->name = 'Import ' . $datetimeStr;
         $this->name = $month.'月份 '.$year;
         $this->splitDateTime = false;
-        $this->datetimeFormat = 'd-m-Y H:i:s';
-        $this->dateFormat = 'd-m-Y';
+        $this->datetimeFormat = 'd/m/Y H:i:s';
+        $this->dateFormat = 'd/m/Y';
         $this->timeFormat = 'H:i:s';
         $this->createDate = new \DateTime("now");
         $this->active = true;

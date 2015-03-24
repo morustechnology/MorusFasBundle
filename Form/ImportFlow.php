@@ -23,6 +23,7 @@ class ImportFlow extends FormFlow {
     protected $container;
     protected $reader;
 
+    public $sample = array();
     public $isSplitDateTime = false;
     public $hasError = false;
     public $totalProcessedCount;
@@ -129,24 +130,44 @@ class ImportFlow extends FormFlow {
         $datetimeFormat = $statement->getDatetimeFormat();
         $dateFormat = $statement->getDateFormat();
         $timeFormat = $statement->getTimeFormat();
-        foreach ($this->reader as $rowNum => $row) {    
+        $this->sample = array();
+        foreach ($this->reader as $rowNum => $row) {   
+            // Get Sample
+            if ($rowNum = 1) {
+                $this->sample['CardNumber'] = trim($row[$statement->getCardNumberHeader()]);
+                $this->sample['LicenceNumber'] = trim($row[$statement->getLicenceNumberHeader()]);
+                $this->sample['Site'] = trim($row[$statement->getSiteHeader()]);
+                $this->sample['ReceiptNumber'] = trim($row[$statement->getReceiptNumberHeader()]);
+                if ($statement->getSplitDateTime()) {
+                    $this->sample['TransactionDate'] = trim($row[$statement->getTransactionDateHeader()]);
+                    $this->sample['TransactionTime'] = trim($row[$statement->getTransactionTimeHeader()]);
+                } else { 
+                   $this->sample['TransactionDatetime'] = trim($row[$statement->getTransactionDatetimeHeader()]);
+                }
+                $this->sample['ProductName'] = trim($row[$statement->getProductNameHeader()]);
+                $this->sample['UnitDiscount'] = trim($row[$statement->getUnitDiscountHeader()]);
+                $this->sample['Volume'] = trim($row[$statement->getVolumeHeader()]);
+                $this->sample['UnitPrice'] = trim($row[$statement->getUnitPriceHeader()]);
+                $this->sample['NetAmount'] = trim($row[$statement->getNetAmountHeader()]);
+            }
+            
            $this->totalProcessedCount = $this->totalProcessedCount + 1;
            $nullCard = false; $nullLic = false; $nullSite = false; 
            
            // Validate Columns and write to logs
-           $nullCard = ($this->isNullOrEmpty($row[$statement->getCardNumberHeader()]) ? true : false );
-           $nullLic = ($this->isNullOrEmpty($row[$statement->getLicenceNumberHeader()]) ? true : false );
-           $nullSite = ($this->isNullOrEmpty($row[$statement->getSiteHeader()]) ? true : false );
-           $nullRpt = ($this->isNullOrEmpty($row[$statement->getReceiptNumberHeader()]) ? true : false );
+           $nullCard = ($this->isNullOrEmpty(trim($row[$statement->getCardNumberHeader()])) ? true : false );
+           $nullLic = ($this->isNullOrEmpty(trim($row[$statement->getLicenceNumberHeader()])) ? true : false );
+           $nullSite = ($this->isNullOrEmpty(trim($row[$statement->getSiteHeader()])) ? true : false );
+           $nullRpt = ($this->isNullOrEmpty(trim($row[$statement->getReceiptNumberHeader()])) ? true : false );
            
            if ($statement->getSplitDateTime()) {
-               $nullTranDate = ($this->isNullOrEmpty($row[$statement->getTransactionDateHeader()]) ? true : false );
-                $nullTranTime = ($this->isNullOrEmpty($row[$statement->getTransactionTimeHeader()]) ? true : false );
+               $nullTranDate = ($this->isNullOrEmpty(trim($row[$statement->getTransactionDateHeader()])) ? true : false );
+                $nullTranTime = ($this->isNullOrEmpty(trim($row[$statement->getTransactionTimeHeader()])) ? true : false );
                 $nullTranDateTime = false;
                 
                 // Check if datetime is valid
-                $date = $row[$statement->getTransactionDateHeader()];
-                $time = $row[$statement->getTransactionTimeHeader()];
+                $date = trim($row[$statement->getTransactionDateHeader()]);
+                $time = trim($row[$statement->getTransactionTimeHeader()]);
                 $transDate = \DateTime::createFromFormat($dateFormat, $date);
                 $transTime = \DateTime::createFromFormat($timeFormat, $time);
                 
@@ -157,21 +178,21 @@ class ImportFlow extends FormFlow {
                 $nullTranDate = false;
                 $nullTranTime = false;
                 
-                $nullTranDateTime = ($this->isNullOrEmpty($row[$statement->getTransactionDatetimeHeader()]) ? true : false );
+                $nullTranDateTime = ($this->isNullOrEmpty(trim($row[$statement->getTransactionDatetimeHeader()])) ? true : false );
                 
                 // Check if datetime is valid
-                $dateTime = $row[$statement->getTransactionDatetimeHeader()];
+                $dateTime = trim($row[$statement->getTransactionDatetimeHeader()]);
                 $transDatetime = \DateTime::createFromFormat($datetimeFormat, $dateTime);
                 
                 $invalidTranDate = false;
                 $invalidTranTime = false;
                 $invalidTranDateTime = (!$transDatetime ? true : false);
            }
-           $nullPdtName = ($this->isNullOrEmpty($row[$statement->getProductNameHeader()]) ? true : false );
-           $nullUnitDis = ($this->isNullOrEmpty($row[$statement->getUnitDiscountHeader()]) ? true : false );
-           $nullVolume = ($this->isNullOrEmpty($row[$statement->getVolumeHeader()]) ? true : false );
-           $nullPx = ($this->isNullOrEmpty($row[$statement->getUnitPriceHeader()]) ? true : false );
-           $nullAmt = ($this->isNullOrEmpty($row[$statement->getNetAmountHeader()]) ? true : false );
+           $nullPdtName = ($this->isNullOrEmpty(trim($row[$statement->getProductNameHeader()])) ? true : false );
+           $nullUnitDis = ($this->isNullOrEmpty(trim($row[$statement->getUnitDiscountHeader()])) ? true : false );
+           $nullVolume = ($this->isNullOrEmpty(trim($row[$statement->getVolumeHeader()])) ? true : false );
+           $nullPx = ($this->isNullOrEmpty(trim($row[$statement->getUnitPriceHeader()])) ? true : false );
+           $nullAmt = ($this->isNullOrEmpty(trim($row[$statement->getNetAmountHeader()])) ? true : false );
            
            if ($nullCard || $nullLic || $nullSite || $nullRpt || $nullTranDateTime || $nullTranDate || $nullTranTime
                         || $nullPdtName || $nullUnitDis || $nullVolume || $nullPx || $nullAmt || $invalidTranDateTime || $invalidTranDate || $invalidTranTime ) {
@@ -185,6 +206,9 @@ class ImportFlow extends FormFlow {
            
            asort($this->errorLogs);
         }
+        
+        
+        
     }
     
     private function isNullOrEmpty($value) {
