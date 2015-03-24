@@ -16,77 +16,6 @@ use PHPPdf\Core\FacadeBuilder;
  */
 class ArController extends Controller
 {
-    /**
-     * @Pdf(stylesheet="MorusFasBundle:Ar:invoice.stylesheet.twig")
-     */
-    public function printTestAction($id) {
-        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
-
-        // Get ar with invoices lines
-        $qb = $aem->getArRepository()
-                ->createQueryBuilder('ar');
-        
-        $query = $qb
-                ->select('ar')
-                ->join('ar.transaction', 't')
-                ->leftJoin('t.invoices', 'v')
-                ->where($qb->expr()->eq('ar.id', $id));
-        
-        $ar = $query->getQuery()->getSingleResult();
-        
-        // Get postal address
-        $postqb = $aem->getLocationRepository()
-                ->createQueryBuilder('l');
-        
-        $postquery = $postqb
-                ->join('l.unit', 'u')
-                ->join('l.locationClass', 'lc', 'WITH', 'lc.controlCode = :controlCode')
-                ->where('l.unit = :unit')
-                ->setParameter('controlCode', 'POSTAL')
-                ->setParameter('unit', $ar->getUnit());
-                
-        $postal = $postquery->getQuery()->getSingleResult();
-        
-        // Total qty total
-        $qty_subtotals = array();
-        $amount_subtotals = array();
-        $qty_total = 0;
-        $amount_total = 0;
-        foreach($ar->getTransaction()->getInvoices() as $invoice)
-        {
-            $vehicle_number = $invoice->getLicence();
-            
-            if (array_key_exists($vehicle_number, $qty_subtotals)) {
-                $qty = $qty_subtotals[$vehicle_number];
-                $qty = $qty + $invoice->getQty();
-                $qty_subtotals[$vehicle_number] = $qty;
-            } else {
-                $qty_subtotals[$vehicle_number] = $invoice->getQty();
-            }
-            
-            if (array_key_exists($vehicle_number, $amount_subtotals)) {
-                $amt = $amount_subtotals[$vehicle_number];
-                $amt = $amt + $invoice->getAmount();
-                $amount_subtotals[$vehicle_number] = $amt;
-            } else {
-                $amount_subtotals[$vehicle_number] = $invoice->getAmount();
-            }
-            
-            $qty_total = $qty_total + round($invoice->getQty(),2);
-            $amount_total = $amount_total + round($invoice->getAmount(), 2);
-        }
-        
-        $format = $this->get('request')->get('_format');
-        
-        return $this->render(sprintf('MorusFasBundle:Ar:invoice.%s.twig', $format), array(
-            'ar' => $ar,
-            'postal' => $postal,
-            'qty_subtotals' => $qty_subtotals,
-            'amount_subtotals' => $amount_subtotals,
-            'qty_total' => $qty_total,
-            'amount_total' => $amount_total
-        ));
-    }
     
     /**
      * @Pdf(stylesheet="MorusFasBundle:Ar:invoice.stylesheet.twig")
@@ -129,11 +58,18 @@ class ArController extends Controller
             $vehicle_number = $invoice->getLicence();
             
             if (array_key_exists($vehicle_number, $qty_subtotals)) {
-                $qty = $qty_subtotals[$vehicle_number];
-                $qty = $qty + $invoice->getQty();
-                $qty_subtotals[$vehicle_number] = $qty;
+                if ($invoice->getProduct()->getNonfuelitem() != true) {
+                    $qty = $qty_subtotals[$vehicle_number];
+                    $qty = $qty + $invoice->getQty();
+                    $qty_subtotals[$vehicle_number] = $qty;
+                } 
             } else {
-                $qty_subtotals[$vehicle_number] = $invoice->getQty();
+                if ($invoice->getProduct()->getNonfuelitem() != true) {
+                    $qty_subtotals[$vehicle_number] = $invoice->getQty();
+                } else {
+                    $qty_subtotals[$vehicle_number] = 0;
+                }
+                
             }
             
             if (array_key_exists($vehicle_number, $amount_subtotals)) {
@@ -144,7 +80,9 @@ class ArController extends Controller
                 $amount_subtotals[$vehicle_number] = $invoice->getAmount();
             }
             
-            $qty_total = $qty_total + round($invoice->getQty(),2);
+            if ($invoice->getProduct()->getNonfuelitem() != true) {
+                $qty_total = $qty_total + round($invoice->getQty(),2);
+            }
             $amount_total = $amount_total + round($invoice->getAmount(), 2);
         }
         

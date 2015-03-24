@@ -253,7 +253,7 @@ class StatementController extends Controller
                         $complete = $em->getRepository('MorusFasBundle:StatementStatus')
                                 ->findOneByControlCode('COMPLETE');
                         
-                        foreach($export->getStatments() as $stmt) {
+                        foreach($export->getStatements() as $stmt) {
                             $stmt->setStatementStatus($complete);
                             $em->persist($stmt);                            
                         }
