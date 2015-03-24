@@ -116,6 +116,7 @@ export_step:
     total_products_discovered: Total Proudcts Discovered
     total_vehicles_discovered: Total Vehicles Discovered
     total_records_discovered: Total Records Discovered
+    back_to_top: Back To Top
     msg:
         total_records_processed: Total of %records Row Processed
     

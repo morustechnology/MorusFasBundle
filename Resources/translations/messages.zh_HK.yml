@@ -115,6 +115,7 @@ export_step:
     total_products_discovered: 總共發現產品數量
     total_vehicles_discovered: 總共發現車牌數量
     total_records_discovered: 總共發現行数
+    back_to_top: 回頁頂
     msg:
         total_records_processed: 總共分析了%records行
 

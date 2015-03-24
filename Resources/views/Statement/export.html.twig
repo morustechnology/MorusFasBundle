@@ -449,6 +449,7 @@
                     
                 {% elseif flow.getCurrentStepNumber() == 4 %}  {# Summary Step #}
                     <div id="{{ fas_sam_tab }}">
+                        <a id="top"></a>
                         <ul>
                             <li><a href="#{{ tab_pl }}">{{ 'export_step.profit_and_loss'|trans }}</a></li>
                             <li><a href="#{{ tab_exp_dtl }}">{{ 'export_step.export_detail'|trans }}</a></li>
@@ -525,6 +526,9 @@
                                         </tr>
                                     </tfoot>
                                 </table>
+                                <br/><a href="#top">{{ 'export_step.back_to_top'|trans }}</a><br/>
+                                <hr/>
+                                <br/><br/>
                             {% endfor %}
                         </div>
                         
@@ -599,7 +603,7 @@
                                     </table>
                                     <br/>
                                 {% endfor %}
-                                <br/><br/>
+                                <br/><a href="#top">{{ 'export_step.back_to_top'|trans }}</a><br/>
                                 <hr/>
                                 <br/><br/>
                             {% endfor %}
