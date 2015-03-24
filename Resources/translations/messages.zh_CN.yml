@@ -92,6 +92,7 @@ btn:
     delete: 删除
     back: 返回
     go: 去
+    excel: Excel
 
 export_step:
     station_discount_ignore_keywords: 不包括折扣油站关键词

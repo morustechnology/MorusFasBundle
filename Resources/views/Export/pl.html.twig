@@ -20,6 +20,17 @@
 
 {% block body -%}
     <a id="top"></a>
+    
+    <ul class="page-control">
+        <li>
+            <a class="loading-btn" href="{{ path('morus_fas_export_excel', {'id': id}) }}" />
+            {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+            <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:0 -50px;" ></em>
+            {% endimage %}
+            {{ 'btn.excel'|trans }}
+            </a>
+        </li>
+    </ul>
     {% for supplier in pl %}
         <table class="fas-tab ar">
             <thead>

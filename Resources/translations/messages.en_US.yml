@@ -93,6 +93,7 @@ btn:
     delete: Delete
     back: Back
     go: Go
+    excel: Excel
 
 export_step:
     station_discount_ignore_keywords: Station Discount Ignore Keywords

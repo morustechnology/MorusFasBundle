@@ -4,7 +4,7 @@ namespace Morus\FasBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
+use Ddeboer\DataImport\Writer\ExcelWriter;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -35,6 +35,24 @@ class ExportController extends Controller
         
         return $this->render('MorusFasBundle:Export:pl.html.twig', array(
             'pl' => $pl,
+            'id' => $id,
         ));
+    }
+    
+    public function excelAction($id) {
+        
+        $file = new \SplFileObject('data.xls', 'w');
+        $writer = new ExcelWriter($file);
+
+        $writer
+            ->prepare()
+            ->writeItem(array('first', 'last'))
+            ->writeItem(array('first' => 'James', 'last' => 'Bond'))
+            ->finish();
+
+        return new Response($file, 200, array(
+            'content-type' => 'application/vnd.ms-excel', 
+            'Content-Disposition'   => 'attachment; filename=pl.xls')
+                );
     }
 }

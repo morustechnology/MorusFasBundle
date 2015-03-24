@@ -5,3 +5,7 @@ morus_fas_export:
 morus_fas_export_pl:
     path:     /{id}/pl
     defaults: { _controller: "MorusFasBundle:Export:pl" }
+    
+morus_fas_export_excel:
+    path:     /{id}/excel
+    defaults: { _controller: "MorusFasBundle:Export:excel" }
