@@ -1,0 +1,98 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+    {% javascripts 
+        '@MorusFasBundle/Resources/public/js/jquery-1.9.1.min.js'
+    %}
+        <script type="text/ecmascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
+    <script type='text/javascript'>
+        jQuery(document).ready(function() {
+            
+        });
+    </script>
+{% endblock javascripts %}
+
+{% block body_title -%}
+    {{ 'export.pl'|trans }}
+{% endblock %}
+
+{% block body -%}
+    <a id="top"></a>
+    {% for supplier in pl %}
+        <table class="fas-tab ar">
+            <thead>
+                <tr><th colspan="6">{{ supplier.name }}</th></tr>
+                <tr>
+                    <th>{{ 'pl.customer'|trans }}</th>
+                    <th>{{ 'pl.licence_number'|trans }}</th>
+                    <th>{{ 'pl.nett'|trans }}</th>
+                    <th>{{ 'pl.receivable'|trans }}</th>
+                    <th>{{ 'pl.pl'|trans }}</th>
+                    <th>{{ 'pl.percentage'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set customername = null %}
+                {% for customer in supplier.customers %}
+                    <tr>
+                        <td>{{ customer.name }}</td>
+                        {% for customerVehicle in customer.customerVehicles %}
+                            {% if customername != customer.name %}
+                                {% set customername = customer.name %}
+                            {% else %}
+                                <tr>
+                                    <td></td>
+                            {% endif %}
+                                <td>{{ customerVehicle.registrationNumber }}</td>
+                                <td>{{ customerVehicle.nett|number_format(2, '.', ',') }}</td>
+                                <td>{{ customerVehicle.receivable|number_format(2, '.', ',') }}</td>
+                                <td>
+                                    {% set pl = customerVehicle.receivable -  customerVehicle.nett %}
+                                    {{ pl|number_format(2, '.', ',') }}
+                                </td>
+                                <td>
+                                    {% set percentage = (pl / customerVehicle.nett) * 100 %}
+                                    {{ percentage|number_format(2, '.', ',') }}%
+                                </td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr id="space" > {# Customer Total #}
+                        <td style="background: #f3f3f3;"/><td style="background: #f3f3f3;"/>
+                        <td style="background: #f3f3f3;">{{ customer.nettTotal|number_format(2, '.', ',') }}</td>
+                        <td style="background: #f3f3f3;">{{ customer.receivableTotal|number_format(2, '.', ',') }}</td>
+                        <td style="background: #f3f3f3;">
+                            {% set plsubtotal = customer.receivableTotal - customer.nettTotal %}
+                            {{ plsubtotal|number_format(2, '.', ',') }}
+                        </td>
+                        <td style="background: #f3f3f3;">
+                            {% set persubtotal = ( plsubtotal / customer.nettTotal) * 100 %}
+                            {{ persubtotal|number_format(2, '.', ',') }}%
+                        </td>
+                    </tr> {# Space between every #}
+                    <tr id="space"><td style="height: 10px; background: #fff;"/><td/><td/><td/><td/><td/></tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>Total:</td>
+                    <td>{{ supplier.nettTotal|number_format(2, '.', ',') }}</td>
+                    <td>{{ supplier.receivableTotal|number_format(2, '.', ',') }}</td>
+                    <td>{% set pltotal = supplier.receivableTotal - supplier.nettTotal %}
+                        {{ pltotal|number_format(2, '.', ',') }}
+                    </td>
+                    <td>
+                        {% set totalper = ( pltotal / supplier.nettTotal) * 100 %}
+                        {{ totalper|number_format(2, '.', ',') }}%
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <br/><a href="#top">{{ 'export_step.back_to_top'|trans }}</a><br/>
+        <hr/>
+        <br/><br/>
+    {% endfor %}
+{% endblock %}

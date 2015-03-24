@@ -15,5 +15,9 @@ morus_fas_contacts:
     prefix:   /Fas/Contacts
     
 morus_fas_inventory:
-    resource: "@MorusFasBundle/Resources/config/routing/Inventory.yml"
+    resource: "@MorusFasBundle/Resources/config/routing/inventory.yml"
     prefix:   /Fas/Inventory
+    
+morus_fas_export:
+    resource: "@MorusFasBundle/Resources/config/routing/export.yml"
+    prefix:   /Fas/Export

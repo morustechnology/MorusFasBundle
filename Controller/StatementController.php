@@ -247,6 +247,7 @@ class StatementController extends Controller
                         // Add generated ar to export
                         foreach($flow->ars as $ar){
                             $export->addAr($ar);
+                            $em->persist($ar);
                         }
                         
                         // Update statement status

@@ -1,0 +1,7 @@
+morus_fas_export:
+    path:     /
+    defaults: { _controller: "MorusFasBundle:Export:index" }
+
+morus_fas_export_pl:
+    path:     /{id}/pl
+    defaults: { _controller: "MorusFasBundle:Export:pl" }

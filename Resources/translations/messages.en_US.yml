@@ -1,6 +1,11 @@
 sunnyday: 晴朗汽車有限公司
 sunnydayeng: Sunny Day Motors Ltd
 
+export:
+    export_list: Export List
+    datetime: Datetime
+    pl: Profile & Lost
+         
 inventory:
     use_othername: Use Print Name
     othername: Print Name
@@ -18,6 +23,7 @@ menu:
     contacts: Contacts
     settings: Settings
     settings_inventory: Inventory
+    export_history: Export History
     
 statement:
     data_sample: Data Sample

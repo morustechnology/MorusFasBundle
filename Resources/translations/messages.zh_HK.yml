@@ -1,6 +1,11 @@
 sunnyday: 晴朗汽車有限公司
 sunnydayeng: Sunny Day Motors Ltd
 
+export:
+    export_list: 滙出記錄
+    datetime: 滙出時間
+    pl: 損益表
+    
 inventory:
     use_othername: 使用列印名稱
     othername: 列印名稱
@@ -18,6 +23,7 @@ menu:
     contacts: 通訊錄
     settings: 設定
     settings_inventory: 庫存貨品
+    export_history: 滙出記錄
     
 statement:
     data_sample: 數據樣本

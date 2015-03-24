@@ -340,7 +340,7 @@ class Export
     public function addAr(\Morus\FasBundle\Entity\Ar $ar)
     {
         $this->ars[] = $ar;
-
+        $ar->setExport($this);
         return $this;
     }
 

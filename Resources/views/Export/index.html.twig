@@ -1,0 +1,40 @@
+{% extends '::base.html.twig' %}
+
+
+
+{% block javascripts %}
+    {% javascripts 
+        '@MorusFasBundle/Resources/public/js/jquery-1.9.1.min.js'
+    %}
+        <script type="text/ecmascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
+    <script type='text/javascript'>
+        jQuery(document).ready(function() {
+            
+        });
+    </script>
+{% endblock javascripts %}
+
+{% block body_title -%}
+    {{ 'export.export_list'|trans }}
+{% endblock %}
+
+{% block body -%}
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>{{ 'export.datetime'|trans }}</th>
+                <th></th>
+            </tr>
+        </thead>
+    {% for export in exports %}
+        <tr>
+            <td></td>
+            <td>{{ export.createDate|date('d/m/Y') }}</td>
+            <td><a href="{{ path('morus_fas_export_pl', {'id': export.id}) }}">{{ 'export.pl'|trans }}<a/></td>
+        <tr>
+    {% endfor %}
+    </table>
+{% endblock %}
