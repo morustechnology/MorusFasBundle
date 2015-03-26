@@ -5,6 +5,7 @@ export:
     export_list: 滙出記錄
     datetime: 滙出時間
     pl: 損益表
+    remark: 備註
     
 inventory:
     use_othername: 使用列印名稱
@@ -123,6 +124,7 @@ export_step:
     total_vehicles_discovered: 總共發現車牌數量
     total_records_discovered: 總共發現行数
     back_to_top: 回頁頂
+    remark: 備註
     msg:
         total_records_processed: 總共分析了%records行
 

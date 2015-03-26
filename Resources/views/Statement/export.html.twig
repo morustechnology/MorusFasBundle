@@ -363,14 +363,17 @@
                 {{ form_errors(export_form) }}        
 
                 {% if flow.getCurrentStepNumber() == 1 %} {# Analysis Statement #}
+                    <h4 class="fas-step-subtitle">{{ 'export_step.remark'|trans }}</h4>
+                    <fieldset>{{ form_widget(export_form.name) }} {{ form_errors(export_form.name) }}</fieldset>
+                    
                     <h4 class="first">{{ 'export_step.invoice_datetime'|trans }}</h4>
                     <fieldset>
-                        {{ 'export_step.invoice_date_from'|trans }} {{ form_widget(export_form.startdate) }}
-                        {{ 'export_step.invoice_date_to'|trans }} {{ form_widget(export_form.enddate) }}
+                        {{ 'export_step.invoice_date_from'|trans }} {{ form_widget(export_form.startdate) }} {{ form_errors(export_form.startdate) }}
+                        {{ 'export_step.invoice_date_to'|trans }} {{ form_widget(export_form.enddate) }} {{ form_errors(export_form.enddate) }}
                     </fieldset>
                     
                     <h4 class="fas-step-subtitle">{{ 'export_step.station_discount_ignore'|trans }}</h4>
-                    <fieldset>{{ 'export_step.station_keywords'|trans }}{{ form_widget(export_form.ignoreKeywords) }}</fieldset>
+                    <fieldset>{{ 'export_step.station_keywords'|trans }}{{ form_widget(export_form.ignoreKeywords) }} {{ form_errors(export_form.ignoreKeywords) }}</fieldset>
                     
                     
                     <h4 class="fas-step-subtitle">{{ 'export_step.analysis_summary'|trans }}</h4>

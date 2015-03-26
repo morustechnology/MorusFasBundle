@@ -9,6 +9,7 @@ class ExportStep1Type extends AbstractType {
     
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
+            ->add('name', 'text')
             ->add('ignoreKeywords' , 'text')
             ->add('startdate', 'date', array(
                 'input'  => 'datetime',

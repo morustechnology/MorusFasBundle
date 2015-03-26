@@ -24,15 +24,15 @@
     <table>
         <thead>
             <tr>
-                <th></th>
                 <th>{{ 'export.datetime'|trans }}</th>
+                <th>{{ 'export.remark'|trans }}</th>
                 <th></th>
             </tr>
         </thead>
     {% for export in exports %}
         <tr>
-            <td></td>
             <td>{{ export.createDate|date('d/m/Y') }}</td>
+            <td>{{ export.name }}</td>
             <td><a href="{{ path('morus_fas_export_pl', {'id': export.id}) }}">{{ 'export.pl'|trans }}<a/></td>
         <tr>
     {% endfor %}

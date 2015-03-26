@@ -5,6 +5,7 @@ export:
     export_list: Export List
     datetime: Datetime
     pl: Profile & Lost
+    remark: Remark
          
 inventory:
     use_othername: Use Print Name
@@ -124,6 +125,7 @@ export_step:
     total_vehicles_discovered: Total Vehicles Discovered
     total_records_discovered: Total Records Discovered
     back_to_top: Back To Top
+    remark: Remark
     msg:
         total_records_processed: Total of %records Row Processed
     

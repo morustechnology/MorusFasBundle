@@ -17,6 +17,8 @@ class PL {
         $this->container = $container;
     }
     
+    
+    
     public function getPL($ars) {
         $suppliers = array();
         foreach($ars as $ar) {

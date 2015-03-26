@@ -25,6 +25,13 @@ class Export
     /**
      * @var string
      *
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     */
+    protected $name;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="ignore_keywords", type="string", length=255, nullable=true)
      */
     protected $ignoreKeywords;
@@ -93,6 +100,10 @@ class Export
      */
     public function __construct()
     {
+        $month = date('m', strtotime('-1 month'));
+        $year = date('Y', strtotime('-1 month'));
+        $this->name = $month.'月份 '.$year;
+        
         $this->statements = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ignoreKeywords = 'AIRPORT';
         $this->createDate = new \DateTime("now");
@@ -113,7 +124,30 @@ class Export
     {
         return $this->id;
     }
+    
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Export
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
 
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+    
     /**
      * Set ignoreKeywords
      *
