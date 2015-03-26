@@ -192,7 +192,8 @@ class ArController extends Controller
         if ($form->isValid()) {
             if ($form->get('bulk_print')->isClicked()) {
                 $ids = array();
-                $ars = $form->getData()['id'];
+                $data = $form->getData();
+                $ars = $data['id'];
                 foreach ($ars as $ar) {
                     $ids[] = $ar->getId();
                 }

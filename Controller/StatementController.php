@@ -45,7 +45,8 @@ class StatementController extends Controller
         if ($form->isValid()) {
             if ($form->get('export_invoice')->isClicked()) {
                 $expStmtsId = array();
-                $expStmts = $form->getData()['id'];
+                $expStmtsData = $form->getData();
+                $expStmts = $expStmtsData['id'];
                 foreach ($expStmts as $expStmt) {
                     $expStmtsId[] = $expStmt->getId();
                 }
@@ -54,7 +55,8 @@ class StatementController extends Controller
                 
                 return $this->redirect($this->generateUrl('morus_fas_statement_export'));
             } elseif ($form->get('delete_invoice')->isClicked()) {
-                $delStmts = $form->getData()['id'];
+                $delStmtsData = $form->getData();
+                $delStmts = $delStmtsData['id'];
                 $session = $this->get('session');
                 $session->set('delStmts', $delStmts);
                 return $this->redirect($this->generateUrl('morus_fas_statement_delete'));
