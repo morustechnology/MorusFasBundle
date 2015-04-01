@@ -241,7 +241,7 @@ class ExportFlow extends FormFlow {
                 $invoice->setReceiptNumber(trim($row[$stmt->getReceiptNumberHeader()]));
                 $invoice->setQty(trim($row[$stmt->getVolumeHeader()]));
                 
-//                $invoice->setNetamount(str_replace(',', '', trim($row[$stmt->getNetAmountHeader()])));
+                $invoice->setNetamount(str_replace(',', '', trim($row[$stmt->getNetAmountHeader()])));
                 $invoice->setLicence(trim(trim($row[$stmt->getLicenceNumberHeader()])));
                 $unitPrice = trim($row[$stmt->getUnitPriceHeader()]);
                 $unitDiscount = abs(trim($row[$stmt->getUnitDiscountHeader()]));

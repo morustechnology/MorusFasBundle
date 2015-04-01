@@ -123,7 +123,7 @@
                 </tr>
 
                 {# table body #}
-                {% for p in product %}
+                {% for p in products %}
                 <tr>
                     <td>{{ form_widget(product_list_form.id[p.id], { 'attr' : { 'name' : p.id  }}) }}</td>
                     <td><a href="{{ path('morus_fas_inventory_show', { 'id': p.id }) }}">{{ p.itemcode }}</a></td>
@@ -134,7 +134,7 @@
                 </tr>
                 {% endfor %}
             </table>
-            {{ form_rest(product_list_form) }}
+            {# {{ form_rest(product_list_form) }} #}
         {{ form_end(product_list_form) }}
     </div>
     

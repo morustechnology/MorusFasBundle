@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+//use Doctrine\ORM\EntityRepository;
 
 class ProductListType extends AbstractType
 {
@@ -31,7 +32,12 @@ class ProductListType extends AbstractType
                 'class' => $this->container->getParameter('morus_accetic.model.product'),
                 'property' => 'itemname',
                 'expanded' => true,
-                'multiple' => true
+                'multiple' => true,
+                'query_builder' => function(\Doctrine\ORM\EntityRepository $er ) {
+                                        return $er->createQueryBuilder('p')
+                                                ->where('p.active = 1')
+                                                ->orderBy('p.itemname', 'ASC');
+                                    }
             ));
     }
     

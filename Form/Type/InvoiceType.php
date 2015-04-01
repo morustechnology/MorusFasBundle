@@ -41,7 +41,6 @@ class InvoiceType extends AbstractType
             ))    
             ->add('description', 'text', array(
                 'required' => false,
-                'read_only' => true,
             ))
             ->add('qty', 'number', array(
                 'precision' => 2,

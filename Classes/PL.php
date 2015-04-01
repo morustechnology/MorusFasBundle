@@ -31,7 +31,7 @@ class PL {
                     
                     if ($s) {
                         $customerVehicle = new CustomerVehicle($invoice->getLicence(), $invoice->getLicence());
-                        $customerVehicle->setNett($invoice->getNettcost());
+                        $customerVehicle->setNett(round($invoice->getNetamount(),2));
                         $customerVehicle->setReceivable(round($invoice->getQty(), 2) * (round($invoice->getSellPrice(), 2) - round($invoice->getSelldiscount(), 2)));
                         
                         $customer = new Customer($ar->getUnit()->getId(), $ar->getUnit()->getName());
@@ -47,11 +47,11 @@ class PL {
                     if ($customer) { // If customer exist
                         $customerVehicle = $this->getObjectById($invoice->getLicence(), $customer->getCustomerVehicles());
                         if ($customerVehicle) { // If vehicle exist
-                            $customerVehicle->accumulateNett($invoice->getNettcost());
+                            $customerVehicle->accumulateNett(round($invoice->getNetamount(),2));
                             $customerVehicle->accumulateReceivable(round($invoice->getQty(), 2) * (round($invoice->getSellPrice(), 2) - round($invoice->getSelldiscount(), 2)));
                         } else {
                             $customerVehicle = new CustomerVehicle($invoice->getLicence(), $invoice->getLicence());
-                            $customerVehicle->setNett($invoice->getNettcost());
+                            $customerVehicle->setNett(round($invoice->getNetamount(),2));
                             $customerVehicle->setReceivable(round($invoice->getQty(), 2) * (round($invoice->getSellPrice(), 2) - round($invoice->getSelldiscount(), 2)));
                             
                             $customer->addCustomerVehicle($customerVehicle);
@@ -60,7 +60,7 @@ class PL {
                         
                     } else {  
                         $customerVehicle = new CustomerVehicle($invoice->getLicence(), $invoice->getLicence());
-                        $customerVehicle->setNett($invoice->getNettcost());
+                        $customerVehicle->setNett(round($invoice->getNetamount(),2));
                         $customerVehicle->setReceivable(round($invoice->getQty(), 2) * (round($invoice->getSellPrice(), 2) - round($invoice->getSelldiscount(), 2)));
                             
                         $customer = new Customer($ar->getUnit()->getId(), $ar->getUnit()->getName());

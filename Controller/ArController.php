@@ -86,14 +86,6 @@ class ArController extends Controller
             $amount_total = $amount_total + round($invoice->getAmount(), 2);
         }
         
-//        $format = $this->get('request')->get('_format');
-        
-//        return $this->render(sprintf('MorusFasBundle:Ar:invoice.%s.twig', $format), array(
-//            'ar' => $ar,
-//            'postal' => $postal,
-//        ));
-        
-        
         $path = $this->container->getParameter('kernel.root_dir') . '/../src/Morus/FasBundle/Resources/views/Ar/invoice.stylesheet.twig';
 
         $stylesheet = file_get_contents($path);
@@ -115,7 +107,7 @@ class ArController extends Controller
         
         return new Response($content, 200, array(
             'content-type' => 'application/pdf', 
-            'Content-Disposition'   => 'attachment; filename="' . $ar->getUnit()->getName() . '.pdf"')
+            'Content-Disposition'   => 'inline; filename="' . $ar->getUnit()->getName() . '.pdf"')
                 );
     }
     
@@ -140,9 +132,9 @@ class ArController extends Controller
             $useOthername = $product->getUseOthername();
             
             if ( $useOthername == true) {
-                $description = $product->getItemname();
-            } else {
                 $description = $product->getOthername();
+            } else {
+                $description = $product->getItemname();
             }
             
             $response = array(
@@ -170,6 +162,8 @@ class ArController extends Controller
         
         $query = $aem->getArRepository()
                 ->createQueryBuilder('ar')
+                ->where('ar.active = 1')
+                ->orderBy('ar.invnumber', 'DESC')
                 ->getQuery();
                 
         $paginator  = $this->get('knp_paginator');

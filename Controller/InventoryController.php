@@ -65,7 +65,8 @@ class InventoryController extends Controller
             $em = $this->getDoctrine()->getManager();
             foreach($request->request->all() as $req){
                 $product = $this->getDoctrine()->getRepository('MorusFasBundle:Product')->findOneById($req);
-                $em->remove($product);
+                $product->setActive(false);
+                $em->persist($product);
             }
             $em->flush();
             
@@ -122,10 +123,15 @@ class InventoryController extends Controller
         // List All product
         $aem = $this->get('morus_accetic.entity_manager'); // Get Fas Entity Manager from service
         
+        $productRepos = $aem->getProductRepository();
         
-        $product = $aem->getProductRepository()->findAll();
+        $qb = $productRepos->createQueryBuilder('p')
+            ->where('p.active = 1')
+            ->orderBy('p.itemname', 'ASC');
         
-        $product_list_form = $this->createForm('fas_product_list', $product, array(
+        $products = $qb->getQuery()->getResult();
+        
+        $product_list_form = $this->createForm('fas_product_list', $products, array(
             'attr' => array('id' => 'fas_product_list'),
             'action' => $this->generateUrl('morus_fas_inventory_delete_ajax'),
             'method' => 'POST',
@@ -145,7 +151,7 @@ class InventoryController extends Controller
         return $this->render('MorusFasBundle:Inventory:index.html.twig', array(
             'product_new_form' => $product_new_form->createView(),
             'product_list_form' => $product_list_form->createView(),
-            'product' => $product
+            'products' => $products
         ));
     }
     
