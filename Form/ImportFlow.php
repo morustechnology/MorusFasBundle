@@ -133,7 +133,7 @@ class ImportFlow extends FormFlow {
         $this->sample = array();
         foreach ($this->reader as $rowNum => $row) {   
             // Get Sample
-            if ($rowNum = 1) {
+            if ($rowNum == 1) {
                 $this->sample['CardNumber'] = trim($row[$statement->getCardNumberHeader()]);
                 $this->sample['LicenceNumber'] = trim($row[$statement->getLicenceNumberHeader()]);
                 $this->sample['Site'] = trim($row[$statement->getSiteHeader()]);
