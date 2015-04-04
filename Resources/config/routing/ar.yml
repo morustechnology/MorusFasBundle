@@ -24,8 +24,10 @@ morus_fas_ar_print:
     pattern: /{id}/print
     defaults: { _controller: "MorusFasBundle:Ar:print" }
 
-morus_fas_print_test:
-    pattern: /{id}/printtest
-    defaults: { _controller: "MorusFasBundle:Ar:printTest" , _format: pdf}
-    requirements:
-      _format: pdf
+morus_fas_ar_print_no_px:
+    pattern: /{id}/printnopx
+    defaults: { _controller: "MorusFasBundle:Ar:printNoPx" }
+
+morus_fas_ar_excel:
+    pattern: /{id}/excel
+    defaults: { _controller: "MorusFasBundle:Ar:excel" }

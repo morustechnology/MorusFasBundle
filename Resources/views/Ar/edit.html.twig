@@ -232,11 +232,19 @@
             {{ form_errors(form) }}
             <ul class="page-control">
                 <li>
-                    <a id="fas_inv_print"  class="loading-btn" href="{{ path('morus_fas_ar_print', {'id': ar.id}) }}">
+                    <a id="fas_inv_print"  class="loading-btn" href="{{ path('morus_fas_ar_print', {'id': ar.id }) }}">
                         {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
                         <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-172px -16px;background-size:260px;" ></em>
                         {% endimage %}
                         {{ 'btn.print'|trans }}
+                    </a>
+                </li>
+                <li>
+                    <a id="fas_inv_print"  class="loading-btn" href="{{ path('morus_fas_ar_print_no_px', {'id': ar.id }) }}">
+                        {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
+                        <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:-172px -16px;background-size:260px;" ></em>
+                        {% endimage %}
+                        {{ 'btn.print_without_unit_px'|trans }}
                     </a>
                 </li>
                 <li>

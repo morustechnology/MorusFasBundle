@@ -2,13 +2,14 @@
     <dynamic-page>
         <placeholders>
             <header>
-                <div height="5px" >
+                <div height="1px" >
 
                 </div>
             </header>
             <footer>
                 <div height="5px">
                     <div class="single-line" border.type="bottom" height="2px" margin="5px 0px 5px 0px"/>
+                    <div float="right" font-type="新細明體" ><page-info format=" %s / %s {{ 'invoice.page'|trans }}" /></div>
                 </div>
             </footer>
         </placeholders>
@@ -19,6 +20,7 @@
             <div class="title">
                 <div class="company-chi-name">
                     {{ 'sunnyday'|trans }}
+                    
                 </div>
                 <div class="company-eng-name">
                     {{ 'sunnydayeng'|trans }}
@@ -26,8 +28,8 @@
                 <div class="company-address">
                     P.O. Box No.1563 Yuen Long Post Office
                 </div>
-                <div>sunnydaymotorsltd@yahoo.com.hk</div>
-                <div>{{ 'invoice.tel'|trans }}：90901108</div>
+                <div class="company-email">sunnydaymotorsltd@yahoo.com.hk</div>
+                <div class="company-tel">{{ 'invoice.tel'|trans }}：90901108</div>
             </div>
         
             <div class="double-line"></div>
@@ -39,21 +41,44 @@
                 <div class="customer-contact">{{ postal.attention }}</div>
             </div>
             <div class="invoice-info" >
-                <div class="invoice-info-line" >{{ 'invoice.invnumber'|trans }}：{{ ar.invnumber }}</div>
-                <div class="invoice-info-line" >{{ 'invoice.invoice_date'|trans}}：{{ ar.transdate|date('d/m/Y') }}</div>
+                <div class="invoice-info-line">
+                    <div class="invoice-info-content" >{{ ar.invnumber }}</div>
+                    <div class="invoice-info-label">{{ 'invoice.invnumber'|trans }}：</div>
+                </div>
+                
+                <div class="invoice-info-line">
+                    <div class="invoice-info-content" >{{ ar.duedate|date('d/m/Y') }}</div>
+                    <div class="invoice-info-label">{{ 'invoice.duedate'|trans}}：</div>
+                    <div class="invoice-info-content" >{{ ar.transdate|date('d/m/Y') }}</div>
+                    <div class="invoice-info-label">{{ 'invoice.invoice_date'|trans}}：</div>
+                </div>
+                
                 <div class="double-line"></div>
+                
                 <div class="invoice-info-line" >
-                    {{ 'invoice.invoice_date_from'|trans }} {{ ar.startdate|date('d/m/y') }} {{ 'invoice.invoice_date_to'|trans }} {{ ar.enddate|date('d/m/y') }}
+                    <div class="invoice-info-content" >{{ ar.enddate|date('d/m/Y') }}</div>
+                    <div class="invoice-info-label">{{ 'invoice.invoice_date_to'|trans }}：</div>
+                    <div class="invoice-info-content" >{{ ar.startdate|date('d/m/Y') }}</div>
+                    <div class="invoice-info-label">{{ 'invoice.invoice_date_from'|trans }}：</div>
                 </div>
+                
                 <div class="invoice-info-line" >
-                    {{ 'invoice.page_total'|trans }}：<page-info format="%s" />
+                    <div class="invoice-info-content" ></div>
+                    <div class="invoice-info-label"></div>
+                    <div class="invoice-info-content" ><page-info format="%2$s {{ 'invoice.page'|trans }}" /></div>
+                    <div class="invoice-info-label">{{ 'invoice.page_total'|trans }}：</div>
                 </div>
+                
                 <div class="double-line"></div>
+                
                 <div class="invoice-info-line" >
-                    <div margin="0px 35px 0px 0px" float="right">{{ 'invoice.customer_number'|trans }}：</div> 
-                    <div margin="0px 35px 0px 0px" float="right">{{ 'invoice.bank_transfer_date'|trans }}：</div>
-                    
+                    <div class="invoice-info-content" >{{ ar.unit.accountNumber }}</div>
+                    <div class="invoice-info-label">{{ 'invoice.customer_number'|trans }}：</div>
+                    <div class="invoice-info-content" ></div>
+                    <div class="invoice-info-label">{{ 'invoice.bank_transfer_date'|trans }}：</div>
                 </div>
+                
+                <div class="double-line"></div>
             </div>
             
             <div class="double-line"></div>
@@ -71,36 +96,40 @@
                         <td class="col4" >{{ 'invoice.receipt_number'|trans }}</td>
                         <td class="col5" >{{ 'invoice.product'|trans }}</td>
                         <td class="col6" >{{ 'invoice.qty'|trans }}</td>
+                        {% if px == true %} 
                         <td class="col7" >{{ 'invoice.sellprice'|trans }}</td>
+                        {% endif %}
                         <td class="col8" >{{ 'invoice.netprice'|trans }}</td>
                         <td class="col9" >{{ 'invoice.total'|trans }}</td>
                     </tr>
                 </table>
             </div>
             
-            {% for vehicle in ar.unit.vehicles %}
+            {% for vehicle in vehicles %}
                 
                 <div breakable="false">
                     <div class="space"/>
                     <table class="invoice-vehcile-table">
                         <tr>
                             <td class="col1" >{{ 'invoice.registration_number'|trans }}: </td>
-                            <td class="col2" >{{ vehicle.registrationNumber }}</td>
+                            <td class="col2" >{{ vehicle }}</td>
                             <td class="col3" ></td>
                             <td class="col4" ></td>
                             <td class="col5" >Sub Total:</td>
                             <td class="col6" >
                                 {% for registrationNumber, qty_subtotal in qty_subtotals %}
-                                    {% if registrationNumber == vehicle.registrationNumber %}
+                                    {% if registrationNumber == vehicle %}
                                         {{ qty_subtotal|number_format(2, '.', ',') }}
                                     {% endif %}
                                 {% endfor %}
                             </td>
+                            {% if px == true %} 
                             <td class="col7" ></td>
+                            {% endif %}
                             <td class="col8" ></td>
                             <td class="col9" >
                                 {% for registrationNumber, amount_subtotal in amount_subtotals %}
-                                    {% if registrationNumber == vehicle.registrationNumber %}
+                                    {% if registrationNumber == vehicle %}
                                         {{ amount_subtotal|number_format(2, '.', ',') }}
                                     {% endif %}
                                 {% endfor %}
@@ -109,7 +138,7 @@
                         </tr>
                     </table>
                     {% for invoice in ar.transaction.invoices %}
-                        {% if invoice.licence == vehicle.registrationNumber %}
+                        {% if invoice.licence == vehicle %}
                             <table class="invoice-detail-table">
                                 <tr>
                                     <td class="col1" >{{ invoice.transDate|date('d/m/Y') }}</td>
@@ -121,10 +150,12 @@
                                         {% set qty = invoice.qty|number_format(2, '.', ',') %}
                                         {{ qty }}
                                     </td>
+                                    {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
+                                    {% if px == true %} 
                                     <td class="col7" >
-                                        {% set sellprice = invoice.sellprice|number_format(2, '.', ',') %}
                                         {{ sellprice }}
                                     </td>
+                                    {% endif %}
                                     <td class="col8" >
                                         {% set netprice = sellprice - invoice.selldiscount %}
                                         {{ netprice|number_format(2, '.', ',') }}
@@ -150,7 +181,9 @@
                     <td class="col4" ></td>
                     <td class="col5" >Total</td>
                     <td class="col6" >{{ qty_total }}</td>
+                    {% if px == true %} 
                     <td class="col7" ></td>
+                    {% endif %}
                     <td class="col8" ></td>
                     <td class="col9" >{{ amount_total }}</td>
                 </tr>

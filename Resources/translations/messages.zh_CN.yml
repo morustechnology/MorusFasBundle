@@ -94,6 +94,7 @@ btn:
     back: 返回
     go: 去
     excel: Excel
+    print_without_unit_px: 列印(無油價)
 
 export_step:
     station_discount_ignore_keywords: 不包括折扣油站关键词
@@ -167,7 +168,7 @@ invoice:
     remark: 備註
     discount_exclude: 機場貨運站及客運站入油並無折扣優惠
     thank_you: 多謝惠顧
-    page: 页数
+    page: 页
     
 contact:
     vehicle_list: 车辆名单
