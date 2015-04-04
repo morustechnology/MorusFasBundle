@@ -95,7 +95,8 @@ btn:
     go: 去
     excel: Excel
     print_without_unit_px: 列印(無油價)
-
+    without_unit_px: (無油價)
+    
 export_step:
     station_discount_ignore_keywords: 不包含折扣油站關鍵詞
     station_discount_ignore: 沒有折扣的油站

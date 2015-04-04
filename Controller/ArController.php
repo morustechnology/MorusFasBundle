@@ -194,24 +194,10 @@ class ArController extends Controller
         return null;
     }
     
-    private function genPDF($id, $px = true, $name) 
+    private function genPDF($ar, $px = true) 
     {
-        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
-
-        // Get ar with invoices lines
-        $qb = $aem->getArRepository()
-                ->createQueryBuilder('ar');
+        $aem = $this->get('morus_accetic.entity_manager');
         
-        $query = $qb
-                ->select('ar')
-                ->join('ar.transaction', 't')
-                ->leftJoin('t.invoices', 'v')
-                ->where($qb->expr()->eq('ar.id', $id));
-        
-        $ar = $query->getQuery()->getSingleResult();
-        
-        $name = $ar->getUnit()->getName();
-                
         // Get postal address
         $postqb = $aem->getLocationRepository()
                 ->createQueryBuilder('l');
@@ -296,12 +282,25 @@ class ArController extends Controller
      */
     public function printNoPxAction($id) {
         
-        $filename = 'initial';
-        $content = $this->genPDF($id, false, $filename);
+        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+
+        // Get ar with invoices lines
+        $qb = $aem->getArRepository()
+                ->createQueryBuilder('ar');
+        
+        $query = $qb
+                ->select('ar')
+                ->join('ar.transaction', 't')
+                ->leftJoin('t.invoices', 'v')
+                ->where($qb->expr()->eq('ar.id', $id));
+        
+        $ar = $query->getQuery()->getSingleResult();
+        
+        $content = $this->genPDF($ar, false);
         
         return new Response($content, 200, array(
             'content-type' => 'application/pdf', 
-            'Content-Disposition'   => 'inline; filename="' . $filename . '.pdf"')
+            'Content-Disposition'   => 'attachment; filename="' . $ar->getUnit()->getName() . '.pdf"')
                 );
     }
     
@@ -310,12 +309,25 @@ class ArController extends Controller
      */
     public function printAction($id) {
         
-        $filename = 'initial';
-        $content = $this->genPDF($id, true, $filename);
+        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+
+        // Get ar with invoices lines
+        $qb = $aem->getArRepository()
+                ->createQueryBuilder('ar');
+        
+        $query = $qb
+                ->select('ar')
+                ->join('ar.transaction', 't')
+                ->leftJoin('t.invoices', 'v')
+                ->where($qb->expr()->eq('ar.id', $id));
+        
+        $ar = $query->getQuery()->getSingleResult();
+        
+        $content = $this->genPDF($ar, true);
         
         return new Response($content, 200, array(
             'content-type' => 'application/pdf', 
-            'Content-Disposition'   => 'inline; filename="' . $filename . '.pdf"')
+            'Content-Disposition'   => 'attachment; filename="' . $ar->getUnit()->getName() . '.pdf"')
                 );
     }
     

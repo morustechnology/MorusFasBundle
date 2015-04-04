@@ -29,6 +29,9 @@
                 <a id="fas_inv_print"  href="{{ path('morus_fas_ar_print', {'id': ar.id}) }}">
                     {{ 'btn.print'|trans }}
                 </a>
+                <a id="fas_inv_print"  href="{{ path('morus_fas_ar_print_no_px', {'id': ar.id}) }}">
+                    {{ 'btn.without_unit_px'|trans }}
+                </a>
             </td>
             <td><a href="{{ path('morus_fas_ar_edit', { 'id': ar.id }) }}">{{ ar.invnumber }}</a></td>
             <td>{{ ar.reference }}</td>

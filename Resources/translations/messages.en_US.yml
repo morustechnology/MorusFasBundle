@@ -96,6 +96,7 @@ btn:
     go: Go
     excel: Excel
     print_without_unit_px: Print (w/o px)
+    without_unit_px: (w/o px)
 
 export_step:
     station_discount_ignore_keywords: Station Discount Ignore Keywords
