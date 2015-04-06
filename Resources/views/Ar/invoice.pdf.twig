@@ -7,9 +7,14 @@
                 </div>
             </header>
             <footer>
-                <div height="5px">
+                
+                <div height="25px">
                     <div class="single-line" border.type="bottom" height="2px" margin="5px 0px 5px 0px"/>
-                    <div float="right" font-type="新細明體" ><page-info format=" %s / %s {{ 'invoice.page'|trans }}" /></div>
+                    <div>
+                    <div class="remark" float="left" font-type="新細明體">{{ 'invoice.remark'|trans }}:{{ 'invoice.discount_exclude'|trans }}</div>
+                    <div class="thank-you" float="left" margin="0px 0px 0px 120px" font-type="新細明體" text-align="center">{{ 'invoice.thank_you'|trans }}!</div>
+                    <div class="page-number" float="right" font-type="新細明體" ><page-info format=" %s / %s {{ 'invoice.page'|trans }}" /></div>
+                    </div>
                 </div>
             </footer>
         </placeholders>
@@ -188,11 +193,6 @@
                     <td class="col9" >{{ amount_total }}</td>
                 </tr>
             </table>
-            
-            <div class="space"/>
-            <div class="remark" >{{ 'invoice.remark'|trans }}:</div>
-            <div class="remark" >{{ 'invoice.discount_exclude'|trans }}</div>
-            <div class="thank-you" >{{ 'invoice.thank_you'|trans }}!</div>
         </div>
         
     </dynamic-page>
