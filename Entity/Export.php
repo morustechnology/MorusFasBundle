@@ -51,6 +51,13 @@ class Export
     protected $enddate;
     
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="replace_station_name", type="boolean")
+     */
+    protected $replaceStationName;
+    
+    /**
      * @var integer
      *
      * @ORM\Column(name="sort_order", type="integer", nullable=true)
@@ -113,6 +120,8 @@ class Export
         $end = new \DateTime("last day of last month");
         $this->startdate = $start;
         $this->enddate = $end;
+        
+        $this->replaceStationName = true;
     }
 
     /**
@@ -215,6 +224,30 @@ class Export
     public function getEnddate()
     {
         return $this->enddate;
+    }
+    
+    
+    /**
+     * Set replaceStationName
+     *
+     * @param boolean $replaceStationName
+     * @return Export
+     */
+    public function setReplaceStationName($replaceStationName)
+    {
+        $this->replaceStationName = $replaceStationName;
+
+        return $this;
+    }
+
+    /**
+     * Get replaceStationName
+     *
+     * @return boolean 
+     */
+    public function getReplaceStationName()
+    {
+        return $this->replaceStationName;
     }
     
     /**

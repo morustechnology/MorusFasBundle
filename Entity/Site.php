@@ -25,16 +25,16 @@ class Site
     /**
      * @var string
      *
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     */
+    private $name;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="other_name", type="string", length=255, nullable=true)
      */
     private $otherName;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="apply_discount", type="boolean")
-     */
-    private $applyDiscount;
     
     /**
      * @var integer
@@ -91,10 +91,33 @@ class Site
     }
 
     /**
+     * Set name
+     *
+     * @param string $name
+     * @return Site
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    /**
      * Set otherName
      *
      * @param string $otherName
-     * @return Vehicle
+     * @return Site
      */
     public function setOtherName($otherName)
     {
@@ -112,35 +135,12 @@ class Site
     {
         return $this->otherName;
     }
-
-    /**
-     * Set applyDiscount
-     *
-     * @param boolean $applyDiscount
-     * @return Vehicle
-     */
-    public function setApplyDiscount($applyDiscount)
-    {
-        $this->applyDiscount = $applyDiscount;
-
-        return $this;
-    }
-
-    /**
-     * Get applyDiscount
-     *
-     * @return boolean 
-     */
-    public function getApplyDiscount()
-    {
-        return $this->applyDiscount;
-    }
     
     /**
      * Set sortOrder
      *
      * @param integer $sortOrder
-     * @return Vehicle
+     * @return Site
      */
     public function setSortOrder($sortOrder)
     {
@@ -163,7 +163,7 @@ class Site
      * Set active
      *
      * @param boolean $active
-     * @return Vehicle
+     * @return Site
      */
     public function setActive($active)
     {
@@ -186,7 +186,7 @@ class Site
      * Set createDate
      *
      * @param \DateTime $createDate
-     * @return Vehicle
+     * @return Site
      */
     public function setCreateDate($createDate)
     {
@@ -209,7 +209,7 @@ class Site
      * Set lastModifiedDate
      *
      * @param \DateTime $lastModifiedDate
-     * @return Vehicle
+     * @return Site
      */
     public function setLastModifiedDate($lastModifiedDate)
     {
@@ -232,7 +232,7 @@ class Site
      * Set inactiveDate
      *
      * @param \DateTime $inactiveDate
-     * @return Vehicle
+     * @return Site
      */
     public function setInactiveDate($inactiveDate)
     {
