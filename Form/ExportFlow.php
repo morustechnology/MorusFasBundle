@@ -156,6 +156,23 @@ class ExportFlow extends FormFlow {
         }
     }
     
+    private function checkStation($station) {
+        // Get Station which appear in statements
+        $site = $this->entityManager
+                ->getRepository('MorusFasBundle:Site')
+                ->findOneByName($station);
+//        $Query = $qb
+//                ->where($qb->expr()->eq('s.name', $station));
+//        
+//        $site = $Query->getQuery()->getSingleResult(); 
+        
+        if($site) {
+            return $site->getOtherName();
+        } else {
+            return $station;
+        }
+    }
+    
     /**
      * Generate FAS Profit and Loss Summary
      */
@@ -237,7 +254,14 @@ class ExportFlow extends FormFlow {
                 $invoice = new \Morus\FasBundle\Entity\Invoice();
                 $invoice->setSuppliergroupid($supplierid);
                 $invoice->setCardNumber(trim($row[$stmt->getCardNumberHeader()]));
-                $invoice->setSite(trim($row[$stmt->getSiteHeader()]));
+                
+                $siteName = trim($row[$stmt->getSiteHeader()]);
+                if ($export->getReplaceStationName()){
+                    $invoice->setSite($this->checkStation($siteName));
+                } else {
+                    $invoice->setSite($siteName);
+                }
+                
                 $invoice->setReceiptNumber(trim($row[$stmt->getReceiptNumberHeader()]));
                 $invoice->setQty(trim($row[$stmt->getVolumeHeader()]));
                 
@@ -323,10 +347,6 @@ class ExportFlow extends FormFlow {
                 ->where($pqb->expr()->in('p.itemname', $this->stmtProd));
         
         $products = $pQuery->getQuery()->getResult(); 
-        
-        if(!$products) {
-            $asdf = 1;
-        }
         
         foreach ($products as $p ) {
             if (strtoupper($p->getItemname()) == strtoupper($productName)) {

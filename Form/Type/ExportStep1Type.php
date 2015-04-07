@@ -20,6 +20,9 @@ class ExportStep1Type extends AbstractType {
                 'input'  => 'datetime',
                 'widget' => 'single_text',
                 'required' => false
+            ))
+            ->add('replaceStationName', 'checkbox', array(
+                'required' => false
             ));
     }
     

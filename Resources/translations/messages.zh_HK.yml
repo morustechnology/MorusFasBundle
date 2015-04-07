@@ -98,6 +98,9 @@ btn:
     without_unit_px: (無油價)
     
 export_step:
+    station_search: 油站搜索
+    station_name: 油站名稱
+    replace_station_name: 撤換油站名稱?
     station_discount_ignore_keywords: 不包含折扣油站關鍵詞
     station_discount_ignore: 沒有折扣的油站
     station_keywords: 油站關鍵詞

@@ -99,6 +99,9 @@ btn:
     without_unit_px: (w/o px)
 
 export_step:
+    station_search: Station Search
+    station_name: Station Name
+    replace_station_name: Replace Station Name?
     station_discount_ignore_keywords: Station Discount Ignore Keywords
     station_discount_ignore: Station Without Discount
     station_keywords: Station Keywords

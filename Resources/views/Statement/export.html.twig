@@ -375,6 +375,8 @@
                     <h4 class="fas-step-subtitle">{{ 'export_step.station_discount_ignore'|trans }}</h4>
                     <fieldset>{{ 'export_step.station_keywords'|trans }}{{ form_widget(export_form.ignoreKeywords) }} {{ form_errors(export_form.ignoreKeywords) }}</fieldset>
                     
+                    <h4 class="fas-step-subtitle">{{ 'export_step.station_name'|trans }}</h4>
+                    <fieldset>{{ form_widget(export_form.replaceStationName) }} {{ 'export_step.replace_station_name'|trans }} {{ form_errors(export_form.replaceStationName) }}</fieldset>
                     
                     <h4 class="fas-step-subtitle">{{ 'export_step.analysis_summary'|trans }}</h4>
                     <p>

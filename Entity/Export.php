@@ -121,7 +121,7 @@ class Export
         $this->startdate = $start;
         $this->enddate = $end;
         
-        $this->replaceStationName = true;
+        $this->replaceStationName = false;
     }
 
     /**
