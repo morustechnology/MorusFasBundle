@@ -1,0 +1,43 @@
+{% extends '::base.html.twig' %}
+
+{% block body_title -%}
+    {{ 'site.site_list'|trans }}
+{% endblock %}
+
+{% block body -%}
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>{{ 'site.site_code'|trans }}</th>
+                <th>{{ 'site.site_name'|trans }}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('morus_fas_site_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                <td>{{ entity.otherName }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('morus_fas_site_show', { 'id': entity.id }) }}">{{ 'btn.show'|trans }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('morus_fas_site_edit', { 'id': entity.id }) }}">{{ 'btn.edit'|trans }}</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('morus_fas_site_new') }}">
+                {{ 'btn.add'|trans }}
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

@@ -98,6 +98,11 @@ services:
         arguments: ['@service_container']
         tags:
             - { name: form.type, alias: fas_product_list }
+    
+    morus_fas.form.type.site:
+        class: Morus\FasBundle\Form\Type\SiteType
+        tags:
+            - { name: form.type, alias: fas_site }
             
     # Utility Classes
     morus_fas.classes.importlog:

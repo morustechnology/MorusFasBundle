@@ -21,3 +21,7 @@ morus_fas_inventory:
 morus_fas_export:
     resource: "@MorusFasBundle/Resources/config/routing/export.yml"
     prefix:   /Fas/Export
+    
+morus_fas_site:
+    resource: "@MorusFasBundle/Resources/config/routing/site.yml"
+    prefix:   /Fas/Site

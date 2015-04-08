@@ -24,6 +24,7 @@ menu:
     contacts: Contacts
     settings: Settings
     settings_inventory: Inventory
+    settings_site: Gas Station Setting
     export_history: Export History
     
 statement:
@@ -88,10 +89,14 @@ btn:
     export_invoice: Export Invoice
     delete_invoice: Delete Invoice
     delete_statement: Delete Statement
+    add: Add
     save: Save
     edit: Edit
+    create: Create
     cancel: Cancel
     delete: Delete
+    update: Update
+    show: Show
     back: Back
     go: Go
     excel: Excel
@@ -179,6 +184,14 @@ contact:
     registration_number: Registration Number
     discount: Discount
     copy_postal: Copy Postal
+    
+site:
+    site_list: Site List
+    site_creation: Site Creation
+    site_edit: Site Edit
+    site_code: Site Code
+    site_name: Site Name
+    
     
 error:
     get_prod_desc: Error getting product detail from database, please try again.

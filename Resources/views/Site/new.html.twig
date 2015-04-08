@@ -1,0 +1,23 @@
+{% extends '::base.html.twig' %}
+
+{% block body_title -%}
+    {{ 'site.site_creation'|trans }}
+{% endblock %}
+
+{% block body -%}
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ 'site.site_code'|trans }} {{ form_widget(form.name) }} {{ form_errors(form.name) }}
+        {{ 'site.site_name'|trans }} {{ form_widget(form.otherName) }} {{ form_errors(form.otherName) }}
+        {{ form_widget(form.submit) }}
+        {{ form_rest(form) }}
+    {{ form_end(form) }}
+        
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('morus_fas_site') }}">
+                {{ 'btn.back'|trans }}
+            </a>
+        </li>
+    </ul>
+{% endblock %}

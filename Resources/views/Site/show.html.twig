@@ -1,0 +1,30 @@
+{% extends '::base.html.twig' %}
+
+{% block body_title -%}
+    {{ entity.name }}
+{% endblock %}
+
+{% block body -%}
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>{{ 'site.site_name'|trans }}</th>
+                <td>{{ entity.otherName }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('morus_fas_site') }}">
+            {{ 'btn.back'|trans }}
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('morus_fas_site_edit', { 'id': entity.id }) }}">
+            {{ 'btn.edit'|trans }}
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

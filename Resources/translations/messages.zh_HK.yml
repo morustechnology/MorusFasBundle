@@ -24,6 +24,7 @@ menu:
     contacts: 通訊錄
     settings: 設定
     settings_inventory: 庫存貨品
+    settings_site: 油站設定
     export_history: 滙出記錄
     
 statement:
@@ -87,15 +88,20 @@ btn:
     export_invoice: 滙出發票
     delete_statement: 刪除月結單
     delete_invoice: 刪除發票
+    add: 新增
     save: 儲存
     edit: 修改
+    create: 建立
     cancel: 取消
     delete: 刪除
+    update: 更新
+    show: 顯示
     back: 返回
     go: 去
     excel: Excel
     print_without_unit_px: 列印(無油價)
     without_unit_px: (無油價)
+    
     
 export_step:
     station_search: 油站搜索
@@ -181,6 +187,13 @@ contact:
     registration_number: 車牌
     discount: 折扣
     copy_postal: 複製郵寄地址
+
+site:
+    site_list: 油站名單
+    site_creation: 新增油站
+    site_edit: 油站修改
+    site_code: 油站編碼
+    site_name: 油站名稱
     
 error:
     get_prod_desc: '從數據庫中查詢產品資料錯誤，請稍後重試。'

@@ -24,6 +24,7 @@ menu:
     contacts: 通讯录
     settings: 设定
     settings_inventory: 库存货品
+    settings_site: 油站设定
     export_history: 汇出记录
     
 statement:
@@ -87,10 +88,14 @@ btn:
     export_invoice: 汇出发票
     delete_invoice: 删除发票
     delete_statement: 删除月结单
-    edit: 修改
+    add: 新增
     save: 保存
+    edit: 修改
+    create: 建立
     cancel: 取消
     delete: 删除
+    update: 更新
+    show: 显示
     back: 返回
     go: 去
     excel: Excel
@@ -182,6 +187,13 @@ contact:
     registration_number: 车牌
     discount: 折扣
     copy_postal: 复制邮寄地址
+
+site:
+    site_list: 油站名单
+    site_creation: 新增油站
+    site_edit: 油站修改
+    site_code: 油站编码
+    site_name: 油站名称
     
 error:
     get_prod_desc: '从数据库中查询产品资料错误，请稍后重试。'

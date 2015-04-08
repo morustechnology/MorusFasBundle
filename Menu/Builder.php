@@ -22,6 +22,7 @@ class Builder extends ContainerAware
         $menu->addChild($translator->trans('menu.contacts'), array('route' => 'morus_fas_contacts'));
         $menu->addChild($translator->trans('menu.settings'), array('route' => 'morus_accetic_config_invoice'));
         $menu[$translator->trans('menu.settings')]->addChild($translator->trans('menu.settings_inventory'), array('route' => 'morus_fas_inventory'));
+        $menu[$translator->trans('menu.settings')]->addChild($translator->trans('menu.settings_site'), array('route' => 'morus_fas_site'));
         
         return $menu;
     }

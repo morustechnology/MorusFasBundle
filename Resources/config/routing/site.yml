@@ -1,0 +1,30 @@
+morus_fas_site:
+    path:     /
+    defaults: { _controller: "MorusFasBundle:Site:index" }
+
+morus_fas_site_show:
+    path:     /{id}/show
+    defaults: { _controller: "MorusFasBundle:Site:show" }
+
+morus_fas_site_new:
+    path:     /new
+    defaults: { _controller: "MorusFasBundle:Site:new" }
+
+morus_fas_site_create:
+    path:     /create
+    defaults: { _controller: "MorusFasBundle:Site:create" }
+    methods:  POST
+
+morus_fas_site_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "MorusFasBundle:Site:edit" }
+
+morus_fas_site_update:
+    path:     /{id}/update
+    defaults: { _controller: "MorusFasBundle:Site:update" }
+    methods:  [POST, PUT]
+
+morus_fas_site_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "MorusFasBundle:Site:delete" }
+    methods:  [POST, DELETE]

@@ -1,0 +1,24 @@
+{% extends '::base.html.twig' %}
+
+{% block body_title -%}
+    {{ 'site.site_edit'|trans }}
+{% endblock %}
+
+{% block body -%}
+    {{ form_start(edit_form) }}
+        {{ form_errors(edit_form) }}
+        {{ 'site.site_code'|trans }} {{ form_widget(edit_form.name) }} {{ form_errors(edit_form.name) }}
+        {{ 'site.site_name'|trans }} {{ form_widget(edit_form.otherName) }} {{ form_errors(edit_form.otherName) }}
+        {{ form_widget(edit_form.submit) }}
+        {{ form_rest(edit_form) }}
+    {{ form_end(edit_form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('morus_fas_site') }}">
+            {{ 'btn.back'|trans }}
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}
