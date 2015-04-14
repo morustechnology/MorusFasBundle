@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fonts>
-    <font name="新細明體">
-        <normal src="%MorusFasBundle:fonts/新細明體/新細明體.ttf%" />
-        <bold src="%MorusFasBundle:fonts/新細明體/MSGothic.ttf" />
+    <font name="PMingLiU">
+        <normal src="%MorusFasBundle:fonts/PMingLiU/PMingLiU.ttf%" />
     </font>
     <font name="AppleGothic">
         <normal src="%MorusFasBundle:fonts/AppleGothic/AppleGothic.ttf%" />
     </font>
-    <font name="微軟正黑體">
-        <normal src="%MorusFasBundle:fonts/微軟正黑體/msjh.ttf%" />
-        <bold src="%MorusFasBundle:fonts/微軟正黑體/msjhbd.ttf%" />
+    <font name="Microsoft_JhengHei">
+        <normal src="%MorusFasBundle:fonts/Microsoft_JhengHei/msjh.ttf%" />
+        <bold src="%MorusFasBundle:fonts/Microsoft_JhengHei/msjhbd.ttf%" />
     </font>
     <font name="courier">
         <normal src="courier" />
