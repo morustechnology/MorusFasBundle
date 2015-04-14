@@ -267,10 +267,14 @@
                     <div class="field inline">
                         <label>{{ 'invoice.invoice_date'|trans }}</label>{{ form_widget(form.transdate) }}
                     </div>
+                    
                     <div class="field inline">
                         <label>{{ 'ar.duedate'|trans }}</label>{{ form_widget(form.duedate) }}
                     </div>
                     <div style="clear:both;"></div>
+                    <div class="field inline">
+                        <label>{{ 'invoice.bank_transfer_date'|trans }}</label>{{ form_widget(form.banktransferdate) }}
+                    </div>
                     <div class="field inline long">
                         <label>{{ 'ar.reference'|trans }}</label>{{ form_widget(form.reference) }} {{ form_errors(form.reference) }}
                     </div>

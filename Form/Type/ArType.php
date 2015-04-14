@@ -43,6 +43,11 @@ class ArType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false
             ))
+            ->add('banktransferdate', 'date', array(
+                'input'  => 'datetime',
+                'widget' => 'single_text',
+                'required' => false
+            ))
             ->add('transaction', 'fas_transaction', array('label' => false));
     }
     

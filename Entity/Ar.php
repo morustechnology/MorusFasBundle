@@ -35,6 +35,13 @@ class Ar extends BaseAr
     protected $enddate;
     
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="bank_transfer_date", type="datetime", nullable=true)
+     */
+    protected $banktransferdate;
+    
+    /**
      * Set export
      *
      * @param \Morus\FasBundle\Entity\Export $export
@@ -103,6 +110,30 @@ class Ar extends BaseAr
         return $this->enddate;
     }
     
+    
+    
+    /**
+     * Set banktransferdate
+     *
+     * @param \DateTime $banktransferdate
+     * @return Ar
+     */
+    public function setBanktransferdate($banktransferdate)
+    {
+        $this->banktransferdate = $banktransferdate;
+
+        return $this;
+    }
+
+    /**
+     * Get banktransferdate
+     *
+     * @return \DateTime 
+     */
+    public function getBanktransferdate()
+    {
+        return $this->banktransferdate;
+    }
     
     public function getTotal()
     {
