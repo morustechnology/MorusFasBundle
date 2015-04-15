@@ -79,7 +79,7 @@
                 <div class="invoice-info-line" >
                     <div class="invoice-info-content" >{{ ar.unit.accountNumber }}</div>
                     <div class="invoice-info-label">{{ 'invoice.customer_number'|trans }}：</div>
-                    <div class="invoice-info-content" >{{ ar.banktransferdate|date('d/m/Y') }}</div>
+                    <div class="invoice-info-content" >{% if ar.banktransferdate is not null %} {{ ar.banktransferdate|date('d/m/Y') }} {% endif %}</div>
                     <div class="invoice-info-label">{{ 'invoice.bank_transfer_date'|trans }}：</div>
                 </div>
                 
