@@ -1,6 +1,7 @@
 <table id="contact-list" class="contact records_list">
     <thead>
         <tr>
+            <th class="left">{{ 'contact.customer_number'|trans }}</th>
             <th class="left">{{ 'contact.display_name'|trans }}</th>
             <th class="left">{{ 'contact.vehicle_list'|trans }}</th> 
             <th class="left">{{ 'contact.product_discount'|trans }}</th>
@@ -9,7 +10,8 @@
     <tbody>
     {% for contact in contacts %}
         <tr>
-            <td class="left"><a href="{{ path('morus_fas_contacts_show', { 'id': contact.id }) }}">{{ contact.name }}</a></td>
+            <td class="left" style="width: 50px;">{{ contact.accountNumber }}</td>
+            <td class="left" style="width: 230px;"><a href="{{ path('morus_fas_contacts_show', { 'id': contact.id }) }}">{{ contact.name }}</a></td>
             <td class="left">  
                 {% for vehicle in contact.vehicles %}
                     {% if loop.index != 1 %} , {% endif %}

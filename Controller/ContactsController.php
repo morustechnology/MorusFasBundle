@@ -38,7 +38,7 @@ class ContactsController extends Controller
                     ->leftJoin('u.vehicles', 'v')
                     ->leftJoin('u.unitProducts', 'uv')
                     ->where('u.active = 1')
-                    ->orderBy('u.name', 'ASC');
+                    ->orderBy('u.accountNumber', 'DESC');
         
         if ($controlCode == 'ALL') {
             $qb->leftJoin('u.unitClasses', 'uc');
@@ -136,7 +136,7 @@ class ContactsController extends Controller
         $unitRepos = $aem->getUnitRepository();
 
         $qb = $unitRepos->createQueryBuilder('u')
-                ->select('u.id, u.name')
+                ->select('u.id, u.name, u.accountNumber')
                 ->addSelect('p.firstName, p.lastName')
                 ->addSelect('c.description as email')                
                 ->join('u.persons', 'p', 'WITH', 'p.isPrimary = 1')

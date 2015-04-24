@@ -34,6 +34,10 @@
 
         <div id="contact-detail">
             <div class="field">
+                <label>{{ 'contact.customer_number'|trans }}</label>
+                <span>{{ contact.accountNumber }}</span>
+            </div>
+            <div class="field">
                 <label>{{ 'contact.contact_person'|trans }}</label>
                 <span>
                     {{ contact.firstName }} {{ contact.lastName }}
@@ -44,6 +48,7 @@
                 <label>{{ 'contact.telephone'|trans }}</label>
                 <span>{{ phone.description }}</span>
             </div>
+            
             <div class="field">
                 <label>{{ 'contact.postal_address'|trans }}</label>
                 <span>{{ postal.address }} {{ postal.city }} {{ postal.state }} {{ postal.zipCode }} {{ postal.country }}</span>

@@ -31,8 +31,8 @@
         </thead>
     {% for export in exports %}
         <tr>
-            <td>{{ export.createDate|date('d/m/Y') }}</td>
-            <td>{{ export.name }}</td>
+            <td style="width: 150px">{{ export.createDate|date('d/m/Y m:s') }}</td>
+            <td style="width: 100px">{{ export.name }}</td>
             <td><a href="{{ path('morus_fas_export_pl', {'id': export.id}) }}">{{ 'export.pl'|trans }}<a/></td>
         <tr>
     {% endfor %}

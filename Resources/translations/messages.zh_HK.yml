@@ -173,7 +173,7 @@ invoice:
     customer_number: 客戶編號
     page_total: 共頁數
     sub_total: 總計
-    invoice_detail_total: 柴油及汽油月結單詳細交易報告
+    invoice_detail_total: 產品銷售月結單詳細交易報告
     remark: 備註
     discount_exclude: 機場貨運站及客運站入油並無折扣優惠
     thank_you: 多謝惠顧
@@ -187,6 +187,7 @@ contact:
     registration_number: 車牌
     discount: 折扣
     copy_postal: 複製郵寄地址
+    customer_number: 客戶編號
 
 site:
     site_list: 油站名單

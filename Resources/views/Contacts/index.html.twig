@@ -55,24 +55,16 @@
                 {{ 'btn.add_supplier'|trans }}
             </a>
         </li>
-        <li>
-            <a class="loading-btn" href="{{ path('morus_fas_contacts_new', {'ecc': 'employee'}) }}">
-                {% image '@MorusAcceticBundle/Resources/public/images/icons-pack.png' %}
-                <em class="icons add icon" style="background:url('{{ asset_url }}') no-repeat;background-position:0 -50px;" ></em>
-                {% endimage %}
-                {{ 'btn.add_employee'|trans }}
-            </a>
-        </li>
     </ul>
 
     <div class="fullwidth-space"></div>
     
     <div id="{{ ct_tab_div_id }}">
         <ul>
-            <li><a href="{{ path('morus_fas_contacts_list', {'ecc': 'all'}) }}">{{ 'contact.all'|trans }}</a></li>
-            <li><a href="{{ path('morus_fas_contacts_list', {'ecc': 'supplier'}) }}">{{ 'contact.suppliers'|trans }}</a></li>
+            
             <li><a href="{{ path('morus_fas_contacts_list', {'ecc': 'customer'}) }}">{{ 'contact.customers'|trans }}</a></li>
-            <li><a href="{{ path('morus_fas_contacts_list', {'ecc': 'employee'}) }}">{{ 'contact.employees'|trans }}</a></li>
+            <li><a href="{{ path('morus_fas_contacts_list', {'ecc': 'supplier'}) }}">{{ 'contact.suppliers'|trans }}</a></li>
+            <li><a href="{{ path('morus_fas_contacts_list', {'ecc': 'all'}) }}">{{ 'contact.all'|trans }}</a></li>
         </ul>
     </div>
     
