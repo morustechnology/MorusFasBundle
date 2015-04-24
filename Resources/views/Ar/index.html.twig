@@ -32,6 +32,7 @@
                 <a id="fas_inv_print"  href="{{ path('morus_fas_ar_print_no_px', {'id': ar.id}) }}">
                     {{ 'btn.without_unit_px'|trans }}
                 </a>
+                    <br/><div style="font-size: 10px; line-height: 10px; color: grey;">{% if ar.lastprintdate is not null %}({{ ar.lastprintdate|date("d/m/y H:i") }}){% endif %}</div>
             </td>
             <td><a href="{{ path('morus_fas_ar_edit', { 'id': ar.id }) }}">{{ ar.invnumber }}</a></td>
             <td>{{ ar.reference }}</td>

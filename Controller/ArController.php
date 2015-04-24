@@ -296,7 +296,14 @@ class ArController extends Controller
         
         $ar = $query->getQuery()->getSingleResult();
         
+        
         $content = $this->genPDF($ar, false);
+        
+        $ar->setLastprintdate(new \DateTime("now"));
+        
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($ar);
+        $em->flush();
         
         return new Response($content, 200, array(
             'content-type' => 'application/pdf', 
@@ -324,6 +331,12 @@ class ArController extends Controller
         $ar = $query->getQuery()->getSingleResult();
         
         $content = $this->genPDF($ar, true);
+        
+        $ar->setLastprintdate(new \DateTime("now"));
+        
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($ar);
+        $em->flush();
         
         return new Response($content, 200, array(
             'content-type' => 'application/pdf', 

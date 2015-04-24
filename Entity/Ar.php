@@ -42,6 +42,13 @@ class Ar extends BaseAr
     protected $banktransferdate;
     
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_print_date", type="datetime", nullable=true)
+     */
+    protected $lastprintdate;
+    
+    /**
      * Set export
      *
      * @param \Morus\FasBundle\Entity\Export $export
@@ -146,8 +153,33 @@ class Ar extends BaseAr
         return $total;
     }
     
+    /**
+     * Set lastprintdate
+     *
+     * @param \DateTime $lastprintdate
+     * @return Ar
+     */
+    public function setLastprintdate($lastprintdate)
+    {
+        $this->lastprintdate = $lastprintdate;
+
+        return $this;
+    }
+
+    /**
+     * Get lastprintdate
+     *
+     * @return \DateTime 
+     */
+    public function getLastprintdate()
+    {
+       return $this->lastprintdate;
+    }
+    
     public function getUnitName()
     {
         return $this->unit->getName();
     }
+    
+    
 }
