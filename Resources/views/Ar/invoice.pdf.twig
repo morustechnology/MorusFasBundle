@@ -33,8 +33,8 @@
                 <div class="company-address">
                     P.O. Box No.1563 Yuen Long Post Office
                 </div>
-                <div class="company-email">sunnydaymotorsltd@yahoo.com.hk</div>
-                <div class="company-tel">{{ 'invoice.tel'|trans }}：90901108</div>
+                <div class="company-email">sunnydaymotorsltd@gmail.com</div>
+                <div class="company-tel">{{ 'invoice.tel'|trans }}：60395519</div>
             </div>
         
             <div class="double-line"></div>
@@ -185,12 +185,12 @@
                     <td class="col3" ></td>
                     <td class="col4" ></td>
                     <td class="col5" >Total</td>
-                    <td class="col6" >{{ qty_total }}</td>
+                    <td class="col6" >{{ qty_total|number_format(2, '.', ',') }}</td>
                     {% if px == true %} 
                     <td class="col7" ></td>
                     {% endif %}
                     <td class="col8" ></td>
-                    <td class="col9" >{{ amount_total }}</td>
+                    <td class="col9" >{{ amount_total|number_format(2, '.', ',') }}</td>
                 </tr>
             </table>
         </div>
