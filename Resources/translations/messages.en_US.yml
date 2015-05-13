@@ -146,6 +146,7 @@ pl:
     receivable: Receivable
     pl: 'P/L'
     percentage: '%'
+    customer_number: Customer Number
 
 invoice:
     registration_number: Registration Number

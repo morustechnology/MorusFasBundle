@@ -162,6 +162,17 @@ class ContactsController extends Controller
                 ->setParameter('telephone', 'TELEPHONE');
         $phone = $phoneSql->getQuery()->getSingleResult();
         
+        // Get Mobile Number
+        $mobileContactRepos = $aem->getContactRepository();
+        
+        $mobileSql = $mobileContactRepos->createQueryBuilder('c')
+                ->select('c.description')
+                ->join('c.unit', 'u', 'WITH', 'u.id = :id')
+                ->join('c.contactClass', 'cc', 'WITH', 'cc.controlCode = :mobile')
+                ->setParameter('id', $id)
+                ->setParameter('mobile', 'MOBILE');
+        $mobile = $mobileSql->getQuery()->getSingleResult();
+        
         // Get Postal Address        
         $locRepos = $aem->getLocationRepository();
         
@@ -185,6 +196,7 @@ class ContactsController extends Controller
         return $this->render('MorusFasBundle:Contacts:show.html.twig', array(
             'contact'       => $contact,
             'phone'         => $phone,
+            'mobile'        => $mobile,
             'postal'        => $postal,
             'physical'      => $physical,
             'delete_form'   => $deleteForm->createView(),

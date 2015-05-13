@@ -146,6 +146,7 @@ pl:
     receivable: 收客
     pl: 'P/L'
     percentage: '%'
+    customer_number: 客户编号
     
 invoice:
     registration_number: 车牌号码

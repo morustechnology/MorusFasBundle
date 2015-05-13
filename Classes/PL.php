@@ -17,8 +17,6 @@ class PL {
         $this->container = $container;
     }
     
-    
-    
     public function getPL($ars) {
         $suppliers = array();
         foreach($ars as $ar) {
@@ -34,7 +32,7 @@ class PL {
                         $customerVehicle->setNett(round($invoice->getNetamount(),2));
                         $customerVehicle->setReceivable(round($invoice->getQty(), 2) * (round($invoice->getSellPrice(), 2) - round($invoice->getSelldiscount(), 2)));
                         
-                        $customer = new Customer($ar->getUnit()->getId(), $ar->getUnit()->getName());
+                        $customer = new Customer($ar->getUnit()->getId(), $ar->getUnit()->getName(), $ar->getUnit()->getAccountNumber());
                         $customer->addCustomerVehicle($customerVehicle);
                         
                         $supplier = new Supplier($s->getId(), $s->getName());
@@ -63,7 +61,7 @@ class PL {
                         $customerVehicle->setNett(round($invoice->getNetamount(),2));
                         $customerVehicle->setReceivable(round($invoice->getQty(), 2) * (round($invoice->getSellPrice(), 2) - round($invoice->getSelldiscount(), 2)));
                             
-                        $customer = new Customer($ar->getUnit()->getId(), $ar->getUnit()->getName());
+                        $customer = new Customer($ar->getUnit()->getId(), $ar->getUnit()->getName(), $ar->getUnit()->getAccountNumber());
                         $customer->addCustomerVehicle($customerVehicle);
                         
                         $supplier->addCustomer($customer);
@@ -86,8 +84,10 @@ class PL {
         return null;
     }
     
+    
 }
 
+    
 class Supplier {
     protected $id;
     
@@ -122,7 +122,15 @@ class Supplier {
     public function addCustomer(Customer $customer)
     {
         $this->customers[] = $customer;
-
+        
+//        $cus_array = array_reverse($this->customers);
+//        
+//        foreach($cus_array as $c) {
+//            if ( strcmp($customer->getAccountNumber(), $c->getAccountNumber()) < 0) {
+//                
+//            }
+//        }
+        
         return $this;
     }
 
@@ -168,13 +176,18 @@ class Supplier {
 class Customer {
     protected $id;
     
+    protected $accountNumber;
+    
     protected $name;
     
     protected $customerVehicles;
     
-    public function __construct($id, $name) {
+    
+    
+    public function __construct($id, $name, $accountNumber) {
         $this->id = $id;
         $this->name = $name;
+        $this->accountNumber = $accountNumber;
         $this->customerVehicles = array();
     }
     
@@ -188,6 +201,14 @@ class Customer {
     
     public function getName() {
         return $this->name;
+    }
+    
+    public function setAccountNumber($accountNumber) {
+        $this->accountNumber = $accountNumber;
+    }
+    
+    public function getAccountNumber() {
+        return $this->accountNumber;
     }
     
     /**
