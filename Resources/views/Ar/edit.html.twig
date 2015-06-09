@@ -230,6 +230,7 @@
         <div class="section-form inset form">
             {{ form_start(form) }}
             {{ form_errors(form) }}
+            {{ form_row(form._token) }}
             <ul class="page-control">
                 <li>
                     <a id="fas_inv_print"  class="loading-btn" href="{{ path('morus_fas_ar_print', {'id': ar.id }) }}">
