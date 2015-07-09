@@ -515,8 +515,7 @@ class ArController extends Controller
                 ->where($qb->expr()->eq('ar.id', $id));
         
         $ar = $query->getQuery()->getSingleResult();
-
-
+        
         if (!$ar) {
             throw $this->createNotFoundException('Unable to find Transaction entity.');
         }
@@ -526,9 +525,11 @@ class ArController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->flush();
 
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($ar);
+            $em->flush();
+            
             return $this->redirect($this->generateUrl('morus_fas_ar'));
         }
 
