@@ -18,8 +18,22 @@ class ExportController extends Controller
     public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
         
-        $exports = $em->getRepository('MorusFasBundle:Export')
-                ->findAll();
+//        $exports = $em->getRepository('MorusFasBundle:Export')
+//                ->findAll();
+        
+        
+        
+        $aem = $this->get('morus_accetic.entity_manager'); // Get Accetic Entity Manager from service
+
+        // Get ar with invoices lines
+        $qb = $em->createQuery(
+                'SELECT e
+                FROM MorusFasBundle:Export e
+                WHERE e.active = true'
+                );
+        
+        $exports = $qb->getResult();
+        
         
         return $this->render('MorusFasBundle:Export:index.html.twig', array(
             'exports' => $exports,
