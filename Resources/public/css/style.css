@@ -324,6 +324,14 @@ table.invoice-info tr td{
 }
 }
 
+.auth {
+    float: right;
+    padding: 1em 0 1em 3em;
+}
+
+.auth a {
+    color: white;
+}
 
 /*Remove input control in Chrome*/
 /*input[type="date"]::-webkit-calendar-picker-indicator,
